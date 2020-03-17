@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+	if [ ! -d $2 ] #checks to see if filename parameter is in exist
+	then
+		echo "Directory $2 does not exist"
+	elif [ $1 != --add ] | [ $1 != --search ] #checks if the options parameters exist
+	then 
+		echo "Option $1 does not exist" 
+	else
+		#case statements for adding and searching for molecules given file path
+		case $1 in #two different
+			--add) 
+			echo "Add... molecule from $2"
+			;;
+			--search) 
+			echo "Search... molecule from $2"
+			;;
+		esac
+	fi
+
