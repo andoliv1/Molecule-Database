@@ -144,21 +144,37 @@ public class MySQLAccess {
     }
 
 
-    /** Finds mid's and names of molecules that have the same number of atoms.
+    /** Finds mid's of molecules that have the same number of atoms and same type of atoms.
      *
      * @param numAtoms - number of atoms in molecule
      * @return resultSet - SQL object that holds mid, name of molecule. Each row represents a molecule.
      * @throws SQLException
      */
-    public ResultSet findSameNumAtoms(int numAtoms) throws SQLException {
-        // This query will extract the mid's, molecule names of the molecules of the same number of atoms
-        String sql = "SELECT mid, name\n"+
-                " FROM molecules\n" +
-                " WHERE num_atoms = ?";
+    public ResultSet findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
+        // MySQL doesn't allow for using array
+        // Work around for using array in the IN clause
+        // Build string of ?,?, ...
+        // Parametrized later
+        StringBuilder builder = new StringBuilder();
+        for( int i = 0 ; i < atoms.size(); i++ ) {
+            builder.append("?,");
+        }
+
+        // This query will extract the mid's of the molecules
+        // of the same number of atoms and of the same type of atoms
+        String sql = "SELECT mid\n"+
+                " FROM atoms\n" +
+                " WHERE atom in (" +
+                builder.deleteCharAt( builder.length() -1 ).toString() +
+                ") " +
+                "GROUP BY mid HAVING count(mid) = ?;";
 
         preparedStatement = connect
                 .prepareStatement(sql);
-        preparedStatement.setInt(1, numAtoms);
+        int ii = 1;
+        for(String atom : atoms)
+            preparedStatement.setString(ii++, atom);
+        preparedStatement.setInt(ii, numAtoms);
         resultSet = preparedStatement.executeQuery();
 //        writeResultSet(resultSet);
         System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
@@ -269,10 +285,17 @@ public class MySQLAccess {
         MySQLAccess dao = new MySQLAccess();
         dao.connect();
 //        dao.readDataBase();
-        dao.queryAdjacencyList("acetylene");
+//        dao.queryAdjacencyList("acetylene");
 //        dao.insertMolecule("butane.txt");
 //        dao.insertMolecule("isobutane.txt");
-        ResultSet rs = dao.findSameNumAtoms(14);
+
+        // You can provide the whole list of atoms
+        // or you can just provide the UNIQUE list of atoms
+        ArrayList<String> atoms = new ArrayList<>();
+        atoms.add("C");
+        atoms.add("H");
+
+        ResultSet rs = dao.findSameAtoms(14, atoms);
         ArrayList<Integer> mids = new ArrayList<>();
         while(rs.next()){
             mids.add(rs.getInt("mid"));
