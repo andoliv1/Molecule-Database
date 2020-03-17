@@ -31,7 +31,7 @@ public class MySQLAccess {
         connect = DriverManager
                 .getConnection("jdbc:mysql://localhost/moleculedb?serverTimezone=UTC",
                         "root",
-                        "password");
+                        "1nbra531");
         connect.setAutoCommit(false);
 
     }
