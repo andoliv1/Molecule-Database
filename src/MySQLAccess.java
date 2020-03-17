@@ -98,9 +98,10 @@ public class MySQLAccess {
         // SQL
         // PreparedStatements can use variables and are more efficient
         preparedStatement = connect
-                .prepareStatement("INSERT INTO molecules VALUES (default, ?)");
+                .prepareStatement("INSERT INTO molecules VALUES (default, ?, ?)");
 
         preparedStatement.setString(1, m.moleculeName);
+        preparedStatement.setInt(2, m.numVertices);
         preparedStatement.executeUpdate();
         connect.commit();
 
