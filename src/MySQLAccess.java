@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
-import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class MySQLAccess {
     private Connection connect;
@@ -81,6 +85,68 @@ public class MySQLAccess {
         // What data structure?
     }
 
+    /**
+     *
+     * @param filename
+     * @throws SQLException
+     */
+    public void writeDatabase(String filename) throws SQLException {
+
+        // Get molecule information from text file
+        MoleculeText m = new MoleculeText(filename);
+
+        // SQL
+        // PreparedStatements can use variables and are more efficient
+        preparedStatement = connect
+                .prepareStatement("INSERT INTO molecules VALUES (default, ?)");
+
+        preparedStatement.setString(1, m.moleculeName);
+        preparedStatement.executeUpdate();
+        connect.commit();
+
+        // Query the mid that was auto incremented in the last insert.
+        preparedStatement = connect
+                .prepareStatement("SELECT mid FROM molecules WHERE name = ?");
+        preparedStatement.setString(1, m.moleculeName);
+        resultSet = preparedStatement.executeQuery();
+
+        resultSet.next();
+        int mid = resultSet.getInt("mid");
+        System.out.println(mid);
+
+        for (int ii = 0; ii < m.numVertices; ii++) {
+            // Atoms table
+            preparedStatement = connect
+                    .prepareStatement("INSERT INTO atoms VALUES (default, ?, ?, ?)");
+
+            // mid, atom, vertex
+            preparedStatement.setInt(1, mid);
+            preparedStatement.setString(2, m.atoms[ii]);
+            preparedStatement.setInt(3, ii);
+
+            preparedStatement.executeUpdate();
+            connect.commit();
+        }
+
+        for (int ii = 0; ii < m.numVertices; ii++){
+            for (int vv: m.adjacencyList[ii]) {
+
+                if (m.adjacencyList.length > 0) {
+                    //Edges table
+                    preparedStatement = connect
+                            .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
+
+                    // mid, vertex1, vertex2
+                    preparedStatement.setInt(1, mid);
+                    preparedStatement.setInt(2, ii);
+                    preparedStatement.setInt(3, vv);
+
+                    preparedStatement.executeUpdate();
+                    connect.commit();
+                }
+            }
+        }
+    }
 
     /** Prints the results of the query along with their columns;
      * @param resultSet The query results are stored here.
@@ -119,6 +185,7 @@ public class MySQLAccess {
         MySQLAccess dao = new MySQLAccess();
         dao.connect();
 //        dao.readDataBase();
-        dao.readDataBase("water");
+        dao.readDataBase("acetylene");
+        dao.writeDatabase("carbon_dioxide.txt");
     }
 }
