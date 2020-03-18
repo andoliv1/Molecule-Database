@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public abstract class MoleculeAbstract {
+    protected Integer mid;
     protected String moleculeName;
     protected Integer numVertices;
     protected ArrayList<String> atoms;
