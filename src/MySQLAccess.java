@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -114,7 +115,7 @@ public class MySQLAccess {
      * @param mids Array of mids
      * @throws SQLException
      */
-    public void queryAdjacencyList(ArrayList<Integer> mids) throws SQLException {
+    public ResultSet queryAdjacencyList(ArrayList<Integer> mids) throws SQLException {
 
         // MySQL doesn't allow for using array
         // Work around for using array in the IN clause
@@ -125,32 +126,34 @@ public class MySQLAccess {
             builder.append("?,");
         }
 
-        String sql = "SELECT A1.mid AS mid, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n"+
+        String sql = "SELECT A1.mid AS mid, M.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n"+
                 " FROM\n"  +
                 " (SELECT A.mid, A.atom, A.vertex\n" +
                 " FROM atoms A WHERE A.mid IN ("+  builder.deleteCharAt( builder.length() -1 ).toString()+  "))A1 \n" +
                 " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
-                " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid);";
+                " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
+                " JOIN molecules M on A1.mid = m.mid;";
         preparedStatement = connect
                 .prepareStatement(sql);
         int ii = 1;
         for(int mid : mids)
             preparedStatement.setInt(ii++, mid);
         resultSet = preparedStatement.executeQuery();
-        writeResultSet(resultSet);
+//        writeResultSet(resultSet);
         System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
-        // Next step is how should we store this
-        // What data structure?
+
+        return resultSet;
     }
 
 
-    /** Finds mid's of molecules that have the same number of atoms and same type of atoms.
+    /** Return Array of MoleculeDB's that have the same number of atoms and the same atoms.
      *
      * @param numAtoms - number of atoms in molecule
+     * @param atoms - array list of atoms in molecule
      * @return resultSet - SQL object that holds mid, name of molecule. Each row represents a molecule.
      * @throws SQLException
      */
-    public ResultSet findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
+    public MoleculeDB[] findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
         // MySQL doesn't allow for using array
         // Work around for using array in the IN clause
         // Build string of ?,?, ...
@@ -162,12 +165,15 @@ public class MySQLAccess {
 
         // This query will extract the mid's of the molecules
         // of the same number of atoms and of the same type of atoms
-        String sql = "SELECT mid\n"+
+        String sql = "SELECT mid, name \n" +
+                "FROM molecules \n" +
+                "WHERE mid IN " +
+                "(SELECT mid\n"+
                 " FROM atoms\n" +
                 " WHERE atom in (" +
                 builder.deleteCharAt( builder.length() -1 ).toString() +
                 ") " +
-                "GROUP BY mid HAVING count(mid) = ?;";
+                "GROUP BY mid HAVING count(mid) = ?);";
 
         preparedStatement = connect
                 .prepareStatement(sql);
@@ -176,9 +182,45 @@ public class MySQLAccess {
             preparedStatement.setString(ii++, atom);
         preparedStatement.setInt(ii, numAtoms);
         resultSet = preparedStatement.executeQuery();
-//        writeResultSet(resultSet);
         System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
-        return resultSet;
+
+        // mapMolecule is a dictionary that takes the  <key, value> = <mid, MoleculeDB>
+        HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
+        ArrayList<Integer> mids = new ArrayList<>();
+        int mid;
+        String name;
+        // Iterate over each row from the SQL query
+        // Instantiate a MoleculeDB
+        // Their adjacency lists will be filled from the next query.
+        while(resultSet.next()){
+            mid = resultSet.getInt("mid");
+            name = resultSet.getString("name");
+            mapMolecule.put(mid, new MoleculeDB(mid, name, numAtoms));
+            mids.add(mid);
+        }
+
+        // Use the mids that we found earlier.
+        // Run queryAdjacencyList to grab all of the adjacency lists for those mids.
+        resultSet = queryAdjacencyList(mids);
+
+        // Populate the atoms, adjacency lists and matrices
+        MoleculeDB molecule;
+        int vertex1, vertex2;
+        String atom1, atom2;
+        while(resultSet.next()){
+            mid = resultSet.getInt("mid");
+            vertex1 = resultSet.getInt("vertex1");
+            vertex2 = resultSet.getInt("vertex2");
+            atom1 = resultSet.getString("atom1");
+            atom2 = resultSet.getString("atom1");
+
+            molecule = mapMolecule.get(mid);
+            molecule.setAtom(vertex1, atom1);
+            molecule.setAtom(vertex2, atom2);
+            molecule.setEdge(vertex1, vertex2);
+        }
+
+        return mapMolecule.values().toArray(new MoleculeDB[0]);
     }
 
     /** Inserts molecule information into SQL via filename.
@@ -284,7 +326,7 @@ public class MySQLAccess {
         dao.connect();
 //        dao.readDataBase();
 //        dao.queryAdjacencyList("acetylene");
-//        dao.insertMolecule("butane.txt");
+//        dao.insertMolecule("1-aminopropan-2-ol");
 //        dao.insertMolecule("isobutane.txt");
 
         // You can provide the whole list of atoms
@@ -293,13 +335,13 @@ public class MySQLAccess {
         atoms.add("C");
         atoms.add("H");
 
-        ResultSet rs = dao.findSameAtoms(14, atoms);
-        ArrayList<Integer> mids = new ArrayList<>();
-        while(rs.next()){
-            mids.add(rs.getInt("mid"));
+        MoleculeDB[] molecules = dao.findSameAtoms(14, atoms);
+
+        for (MoleculeDB m : molecules){
+            System.out.println(m.getMoleculeName() + "\t" + m.getNumVertices());
+//            m.getAdjacencyList();
+            m.getAdjacencyMatrix();
         }
-        System.out.println(mids.size());
-        dao.queryAdjacencyList(mids);
 
     }
 }
