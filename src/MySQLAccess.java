@@ -31,7 +31,7 @@ public class MySQLAccess {
         connect = DriverManager
                 .getConnection("jdbc:mysql://localhost/moleculedb?serverTimezone=UTC",
                         "root",
-                        "1nbra531");
+                        "password");
         connect.setAutoCommit(false);
 
     }
@@ -196,15 +196,15 @@ public class MySQLAccess {
         preparedStatement = connect
                 .prepareStatement("INSERT INTO molecules VALUES (default, ?, ?)");
 
-        preparedStatement.setString(1, m.moleculeName);
-        preparedStatement.setInt(2, m.numVertices);
+        preparedStatement.setString(1, m.getMoleculeName());
+        preparedStatement.setInt(2, m.getNumVertices());
         preparedStatement.executeUpdate();
         connect.commit();
 
         // Query the mid that was auto incremented in the last insert.
         preparedStatement = connect
                 .prepareStatement("SELECT mid FROM molecules WHERE name = ?");
-        preparedStatement.setString(1, m.moleculeName);
+        preparedStatement.setString(1, m.getMoleculeName());
         resultSet = preparedStatement.executeQuery();
 
         resultSet.next();
@@ -218,29 +218,27 @@ public class MySQLAccess {
 
             // mid, atom, vertex
             preparedStatement.setInt(1, mid);
-            preparedStatement.setString(2, m.atoms[ii]);
+            preparedStatement.setString(2, m.getAtomList().get(ii));
             preparedStatement.setInt(3, ii);
 
             preparedStatement.executeUpdate();
             connect.commit();
         }
 
+        LinkedList<Integer>[] adjacencyList = m.getAdjacencyList();
         for (int ii = 0; ii < m.numVertices; ii++){
-            for (int vv: m.adjacencyList[ii]) {
+            for (int vv: adjacencyList[ii]) {
+                //Edges table
+                preparedStatement = connect
+                        .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
 
-                if (m.adjacencyList.length > 0) {
-                    //Edges table
-                    preparedStatement = connect
-                            .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
+                // mid, vertex1, vertex2
+                preparedStatement.setInt(1, mid);
+                preparedStatement.setInt(2, ii);
+                preparedStatement.setInt(3, vv);
 
-                    // mid, vertex1, vertex2
-                    preparedStatement.setInt(1, mid);
-                    preparedStatement.setInt(2, ii);
-                    preparedStatement.setInt(3, vv);
-
-                    preparedStatement.executeUpdate();
-                    connect.commit();
-                }
+                preparedStatement.executeUpdate();
+                connect.commit();
             }
         }
     }
