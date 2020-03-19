@@ -71,7 +71,7 @@ public class MySQLAccess {
         preparedStatement.setInt(1, mid);
         resultSet = preparedStatement.executeQuery();
         writeResultSet(resultSet);
-        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
         // Next step is how should we store this
         // What data structure?
     }
@@ -99,7 +99,7 @@ public class MySQLAccess {
         preparedStatement.setString(1, moleculeName);
         resultSet = preparedStatement.executeQuery();
         writeResultSet(resultSet);
-        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
         // Next step is how should we store this
         // What data structure?
     }
@@ -112,6 +112,7 @@ public class MySQLAccess {
      *
      * @param mids Array of mids
      * @throws SQLException
+     * @return ResultSet - results of query
      */
     public ResultSet queryAdjacencyList(ArrayList<Integer> mids) throws SQLException {
 
@@ -138,7 +139,7 @@ public class MySQLAccess {
             preparedStatement.setInt(ii++, mid);
         resultSet = preparedStatement.executeQuery();
 //        writeResultSet(resultSet);
-        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
         return resultSet;
     }
@@ -180,7 +181,7 @@ public class MySQLAccess {
             preparedStatement.setString(ii++, atom);
         preparedStatement.setInt(ii, numAtoms);
         resultSet = preparedStatement.executeQuery();
-        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
         // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
         HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
@@ -320,12 +321,10 @@ public class MySQLAccess {
     }
 
     public static void main(String[] args) throws Exception {
+
+        // Connect to Database
         MySQLAccess dao = new MySQLAccess();
         dao.connect();
-//        dao.readDataBase();
-//        dao.queryAdjacencyList("acetylene");
-//        dao.insertMolecule("1-aminopropan-2-ol");
-//        dao.insertMolecule("isobutane.txt");
 
         // You can provide the whole list of atoms
         // or you can just provide the UNIQUE list of atoms
@@ -333,12 +332,16 @@ public class MySQLAccess {
         atoms.add("C");
         atoms.add("H");
 
-        MoleculeDB[] molecules = dao.findSameAtoms(14, atoms);
+        int numAtoms = 14;
 
+        // Find molecules that have only have Carbon and Hydrogen and have 14 total atoms.
+        MoleculeDB[] molecules = dao.findSameAtoms(numAtoms, atoms);
+
+        // Print out the molecule names, vertices, adj matrix
         for (MoleculeDB m : molecules){
             System.out.println(m.getMoleculeName() + "\t" + m.getNumVertices());
-//            m.getAdjacencyList();
             m.getAdjacencyMatrix();
+            System.out.println("------------------------------------------------------");
         }
 
     }
