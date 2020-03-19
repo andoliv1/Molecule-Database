@@ -153,7 +153,7 @@ public class externalDatabaseParser {
                                                         filewriter.write(periodicTable[elementsArrayList.get(i) - 1][2] + '\n');
                                                 }
                                                 for (int i = 0; i < bondArrayList.size(); i++) {
-                                                        filewriter.write(bondArrayList.get(i).strip() + '\n');
+                                                        filewriter.write(bondArrayList.get(i).trim() + '\n');
                                                 }
                                                 filewriter.close();
                                                 moleculeCount += 1;
