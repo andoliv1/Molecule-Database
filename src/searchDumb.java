@@ -3,6 +3,7 @@
 Instructions: the code is well commented out and by running main you should see the tests we have created to check our
 isomorphism algorithm.
  */
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -11,20 +12,20 @@ public class searchDumb{
     /*
     Compare method used to denote how strings are sorted
      */
-    private static int compare(String o1, String o2) {
-        if ((int) o1.charAt(0) > (int) o2.charAt(0)) {
+    private static int compare(Pair<String,Integer> o1, Pair<String,Integer> o2) {
+        if ((int) o1.getKey().charAt(0) > (int) o2.getKey().charAt(0)) {
             return 1;
-        } else if ((int) o1.charAt(0) < (int) o2.charAt(0)) {
+        } else if ((int) o1.getKey().charAt(0) < (int) o2.getKey().charAt(0)) {
             return -1;
-        } else if (o1.length() > 1 && o2.length() > 1) {
-            if ((int) o1.charAt(1) > (int) o2.charAt(1)) {
+        } else if (o1.getKey().length() > 1 && o2.getKey().length() > 1) {
+            if ((int) o1.getKey().charAt(1) > (int) o2.getKey().charAt(1)) {
                 return 1;
-            } else if ((int) o1.charAt(1) < (int) o2.charAt(1)) {
+            } else if ((int) o1.getKey().charAt(1) < (int) o2.getKey().charAt(1)) {
                 return -1;
             } else {
                 return 0;
             }
-        } else if (o1.length() > 1) {
+        } else if (o1.getKey().length() > 1) {
             return 1;
         } else {
             return -1;
@@ -33,8 +34,8 @@ public class searchDumb{
 
     //this will sort the adjacencyList in alphabetical order meaning by first letter and if it contains a second letter
     //by second letter
-    public static ArrayList<String> sortAtomList(ArrayList<String> atomList){
-        Collections.sort(atomList, (Comparator<String>) searchDumb::compare);
+    public static ArrayList<Pair<String,Integer>> sortAtomList(ArrayList<Pair<String,Integer>> atomList){
+        Collections.sort(atomList, (Comparator<Pair<String,Integer>>) searchDumb::compare);
         return atomList;
     }
 
@@ -55,12 +56,7 @@ public class searchDumb{
     be isomorphic and if there is a one to one mapping from all connection from one molecule to all connections in the other
     molecule then it is true.
      */
-    /*
-    A note is that this algorithm needs to be altered to handle more than one bond. Such alteration will not be hard because
-    it only requires some extra lines of code and making the int[][] matrix to have not only 1 at a position i,j but instead
-    having 2,3,.... to represent that the atom i,j are double bonded or triple bonded.
-     */
-    public static boolean isIsomorphic(molecule molecule1, molecule molecule2) {
+    public static boolean isIsomorphic(main.MoleculeAbstract molecule1, main.MoleculeAbstract molecule2) {
         //get the molecules adjacency matrix
         int[][] adj1 = molecule1.getAdjacencyMatrix();
         int[][] adj2 = molecule2.getAdjacencyMatrix();
@@ -87,14 +83,14 @@ public class searchDumb{
                     int[] connections = adj1[i];
                     int[] connections2 = adj2[j];
                     //get the atoms connected to the vertex with respect to their vertex list
-                    ArrayList<String> atom_connections = new ArrayList<>();
-                    ArrayList<String> atom_connections2 = new ArrayList<>();
+                    ArrayList<Pair<String,Integer>> atom_connections = new ArrayList<>();
+                    ArrayList<Pair<String,Integer>> atom_connections2 = new ArrayList<>();
                     for (int k = 0; k < connections.length; k++) {
-                        if (connections[k] == 1) {
-                            atom_connections.add(ato1.get(k));
+                        if (connections[k] >= 1) {
+                            atom_connections.add(new Pair(ato1.get(k),connections[k]));
                         }
-                        if (connections2[k] == 1) {
-                            atom_connections2.add(ato2.get(k));
+                        if (connections2[k] >= 1) {
+                            atom_connections2.add(new Pair(ato2.get(k),connections2[k]));
                         }
                     }
                     //sort both atom connections
@@ -105,7 +101,8 @@ public class searchDumb{
                     int w = 0;
                     while (w < atom_connections.size()) {
                         //if the connections are not the same then we don't want to use the vertex
-                        if (atom_connections.get(w).equals(atom_connections2.get(w)) == false) {
+                        if (atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) == false &&
+                                atom_connections.get(w).getValue().equals(atom_connections2.get(w).getValue()) == false) {
                             found = false;
                         }
                         w++;
@@ -155,8 +152,8 @@ public class searchDumb{
         water_matrix2[0][1] = 1;
         water_matrix2[1][0] = 1;
         water_matrix2[2][0] = 1;
-        molecule water = new molecule(water_matrix,water_atoms);
-        molecule water2 = new molecule(water_matrix2,water_atom2);
+        MoleculeText water = new MoleculeText(water_matrix,water_atoms);
+        MoleculeText water2 = new MoleculeText(water_matrix2,water_atom2);
         boolean isomorphic = isIsomorphic(water,water2);
         System.out.println("Are water1 and water2 isomorphic? " + isomorphic);
 
@@ -172,8 +169,8 @@ public class searchDumb{
         int[][] salt_matrix2 = new int[2][2];
         salt_matrix2[0][1] = 1;
         salt_matrix2[1][0] = 1;
-        molecule salt_mol = new molecule(salt_matrix,salt_atoms);
-        molecule salt_mol2 = new molecule(salt_matrix2,salt_atoms2);
+        MoleculeText salt_mol = new MoleculeText(salt_matrix,salt_atoms);
+        MoleculeText salt_mol2 = new MoleculeText(salt_matrix2,salt_atoms2);
         boolean isomorphic2 = isIsomorphic(salt_mol,salt_mol2);
         System.out.println("Are sodium chloride and sodium potassium isomorphic? " + isomorphic2);
 
@@ -186,9 +183,46 @@ public class searchDumb{
         methylene_matrix[0][2] = 1;
         methylene_matrix[1][0] = 1;
         methylene_matrix[2][0] = 1;
-        molecule methylene_mol = new molecule(methylene_matrix,methylene_atoms);
+        MoleculeText methylene_mol = new MoleculeText(methylene_matrix,methylene_atoms);
         boolean isomorphic3 = isIsomorphic(water2,methylene_mol);
-        System.out.println("Are water and methylene isomorphic? " + isomorphic2);
+        System.out.println("Are water and methylene isomorphic? " + isomorphic3);
+
+        ArrayList<String> carbon_dioxide_atoms = new ArrayList<String>();
+        carbon_dioxide_atoms.add("C");
+        carbon_dioxide_atoms.add("O");
+        carbon_dioxide_atoms.add("O");
+        int[][] carbon_dioxide_matrix = new int[3][3];
+        carbon_dioxide_matrix[0][1] = 2;
+        carbon_dioxide_matrix[0][2] = 2;
+        carbon_dioxide_matrix[1][0] = 2;
+        carbon_dioxide_matrix[2][0] = 2;
+        MoleculeText carbon_dioxide_mol = new MoleculeText(carbon_dioxide_matrix,carbon_dioxide_atoms);
+
+        ArrayList<String> carbon_dioxide_atoms2 = new ArrayList<String>();
+        carbon_dioxide_atoms2.add("C");
+        carbon_dioxide_atoms2.add("C");
+        carbon_dioxide_atoms2.add("O");
+        int[][] carbon_dioxide_matrix2 = new int[3][3];
+        carbon_dioxide_matrix2[0][1] = 2;
+        carbon_dioxide_matrix2[0][2] = 2;
+        carbon_dioxide_matrix2[1][0] = 2;
+        carbon_dioxide_matrix2[2][0] = 2;
+        MoleculeText carbon_dioxide_mol2 = new MoleculeText(carbon_dioxide_matrix2,carbon_dioxide_atoms2);
+        boolean isomorphic4 = isIsomorphic(carbon_dioxide_mol,carbon_dioxide_mol2);
+        System.out.println("Are carbon_dioxide_mol and carbon_dioxide_mol2 isomorphic? " + isomorphic4);
+
+        ArrayList<String> carbon_dioxide_atoms3 = new ArrayList<String>();
+        carbon_dioxide_atoms3.add("O");
+        carbon_dioxide_atoms3.add("O");
+        carbon_dioxide_atoms3.add("C");
+        int[][] carbon_dioxide_matrix3 = new int[3][3];
+        carbon_dioxide_matrix3[0][2] = 2;
+        carbon_dioxide_matrix3[1][2] = 2;
+        carbon_dioxide_matrix3[2][0] = 2;
+        carbon_dioxide_matrix3[2][1] = 2;
+        MoleculeText carbon_dioxide_mol3 = new MoleculeText(carbon_dioxide_matrix3,carbon_dioxide_atoms3);
+        boolean isomorphic5 = isIsomorphic(carbon_dioxide_mol,carbon_dioxide_mol3);
+        System.out.println("Are carbon_dioxide_mol and carbon_dioxide_mol3 isomorphic? " + isomorphic5);
 
     }
 }

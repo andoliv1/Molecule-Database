@@ -1,5 +1,3 @@
-package main;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,13 +5,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 
-public class MoleculeText extends MoleculeAbstract {
+public class MoleculeText extends main.MoleculeAbstract {
 
+    //constructor with only file name
     public MoleculeText(String filename){
         parseFile(filename);
     }
 
-    private void parseFile(String filename) {
+    //constructor that takes adjacency matrix and atoms
+    public MoleculeText(int[][] matrix, ArrayList<String> vertices){
+        this.adjacencyMatrix = matrix;
+        this.atoms = vertices;
+    }
+
+    public void parseFile(String filename) {
         try {
             System.out.println("Parsing...");
             BufferedReader br = new BufferedReader(new FileReader(filename));
