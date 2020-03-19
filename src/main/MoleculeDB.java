@@ -1,8 +1,10 @@
+package main;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class MoleculeDB extends MoleculeAbstract{
+public class MoleculeDB extends MoleculeAbstract {
 
     MoleculeDB(int mid, String name, int numVertices){
         this.mid = mid;

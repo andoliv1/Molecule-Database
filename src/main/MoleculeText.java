@@ -1,3 +1,5 @@
+package main;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -5,7 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 
-public class MoleculeText extends MoleculeAbstract{
+public class MoleculeText extends MoleculeAbstract {
 
     public MoleculeText(String filename){
         parseFile(filename);
@@ -89,7 +91,7 @@ public class MoleculeText extends MoleculeAbstract{
     }
 
     public static void main(String[] args) {
-        MoleculeText m = new MoleculeText("butane.txt");
+//        main.MoleculeText m = new main.MoleculeText("butane.txt");
 
     }
 }

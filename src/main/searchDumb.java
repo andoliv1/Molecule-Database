@@ -1,6 +1,8 @@
+package main;
+
 import java.util.*;
 
-public class searchDumb implements Search {
+public class searchDumb {
 
     private static int compare(String o1, String o2) {
         if ((int) o1.charAt(0) > (int) o2.charAt(0)) {
@@ -37,7 +39,7 @@ public class searchDumb implements Search {
     Comment: I am not quite sure how to query the SQL database yet so I need to figure out how to do this.
      */
 
-    @Override
+//    @Override
     public int[] findIDsSql(ArrayList<String> adjacencyList) {
         return new int[0];
     }
@@ -47,15 +49,15 @@ public class searchDumb implements Search {
     that still satisfy the molecule arrangement and check if any of those matrices match the isomers we found in the
     findIDsSql method. This is an n! step for each isomer we have.
      */
-    @Override
-    public boolean isIsomorphic(moleculeChemSpider molecule1, moleculeChemSpider molecule2) {
-        int[][] adj1 = molecule1.getAdjacencyMatrix();
-        int[][] adj2 = molecule2.getAdjacencyMatrix();
-        ArrayList<String> ato1 = molecule1.getAtomList();
-        ArrayList<String> ato2 = molecule2.getAtomList();
-
-        return false;
-    }
+//    @Override
+//    public boolean isIsomorphic(main.moleculeChemSpider molecule1, main.moleculeChemSpider molecule2) {
+//        int[][] adj1 = molecule1.getAdjacencyMatrix();
+//        int[][] adj2 = molecule2.getAdjacencyMatrix();
+//        ArrayList<String> ato1 = molecule1.getAtomList();
+//        ArrayList<String> ato2 = molecule2.getAtomList();
+//
+//        return false;
+//    }
 
     /*
     This is the method that will create the permuted matrix while still keeping the connections the same i.e we can

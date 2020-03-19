@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
+package main.java;
 
 public class main {
 }
