@@ -143,7 +143,7 @@ public class externalDatabaseParser {
                                         ArrayList<Integer> elementsArrayList = getElements(json, periodicTable);
                                         ArrayList<String> bondArrayList = getBonds(json, periodicTable);
                                         if (bondArrayList != null) {
-                                                file = new File(".\\molecules\\" + moleculeName);
+                                                file = new File("molecules/" + moleculeName);
                                                 filewriter = new FileWriter(file);
                                                 filewriter.write(moleculeName + '\n');
                                                 filewriter.write(numberOfVertices + '\n');
