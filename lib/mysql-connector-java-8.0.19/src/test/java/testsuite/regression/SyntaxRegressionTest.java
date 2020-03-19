@@ -754,7 +754,7 @@ public class SyntaxRegressionTest extends BaseTestCase {
     }
 
     /**
-     * WL#5538 - InnoDB Full-Text main.Search Support
+     * WL#5538 - InnoDB Full-Text main.java.Search Support
      * 
      * CREATE TABLE syntax changed in 5.6GA
      * 

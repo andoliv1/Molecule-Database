@@ -1,4 +1,4 @@
-package main;
+package main.java;
 
 //Group9: Molecular Database
 /*
@@ -60,7 +60,7 @@ public class searchDumb{
     be isomorphic and if there is a one to one mapping from all connection from one molecule to all connections in the other
     molecule then it is true.
      */
-    public static boolean isIsomorphic(main.MoleculeAbstract molecule1, main.MoleculeAbstract molecule2) {
+    public static boolean isIsomorphic(MoleculeAbstract molecule1, MoleculeAbstract molecule2) {
         //get the molecules adjacency matrix
         int[][] adj1 = molecule1.getAdjacencyMatrix();
         int[][] adj2 = molecule2.getAdjacencyMatrix();

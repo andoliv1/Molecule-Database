@@ -1,4 +1,4 @@
-package main;
+package main.java;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -98,7 +98,7 @@ public class MoleculeText extends MoleculeAbstract {
     }
 
     public static void main(String[] args) {
-//        main.MoleculeText m = new main.MoleculeText("butane.txt");
+//        main.java.MoleculeText m = new main.java.MoleculeText("butane.txt");
 
     }
 }

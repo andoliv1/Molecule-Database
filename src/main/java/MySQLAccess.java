@@ -1,4 +1,4 @@
-package main;
+package main.java;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class MySQLAccess {
     }
 
 
-    /** Return Array of main.MoleculeDB's that have the same number of atoms and the same atoms.
+    /** Return Array of main.java.MoleculeDB's that have the same number of atoms and the same atoms.
      *
      * @param numAtoms - number of atoms in molecule
      * @param atoms - array list of atoms in molecule
@@ -182,13 +182,13 @@ public class MySQLAccess {
         resultSet = preparedStatement.executeQuery();
         System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
-        // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.MoleculeDB>
+        // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
         HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
         ArrayList<Integer> mids = new ArrayList<>();
         int mid;
         String name;
         // Iterate over each row from the SQL query
-        // Instantiate a main.MoleculeDB
+        // Instantiate a main.java.MoleculeDB
         // Their adjacency lists will be filled from the next query.
         while(resultSet.next()){
             mid = resultSet.getInt("mid");

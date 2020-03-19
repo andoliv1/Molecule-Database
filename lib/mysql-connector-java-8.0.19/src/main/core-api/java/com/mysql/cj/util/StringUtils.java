@@ -69,31 +69,31 @@ public class StringUtils {
     public static final Set<SearchMode> SEARCH_MODE__ALL = Collections.unmodifiableSet(EnumSet.allOf(SearchMode.class));
 
     /**
-     * main.Search mode: skip between markers, skip block comments, skip line comments and skip white space.
+     * main.java.Search mode: skip between markers, skip block comments, skip line comments and skip white space.
      */
     public static final Set<SearchMode> SEARCH_MODE__MRK_COM_WS = Collections.unmodifiableSet(
             EnumSet.of(SearchMode.SKIP_BETWEEN_MARKERS, SearchMode.SKIP_BLOCK_COMMENTS, SearchMode.SKIP_LINE_COMMENTS, SearchMode.SKIP_WHITE_SPACE));
 
     /**
-     * main.Search mode: allow backslash escape, skip block comments, skip line comments and skip white space.
+     * main.java.Search mode: allow backslash escape, skip block comments, skip line comments and skip white space.
      */
     public static final Set<SearchMode> SEARCH_MODE__BSESC_COM_WS = Collections.unmodifiableSet(
             EnumSet.of(SearchMode.ALLOW_BACKSLASH_ESCAPE, SearchMode.SKIP_BLOCK_COMMENTS, SearchMode.SKIP_LINE_COMMENTS, SearchMode.SKIP_WHITE_SPACE));
 
     /**
-     * main.Search mode: allow backslash escape, skip between markers and skip white space.
+     * main.java.Search mode: allow backslash escape, skip between markers and skip white space.
      */
     public static final Set<SearchMode> SEARCH_MODE__BSESC_MRK_WS = Collections
             .unmodifiableSet(EnumSet.of(SearchMode.ALLOW_BACKSLASH_ESCAPE, SearchMode.SKIP_BETWEEN_MARKERS, SearchMode.SKIP_WHITE_SPACE));
 
     /**
-     * main.Search mode: skip block comments, skip line comments and skip white space.
+     * main.java.Search mode: skip block comments, skip line comments and skip white space.
      */
     public static final Set<SearchMode> SEARCH_MODE__COM_WS = Collections
             .unmodifiableSet(EnumSet.of(SearchMode.SKIP_BLOCK_COMMENTS, SearchMode.SKIP_LINE_COMMENTS, SearchMode.SKIP_WHITE_SPACE));
 
     /**
-     * main.Search mode: skip between markers and skip white space.
+     * main.java.Search mode: skip between markers and skip white space.
      */
     public static final Set<SearchMode> SEARCH_MODE__MRK_WS = Collections
             .unmodifiableSet(EnumSet.of(SearchMode.SKIP_BETWEEN_MARKERS, SearchMode.SKIP_WHITE_SPACE));
