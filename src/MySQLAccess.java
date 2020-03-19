@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+
 public class MySQLAccess {
     private Connection connect;
     private Statement statement;
@@ -31,7 +32,7 @@ public class MySQLAccess {
         connect = DriverManager
                 .getConnection("jdbc:mysql://localhost/moleculedb?serverTimezone=UTC",
                         "root",
-                        "1nbra531");
+                        "password");
         connect.setAutoCommit(false);
 
     }
@@ -180,39 +181,39 @@ public class MySQLAccess {
         preparedStatement = connect
                 .prepareStatement("INSERT INTO molecules VALUES (default, ?, ?)");
 
-        preparedStatement.setString(1, m.moleculeName);
-        preparedStatement.setInt(2, m.numVertices);
+        preparedStatement.setString(1, m.getMoleculeName());
+        preparedStatement.setInt(2, m.getNumVertices());
         preparedStatement.executeUpdate();
         connect.commit();
 
         // Query the mid that was auto incremented in the last insert.
         preparedStatement = connect
                 .prepareStatement("SELECT mid FROM molecules WHERE name = ?");
-        preparedStatement.setString(1, m.moleculeName);
+        preparedStatement.setString(1, m.getMoleculeName());
         resultSet = preparedStatement.executeQuery();
 
         resultSet.next();
         int mid = resultSet.getInt("mid");
         System.out.println(mid);
 
-        for (int ii = 0; ii < m.numVertices; ii++) {
+        for (int ii = 0; ii < m.getNumVertices(); ii++) {
             // Atoms table
             preparedStatement = connect
                     .prepareStatement("INSERT INTO atoms VALUES (default, ?, ?, ?)");
 
             // mid, atom, vertex
             preparedStatement.setInt(1, mid);
-            preparedStatement.setString(2, m.atoms[ii]);
+            preparedStatement.setString(2, m.getAtomList().get(ii));
             preparedStatement.setInt(3, ii);
 
             preparedStatement.executeUpdate();
             connect.commit();
         }
 
-        for (int ii = 0; ii < m.numVertices; ii++){
-            for (int vv: m.adjacencyList[ii]) {
+        for (int ii = 0; ii < m.getNumVertices(); ii++){
+            for (int vv: m.getAdjacencyList()[ii]) {
 
-                if (m.adjacencyList.length > 0) {
+                if (m.getAdjacencyList().length > 0) {
                     //Edges table
                     preparedStatement = connect
                             .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
