@@ -1,23 +1,17 @@
 package test;
 
-import jdk.internal.org.xml.sax.InputSource;
 import org.dbunit.DatabaseTestCase;
-import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.dbunit.ext.mysql.MySqlDataTypeFactory;
-import org.dbunit.operation.DatabaseOperation;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+
 
 @SuppressWarnings("deprecation")
 public class SQLUnit extends DatabaseTestCase {
