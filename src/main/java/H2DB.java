@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class MySQLAccess {
+public class H2DB {
     private Connection connect;
     private Statement statement;
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
 
-    MySQLAccess(){
+    H2DB(){
         connect = null;
         statement = null;
         preparedStatement = null;
@@ -310,7 +310,7 @@ public class MySQLAccess {
     public static void main(String[] args) throws Exception {
 
         // Connect to Database
-        MySQLAccess dao = new MySQLAccess();
+        H2DB dao = new H2DB();
         dao.connect();
 
         // You can provide the whole list of atoms
