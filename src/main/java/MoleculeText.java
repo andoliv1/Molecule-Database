@@ -35,7 +35,7 @@ public class MoleculeText extends MoleculeAbstract {
             this.atoms = new ArrayList<>(this.numVertices);
             this.adjacencyList = new LinkedList[this.numVertices];
             for (int ii = 0; ii<this.numVertices; ii++){
-                this.atoms.add(br.readLine());
+                this.atoms.add(br.readLine().trim());
                 System.out.println(this.atoms.get(ii));
                 this.adjacencyList[ii] = new LinkedList<>();
             }
