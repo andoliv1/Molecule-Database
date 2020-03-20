@@ -35,9 +35,9 @@ public class SQLUnit extends DatabaseTestCase {
     protected IDatabaseConnection getConnection() throws Exception{
         Class.forName("com.mysql.cj.jdbc.Driver");
         jdbcConnection = DriverManager
-                .getConnection("jdbc:mysql://localhost/moleculedb?serverTimezone=UTC",
-                        "root",
-                        "password");
+                .getConnection("jdbc:h2:~/moleculedb",
+                        "sa",
+                        "");
 
         connection = new DatabaseConnection(jdbcConnection);
         dbConfig = connection.getConfig();

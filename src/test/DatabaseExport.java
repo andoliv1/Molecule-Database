@@ -21,9 +21,9 @@ public class DatabaseExport {
         // database connection
         Class driverClass = Class.forName("com.mysql.cj.jdbc.Driver");
         Connection jdbcConnection = DriverManager
-                                    .getConnection("jdbc:mysql://localhost/moleculedb?serverTimezone=UTC",
-                                            "root",
-                                            "password");
+                                    .getConnection("jdbc:h2:~/moleculedb",
+                                            "sa",
+                                            "");
         DatabaseConnection connection = new DatabaseConnection(jdbcConnection);
         DatabaseConfig dbConfig = connection.getConfig();
         dbConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
