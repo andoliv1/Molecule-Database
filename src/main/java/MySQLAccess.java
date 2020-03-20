@@ -25,12 +25,12 @@ public class MySQLAccess {
      */
     public void connect() throws ClassNotFoundException, SQLException {
         // Load the MySQL driver
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName("org.h2.Driver");
         // Setup the connection with  DB
         connect = DriverManager
-                .getConnection("jdbc:mysql://localhost/moleculedb?serverTimezone=UTC",
-                        "root",
-                        "password");
+                .getConnection("jdbc:h2:~/moleculedb",
+                        "sa",
+                        "");
         connect.setAutoCommit(false);
 
     }
@@ -115,28 +115,21 @@ public class MySQLAccess {
      * @return ResultSet - results of query
      */
     public ResultSet queryAdjacencyList(ArrayList<Integer> mids) throws SQLException {
-
-        // MySQL doesn't allow for using array
-        // Work around for using array in the IN clause
-        // Build string of ?,?, ...
-        // Parametrized later
-        StringBuilder builder = new StringBuilder();
-        for( int i = 0 ; i < mids.size(); i++ ) {
-            builder.append("?,");
-        }
+        // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
+        // Specifically for the WITH _ IN clause
+        // https://github.com/h2database/h2database/issues/149
+        // Timmy
 
         String sql = "SELECT A1.mid AS mid, M.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n"+
                 " FROM\n"  +
                 " (SELECT A.mid, A.atom, A.vertex\n" +
-                " FROM atoms A WHERE A.mid IN ("+  builder.deleteCharAt( builder.length() -1 ).toString()+  "))A1 \n" +
+                " FROM atoms A WHERE A.mid IN (SELECT * FROM TABLE(x INTEGER = ? ) )) A1 \n" +
                 " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
                 " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
                 " JOIN molecules M on A1.mid = m.mid;";
         preparedStatement = connect
                 .prepareStatement(sql);
-        int ii = 1;
-        for(int mid : mids)
-            preparedStatement.setInt(ii++, mid);
+        preparedStatement.setObject(1, mids.toArray());
         resultSet = preparedStatement.executeQuery();
 //        writeResultSet(resultSet);
 //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
@@ -153,33 +146,27 @@ public class MySQLAccess {
      * @throws SQLException
      */
     public MoleculeDB[] findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
-        // MySQL doesn't allow for using array
-        // Work around for using array in the IN clause
-        // Build string of ?,?, ...
-        // Parametrized later
-        StringBuilder builder = new StringBuilder();
-        for( int i = 0 ; i < atoms.size(); i++ ) {
-            builder.append("?,");
-        }
+        // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
+        // Specifically for the WITH _ IN clause
+        // https://github.com/h2database/h2database/issues/149
+        // Timmy
 
         // This query will extract the mid's of the molecules
         // of the same number of atoms and of the same type of atoms
-        String sql = "SELECT mid, name \n" +
+        String sql =
+                "SELECT mid, name, num_atoms \n" +
                 "FROM molecules \n" +
                 "WHERE mid IN " +
-                "(SELECT mid\n"+
-                " FROM atoms\n" +
-                " WHERE atom in (" +
-                builder.deleteCharAt( builder.length() -1 ).toString() +
-                ") " +
-                "GROUP BY mid HAVING count(mid) = ?);";
+                " (SELECT A.mid \n" +
+                " FROM atoms A\n" +
+                " WHERE A.atom IN (SELECT * FROM TABLE(x VARCHAR = ? ))" +
+                " GROUP BY A.mid \n" +
+                " HAVING COUNT(A.mid) = ?)";
 
         preparedStatement = connect
                 .prepareStatement(sql);
-        int ii = 1;
-        for(String atom : atoms)
-            preparedStatement.setString(ii++, atom);
-        preparedStatement.setInt(ii, numAtoms);
+        preparedStatement.setObject(1, atoms.toArray());
+        preparedStatement.setInt(2, numAtoms);
         resultSet = preparedStatement.executeQuery();
 //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
