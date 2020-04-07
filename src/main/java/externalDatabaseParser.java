@@ -33,9 +33,9 @@ public class externalDatabaseParser {
         }
 
         // Grab the molecule name. Only IUAPC field has the correct name so we search for it
-        public static String getMoleculeName(JSONObject json){
+        public static String getMoleculeName(JSONObject json, int moleculeCounter){
                 JSONArray arr = json.getJSONArray("PC_Compounds");
-                JSONObject obj = arr.getJSONObject(0);
+                JSONObject obj = arr.getJSONObject(moleculeCounter);
                 arr = obj.getJSONArray("props");
                 String molecularName = "";
                 for(int index=0; index<arr.length(); index++){
@@ -56,9 +56,9 @@ public class externalDatabaseParser {
         }
 
         // Grab atomic elements and get the length of the array for # of vertices
-        public static Integer getNumberOfVertices(JSONObject json){
+        public static Integer getNumberOfVertices(JSONObject json, int moleculeCounter){
                 JSONArray arr = json.getJSONArray("PC_Compounds");
-                JSONObject obj = arr.getJSONObject(0);
+                JSONObject obj = arr.getJSONObject(moleculeCounter);
                 obj = obj.getJSONObject("atoms");
                 Integer vertexCount = 0;
                 JSONArray element = obj.getJSONArray("element");
@@ -68,10 +68,10 @@ public class externalDatabaseParser {
         }
 
         // Grab atomic elements in the compound
-        public static ArrayList<Integer> getElements(JSONObject json, String [][] peridicTable)
+        public static ArrayList<Integer> getElements(JSONObject json, int moleculeCounter)
         {
                 JSONArray arr = json.getJSONArray("PC_Compounds");
-                JSONObject obj = arr.getJSONObject(0);
+                JSONObject obj = arr.getJSONObject(moleculeCounter);
                 obj = obj.getJSONObject("atoms");
                 JSONArray element = obj.getJSONArray("element");
                 ArrayList<Integer> elementArrayList = new ArrayList<>();
@@ -83,11 +83,11 @@ public class externalDatabaseParser {
 
         // Get bond info. The order tells you how many repetition of bond connections between
         // atom 1 to atom 2
-        public static ArrayList<String> getBonds(JSONObject json, String [][] periodicTable)
+        public static ArrayList<String> getBonds(JSONObject json, int moleculeCounter)
         {
                 try {
                         JSONArray arr = json.getJSONArray("PC_Compounds");
-                        JSONObject obj = arr.getJSONObject(0);
+                        JSONObject obj = arr.getJSONObject(moleculeCounter);
                         JSONObject bonds = obj.getJSONObject("bonds");
                         JSONArray aid1 = bonds.getJSONArray("aid1");
                         JSONArray aid2 = bonds.getJSONArray("aid2");
@@ -126,38 +126,27 @@ public class externalDatabaseParser {
                 return array;
         }
 
-        public static void main(String[] args) throws JSONException {
-                // Number of molecules to grab
-                int numOfMolecules = 5;
-                int moleculeCount = 0;
-                int moleculeCounter = 1;
+        public static void writeFiles(ArrayList<String> numberOfVerticesFile,
+                                      ArrayList<String> moleculeNameFile,
+                                      ArrayList<ArrayList<String>> bondArrayListFile,
+                                      ArrayList<ArrayList<Integer>> elementsArrayListFile) throws IOException {
                 File file = null;
+                String[][] periodicTable = importPeriodicTable("periodicTable.csv");
                 FileWriter filewriter = null;
                 try {
-                        while(moleculeCount != numOfMolecules) {
-                                JSONObject json = readJsonFromUrl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/" + Integer.toString(moleculeCounter) + "/record/JSON/?record_type=2d&response_type=display");
-                                String moleculeName = getMoleculeName(json);
-                                if (!moleculeName.contains("[") && !moleculeName.contains("(") && moleculeName.length() > 0) {
-                                        String[][] periodicTable = importPeriodicTable("periodicTable.csv");
-                                        String numberOfVertices = Integer.toString(getNumberOfVertices(json));
-                                        ArrayList<Integer> elementsArrayList = getElements(json, periodicTable);
-                                        ArrayList<String> bondArrayList = getBonds(json, periodicTable);
-                                        if (bondArrayList != null) {
-                                                file = new File("molecules/" + moleculeName);
-                                                filewriter = new FileWriter(file);
-                                                filewriter.write(moleculeName + '\n');
-                                                filewriter.write(numberOfVertices + '\n');
-                                                for (int i = 0; i < elementsArrayList.size(); i++) {
-                                                        filewriter.write(periodicTable[elementsArrayList.get(i) - 1][2] + '\n');
-                                                }
-                                                for (int i = 0; i < bondArrayList.size(); i++) {
-                                                        filewriter.write(bondArrayList.get(i).trim() + '\n');
-                                                }
-                                                filewriter.close();
-                                                moleculeCount += 1;
-                                        }
+                        for(int i = 0; i < moleculeNameFile.size(); i++) {
+                                System.out.println(moleculeNameFile.get(i));
+                                file = new File("molecules/" + moleculeNameFile.get(i));
+                                filewriter = new FileWriter(file);
+                                filewriter.write(moleculeNameFile.get(i) + '\n');
+                                filewriter.write(numberOfVerticesFile.get(i) + '\n');
+                                for (int j = 0; j < elementsArrayListFile.get(i).size(); j++) {
+                                        filewriter.write(periodicTable[elementsArrayListFile.get(i).get(j) - 1][2] + '\n');
                                 }
-                                moleculeCounter += 1;
+                                for (int j = 0; j < bondArrayListFile.get(i).size(); j++) {
+                                        filewriter.write(bondArrayListFile.get(i).get(j).trim() + '\n');
+                                }
+                                filewriter.close();
                         }
                 }
                 catch (Exception e) {
@@ -171,5 +160,57 @@ public class externalDatabaseParser {
                                 e.printStackTrace();
                         }
                 }
+        }
+
+        public static void main(String[] args) throws JSONException, IOException {
+                // Number of molecules to grab
+                int numOfMolecules = 5;
+                int moleculeCount = 0;
+                ArrayList<String> numberOfVerticesFile = new ArrayList<>();
+                ArrayList<String> moleculeNameFile = new ArrayList<>();
+                ArrayList<ArrayList<String>> bondArrayListFile = new ArrayList<>();
+                ArrayList<ArrayList<Integer>> elementsArrayListFile = new ArrayList<>();
+                int cidCount = 1;
+                while (moleculeCount < numOfMolecules) {
+                        String countString = "";
+                        int limit = numOfMolecules;
+                        if (numOfMolecules >= 150) {
+                                limit = 150;
+                        }
+                        for (int j = cidCount; j <= limit+cidCount-1; j++) {
+                                if (j == limit+cidCount-1)
+                                        countString += j;
+                                else
+                                        countString += j + ",";
+                        }
+                        cidCount += limit;
+                        try {
+                                int count = countString.split(",").length;
+                                JSONObject json = readJsonFromUrl("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/" + countString + "/record/JSON/?record_type=2d&response_type=display");
+                                int counter = 0;
+                                while (counter <= count - 1) {
+                                        String moleculeName = getMoleculeName(json, counter);
+                                        if (moleculeName.length() > 200)
+                                        {
+                                                moleculeName = moleculeName.substring(0, 199);
+                                        }
+                                        String numberOfVertices = Integer.toString(getNumberOfVertices(json, counter));
+                                        ArrayList<Integer> elementsArrayList = getElements(json, counter);
+                                        ArrayList<String> bondArrayList = getBonds(json, counter);
+                                        if (bondArrayList != null && moleculeName.length() != 0) {
+                                                moleculeNameFile.add(moleculeName);
+                                                elementsArrayListFile.add(elementsArrayList);
+                                                bondArrayListFile.add(bondArrayList);
+                                                numberOfVerticesFile.add(numberOfVertices);
+                                                moleculeCount += 1;
+                                        }
+                                        counter += 1;
+                                }
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+
+                }
+                writeFiles(numberOfVerticesFile, moleculeNameFile, bondArrayListFile, elementsArrayListFile);
         }
 }
