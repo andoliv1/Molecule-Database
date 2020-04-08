@@ -22,21 +22,17 @@ public class MoleculeText extends MoleculeAbstract {
 
     public void parseFile(String filename) {
         try {
-            System.out.println("Parsing...");
             BufferedReader br = new BufferedReader(new FileReader(filename));
             // First line is always the molecule name
             this.moleculeName = br.readLine();
-            System.out.println(moleculeName);
 
             // Second line is always the number of vertices
             this.numVertices = Integer.parseInt(br.readLine());
-            System.out.println(numVertices);
             // The next numVertices line are the atoms in the molecule
             this.atoms = new ArrayList<>(this.numVertices);
             this.adjacencyList = new LinkedList[this.numVertices];
             for (int ii = 0; ii<this.numVertices; ii++){
                 this.atoms.add(br.readLine().trim());
-                System.out.println(this.atoms.get(ii));
                 this.adjacencyList[ii] = new LinkedList<>();
             }
 
@@ -54,22 +50,6 @@ public class MoleculeText extends MoleculeAbstract {
                 this.adjacencyList[vertex1].add(vertex2);
                 this.adjacencyMatrix[vertex1][vertex2] += 1;
                 this.adjacencyMatrix[vertex2][vertex1] += 1;
-            }
-            System.out.println("Adjacency List");
-            for (int ii = 0; ii<this.numVertices; ii++){
-                System.out.print("Vertex " + ii + ":\t");
-                for (int s : adjacencyList[ii]) {
-                    System.out.print(s +"\t");
-                }
-                System.out.println();
-            }
-
-            System.out.println("Adjacency Matrix");
-            for (int ii = 0; ii<this.numVertices; ii++){
-                for (int jj = 0; jj<this.numVertices; jj++){
-                    System.out.print(adjacencyMatrix[ii][jj] +"\t");
-                }
-                System.out.println();
             }
         } catch(IOException e) {
             e.printStackTrace();
