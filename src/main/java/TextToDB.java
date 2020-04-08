@@ -16,7 +16,7 @@ public class TextToDB {
             e.printStackTrace();
         }
 
-        // Folder 
+        // Folder
         moleculesDir = new File("molecules");
         listOfFiles = moleculesDir.listFiles();
         assert listOfFiles != null;
