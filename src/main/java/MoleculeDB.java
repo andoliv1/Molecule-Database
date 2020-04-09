@@ -51,5 +51,26 @@ public class MoleculeDB extends MoleculeAbstract {
         this.adjacencyMatrix[vertex1][vertex2]++;
         this.adjacencyMatrix[vertex2][vertex1]++;
     }
+    public boolean changeLabels(String newlabel, int index){
+        ArrayList<String> newAtomList = new ArrayList<>();
+        for(int i = 0; i < atoms.size(); i++){
+            if(i != index){
+                newAtomList.add(atoms.get(i));
+            }
+            else{
+                newAtomList.add(newlabel);
+            }
+        }
+        atoms = newAtomList;
+        return true;
+    }
+
+    public String toString() {
+        StringBuilder representation = new StringBuilder();
+        representation.append(atoms.toString());
+        representation.append("/n");
+        representation.append(Arrays.deepToString(adjacencyMatrix));
+        return representation.toString();
+    }
 
 }

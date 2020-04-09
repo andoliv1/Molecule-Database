@@ -106,7 +106,7 @@ public class searchDumb{
      * the numbers that need to be permuted and the int[] indices hold where the permuted numbers will be appended to the atom.
      * The concept is better explained in the function verify_rigorous isomorphism
      */
-    public static boolean generate(int n, int[] a, MoleculeText molecule1, MoleculeText molecule2, int[] indices) {
+    public static boolean generate(int n, int[] a, MoleculeAbstract molecule1, MoleculeAbstract molecule2, int[] indices) {
         // Placeholder for swapping values
         int tmp;
         // If a new permutation has been found then change the respective indices of the vertices that needed to have a key assigned to it
@@ -189,7 +189,7 @@ public class searchDumb{
      * @param molecule2
      * @returne
      */
-    public static boolean verify_rigorous_isomorphism(MoleculeText molecule1, MoleculeText molecule2){
+    public static boolean verify_rigorous_isomorphism(MoleculeAbstract molecule1, MoleculeAbstract molecule2){
         int[][] adj1 = molecule1.getAdjacencyMatrix();
         int[][] adj2 = molecule2.getAdjacencyMatrix();
         //get the molecules vertex list
@@ -386,7 +386,7 @@ public class searchDumb{
     be isomorphic and if there is a one to one mapping from all connection from one molecule to all connections in the other
     molecule then it is true.
      */
-    public static boolean isIsomorphicWithNumbers(MoleculeText molecule1, MoleculeText molecule2){
+    public static boolean isIsomorphicWithNumbers(MoleculeAbstract molecule1, MoleculeAbstract molecule2){
         //get the molecules adjacency matrix
         int[][] adj1 = molecule1.getAdjacencyMatrix();
         int[][] adj2 = molecule2.getAdjacencyMatrix();
