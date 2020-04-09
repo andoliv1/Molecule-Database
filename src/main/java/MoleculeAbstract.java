@@ -16,4 +16,6 @@ public abstract class MoleculeAbstract {
     public abstract LinkedList<Integer>[] getAdjacencyList();
     public abstract int[][] getAdjacencyMatrix();
     public abstract ArrayList<String> getAtomList();
+    public abstract boolean changeLabels(String str, int index);
+    public abstract String toString();
 }
