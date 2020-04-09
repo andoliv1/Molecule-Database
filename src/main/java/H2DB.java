@@ -147,6 +147,8 @@ public class H2DB {
      * @throws SQLException
      */
     public MoleculeDB[] findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
+        long startTime = System.nanoTime();
+
         // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
         // Specifically for the WITH _ IN clause
         // https://github.com/h2database/h2database/issues/149
@@ -162,12 +164,14 @@ public class H2DB {
                 " FROM atoms A\n" +
                 " WHERE A.atom IN (SELECT * FROM TABLE(x VARCHAR = ? ))" +
                 " GROUP BY A.mid \n" +
-                " HAVING COUNT(A.mid) = ?)";
+                " HAVING COUNT(A.mid) = ?) " +
+                "AND num_atoms = ?;";
 
         preparedStatement = connect
                 .prepareStatement(sql);
         preparedStatement.setObject(1, atoms.toArray());
         preparedStatement.setInt(2, numAtoms);
+        preparedStatement.setInt(3, numAtoms);
         resultSet = preparedStatement.executeQuery();
 //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
@@ -206,7 +210,9 @@ public class H2DB {
             molecule.setAtom(vertex2, atom2);
             molecule.setEdge(vertex1, vertex2);
         }
-
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println("Insert Time: " + duration/1000000 + "ms");
         return mapMolecule.values().toArray(new MoleculeDB[0]);
     }
 
@@ -280,11 +286,37 @@ public class H2DB {
     public void insertMolecule(File[] files) throws SQLException {
         long startTime = System.nanoTime();
         MoleculeText[] molecules = new MoleculeText[files.length];
-
+        // Get molecule information from text file
         for(int i = 0; i < files.length; i++){
             molecules[i] = new MoleculeText(files[i].getAbsolutePath());
         }
-        // Get molecule information from text file
+
+        insertManyMolecules(molecules);
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println("Insert Time: " + duration/1000000 + "ms");
+    }
+
+    public void insertRandomMolecules(int numberMolecules) throws SQLException {
+        long startTime = System.nanoTime();
+        MoleculeRandomized[] molecules = new MoleculeRandomized[numberMolecules];
+        for (int i = 0; i< numberMolecules; i++){
+            molecules[i] = new MoleculeRandomized();
+        }
+        insertManyMolecules(molecules);
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println("Insert Time: " + duration/1000000 + "ms");
+    }
+
+
+    /** Inserts many rows in the DB
+     *
+     * @param molecules list of molecules
+     * @throws SQLException
+     */
+    private void insertManyMolecules(MoleculeAbstract[] molecules) throws SQLException {
         StringBuilder sb = new StringBuilder();
         for( int i = 0 ; i < molecules.length; i++ ) {
             sb.append("(?, ?),");
@@ -292,11 +324,13 @@ public class H2DB {
         String stmt = "INSERT INTO molecules (name, num_atoms) VALUES "
                 + sb.deleteCharAt( sb.length() -1 ).toString() + ";";
 
+
         // SQL
+        // Return the auto incremented mids
         preparedStatement = connect
                 .prepareStatement(stmt, PreparedStatement.RETURN_GENERATED_KEYS);
 
-        for(int i = 0, j = 1; i < files.length; i++, j+=2){
+        for(int i = 0, j = 1; i < molecules.length; i++, j+=2){
             preparedStatement.setString(j, molecules[i].getMoleculeName());
             preparedStatement.setInt(j + 1, molecules[i].getNumVertices());
         }
@@ -305,7 +339,7 @@ public class H2DB {
 
         // Grab the generated keys i.e the auto-incremented mids from the molecules query
         ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-        ArrayList<Integer> mids = new ArrayList<>(files.length);
+        ArrayList<Integer> mids = new ArrayList<>(molecules.length);
 
         while (generatedKeys.next()) {
             int id = generatedKeys.getInt(1);
@@ -322,7 +356,7 @@ public class H2DB {
         }
 
         for(int i = 0; i < molecules.length; i++) {
-            MoleculeText m = molecules[i];
+            MoleculeAbstract m = molecules[i];
             for (int ii = 0; ii < m.numVertices; ii++) {
                 // Atoms table
                 preparedStatement = connect
@@ -354,10 +388,6 @@ public class H2DB {
                 }
             }
         }
-
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        System.out.println("Insert Time: " + duration/1000000 + "ms");
     }
     /** Prints the results of the query along with their columns;
      * @param resultSet The query results are stored here.
@@ -400,14 +430,18 @@ public class H2DB {
         // Connect to Database
         H2DB dao = new H2DB();
         dao.connect();
-
-        // You can provide the whole list of atoms
-        // or you can just provide the UNIQUE list of atoms
+//        for(int i = 0; i < 2; i++){
+//            dao.insertRandomMolecules(1);
+//            System.out.println("iter "+ i + " complete");
+//        }
+//        dao.insertMolecule("molecules");
+//        // You can provide the whole list of atoms
+//        // or you can just provide the UNIQUE list of atoms
         ArrayList<String> atoms = new ArrayList<>();
         atoms.add("C");
         atoms.add("H");
 
-        int numAtoms = 14;
+        int numAtoms = 30;
 
         // Find molecules that have only have Carbon and Hydrogen and have 14 total atoms.
         MoleculeDB[] molecules = dao.findSameAtoms(numAtoms, atoms);
