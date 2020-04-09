@@ -138,7 +138,74 @@ public class H2DB {
         return resultSet;
     }
 
+    /** Return Array of main.java.MoleculeDB's that have the same number of atoms and the same atoms.
+     *
+     * @param numAtoms - number of atoms in molecule
+     * @param atoms - array list of atoms in molecule
+     * @return resultSet - SQL object that holds mid, name of molecule. Each row represents a molecule.
+     * @throws SQLException
+     */
+    public MoleculeDB[] findSameNumberAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
+        long startTime = System.nanoTime();
 
+        // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
+        // Specifically for the WITH _ IN clause
+        // https://github.com/h2database/h2database/issues/149
+        // Timmy
+
+        // This query will extract the mid's of the molecules
+        // of the same number of atoms and of the same type of atoms
+        String sql =
+                "SELECT mid, name, num_atoms \n" +
+                        "FROM molecules \n" +
+                        "WHERE num_atoms = ?;";
+
+        preparedStatement = connect
+                .prepareStatement(sql);
+        preparedStatement.setInt(1, numAtoms);
+        resultSet = preparedStatement.executeQuery();
+//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+
+        // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
+        HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
+        ArrayList<Integer> mids = new ArrayList<>();
+        int mid;
+        String name;
+        // Iterate over each row from the SQL query
+        // Instantiate a main.java.MoleculeDB
+        // Their adjacency lists will be filled from the next query.
+        while(resultSet.next()){
+            mid = resultSet.getInt("mid");
+            name = resultSet.getString("name");
+            mapMolecule.put(mid, new MoleculeDB(mid, name, numAtoms));
+            mids.add(mid);
+        }
+
+        // Use the mids that we found earlier.
+        // Run queryAdjacencyList to grab all of the adjacency lists for those mids.
+        resultSet = queryAdjacencyList(mids);
+
+        // Populate the atoms, adjacency lists and matrices
+        MoleculeDB molecule;
+        int vertex1, vertex2;
+        String atom1, atom2;
+        while(resultSet.next()){
+            mid = resultSet.getInt("mid");
+            vertex1 = resultSet.getInt("vertex1");
+            vertex2 = resultSet.getInt("vertex2");
+            atom1 = resultSet.getString("atom1");
+            atom2 = resultSet.getString("atom1");
+
+            molecule = mapMolecule.get(mid);
+            molecule.setAtom(vertex1, atom1);
+            molecule.setAtom(vertex2, atom2);
+            molecule.setEdge(vertex1, vertex2);
+        }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println("Insert Time: " + duration/1000000 + "ms");
+        return mapMolecule.values().toArray(new MoleculeDB[0]);
+    }
     /** Return Array of main.java.MoleculeDB's that have the same number of atoms and the same atoms.
      *
      * @param numAtoms - number of atoms in molecule
