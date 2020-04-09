@@ -290,7 +290,9 @@ public class searchDumb{
         //System.out.println(representation);
         //System.out.println("repreentation2");
         //System.out.println(representation2);
-
+        if(isIsomorphicWithNumbers(molecule1,molecule2) == true){
+            return true;
+        }
         //make all specific bijections and check if any of them are isomorphic
         boolean isomorphic = generate(duplicates_to_array.length,duplicates_to_array, molecule1, molecule2, duplicates_to_array);
         return isomorphic;
@@ -489,7 +491,7 @@ public class searchDumb{
         water_matrix2[2][0] = 1;
         MoleculeText water = new MoleculeText(water_matrix,water_atoms);
         MoleculeText water2 = new MoleculeText(water_matrix2,water_atom2);
-        boolean weakIsomorphic = isIsomorphicWithNumbers(water,water2);
+        boolean weakIsomorphic = isIsomorphicWithNumbers(water,water);
         boolean isomorphic;
         System.out.println("Molecule 1 name: water");
         System.out.println("representation: ");
@@ -502,7 +504,7 @@ public class searchDumb{
         if(weakIsomorphic == true){
             System.out.println("Yes");
             System.out.println("Are they actually isomorphic?");
-            isomorphic = verify_rigorous_isomorphism(water,water2);
+            isomorphic = verify_rigorous_isomorphism(water,water);
             if(isomorphic == true){
                 System.out.println("The two molecules are actually isomorphic and you can find a bijection among them");
             }
