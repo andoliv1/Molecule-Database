@@ -1,10 +1,7 @@
 package main.java;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 public class MoleculeRandomized extends MoleculeAbstract{
 
@@ -175,6 +172,31 @@ public class MoleculeRandomized extends MoleculeAbstract{
     public ArrayList<String> getAtomList() {
         return this.atoms;
     }
+
+    @Override
+    public boolean changeLabels(String newlabel, int index){
+        ArrayList<String> newAtomList = new ArrayList<>();
+        for(int i = 0; i < atoms.size(); i++){
+            if(i != index){
+                newAtomList.add(atoms.get(i));
+            }
+            else{
+                newAtomList.add(newlabel);
+            }
+        }
+        atoms = newAtomList;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder representation = new StringBuilder();
+        representation.append(atoms.toString());
+        representation.append("/n");
+        representation.append(Arrays.deepToString(adjacencyMatrix));
+        return representation.toString();
+    }
+
 
 
     public final static String[] periodicTable = new String[]{  "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na",
