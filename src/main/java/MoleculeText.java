@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 
@@ -75,6 +76,28 @@ public class MoleculeText extends MoleculeAbstract {
 
     public int[][] getAdjacencyMatrix(){
         return adjacencyMatrix;
+    }
+
+    public boolean changeLabels(String newlabel, int index){
+        ArrayList<String> newAtomList = new ArrayList<>();
+        for(int i = 0; i < atoms.size(); i++){
+            if(i != index){
+                newAtomList.add(atoms.get(i));
+            }
+            else{
+                newAtomList.add(newlabel);
+            }
+        }
+        atoms = newAtomList;
+        return true;
+    }
+
+    public String toString() {
+        StringBuilder representation = new StringBuilder();
+        representation.append(atoms.toString());
+        representation.append("/n");
+        representation.append(Arrays.deepToString(adjacencyMatrix));
+        return representation.toString();
     }
 
     public static void main(String[] args) {
