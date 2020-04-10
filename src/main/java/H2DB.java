@@ -118,16 +118,15 @@ public class H2DB {
             // This query will extract the mid's of the molecules
             // of the same number of atoms and of the same type of atoms
             String sql =
-                    "WITH find_mid AS(SELECT mid \n" +
+                    "WITH same_num AS(SELECT mid, name \n" +
                             "FROM molecules \n" +
                             "WHERE num_atoms = ?) \n" +
-                            "SELECT A1.mid AS mid, M.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2, M.name\n" +
-                            " FROM\n" +
-                            " (SELECT A.mid, A.atom, A.vertex\n" +
-                            " FROM atoms A WHERE A.mid IN (SELECT mid FROM find_mid )) A1 \n" +
-                            " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
-                            " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
-                            " JOIN molecules M on A1.mid = m.mid;";
+                    "SELECT A1.mid AS mid, F.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n" +
+                    " FROM\n" +
+                    " same_num F JOIN atoms A1" +
+                    " ON F.mid = A1.mid \n" +
+                    " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
+                    " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n";
 
             preparedStatement = connect
                     .prepareStatement(sql);
@@ -160,6 +159,7 @@ public class H2DB {
                 molecule.setEdge(vertex1, vertex2);
             }
         } catch(SQLException e){
+            e.printStackTrace();
             close();
             return null;
         } finally {
@@ -193,67 +193,66 @@ public class H2DB {
             // This query will extract the mid's of the molecules
             // of the same number of atoms and of the same type of atoms
             String sql =
-                    "SELECT mid, name, num_atoms \n" +
-                    "FROM molecules \n" +
-                    "WHERE mid IN " +
-                    " (SELECT A.mid \n" +
-                    " FROM atoms A\n" +
-                    " WHERE A.atom IN (SELECT * FROM TABLE(x VARCHAR = ? ))" +
-                    " GROUP BY A.mid \n" +
-                    " HAVING COUNT(A.mid) = ?) " +
-                    "AND num_atoms = ?;";
+                    "WITH same_atoms  AS " +
+                            "(SELECT A.mid, M.name \n" +
+                            " FROM molecules M JOIN atoms A ON M.mid = A.mid\n" +
+                            " WHERE M.num_atoms=? AND A.atom IN (SELECT x FROM TABLE(x VARCHAR = ? ))" +
+                            " GROUP BY A.mid \n" +
+                            " HAVING COUNT(A.mid) = ?) " +
+                    "SELECT A1.mid AS mid, F.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n" +
+                    " FROM\n" +
+                    " same_atoms F JOIN atoms A1" +
+                    " ON F.mid = A1.mid \n" +
+                    " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
+                    " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n";
 
             preparedStatement = connect
                     .prepareStatement(sql);
-            preparedStatement.setObject(1, atoms.toArray());
-            preparedStatement.setInt(2, numAtoms);
+            preparedStatement.setObject(2, atoms.toArray());
+            preparedStatement.setInt(1, numAtoms);
             preparedStatement.setInt(3, numAtoms);
             resultSet = preparedStatement.executeQuery();
-    //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+//            System.out.println((t2-t1)/1000000);
+//            System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
             // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
-            ArrayList<Integer> mids = new ArrayList<>();
-            int mid;
-            String name;
-            // Iterate over each row from the SQL query
-            // Instantiate a main.java.MoleculeDB
-            // Their adjacency lists will be filled from the next query.
-            while(resultSet.next()){
-                mid = resultSet.getInt("mid");
-                name = resultSet.getString("name");
-                mapMolecule.put(mid, new MoleculeDB(mid, name, numAtoms));
-                mids.add(mid);
-            }
-
-            // Use the mids that we found earlier.
-            // Run queryAdjacencyList to grab all of the adjacency lists for those mids.
-            resultSet = queryAdjacencyList(mids);
+//            ArrayList<Integer> mids = new ArrayList<>();
 
             // Populate the atoms, adjacency lists and matrices
             MoleculeDB molecule;
             int vertex1, vertex2;
             String atom1, atom2;
+            int mid;
+            String name;
+
             while(resultSet.next()){
                 mid = resultSet.getInt("mid");
+                name = resultSet.getString("name");
                 vertex1 = resultSet.getInt("vertex1");
                 vertex2 = resultSet.getInt("vertex2");
                 atom1 = resultSet.getString("atom1");
                 atom2 = resultSet.getString("atom1");
-
+//                System.out.println(name + " " + vertex1 + "   " + vertex2);
                 molecule = mapMolecule.get(mid);
+                if (molecule == null) {
+                    molecule = new MoleculeDB(mid, name, numAtoms);
+                    mapMolecule.put(mid, molecule);
+                }
                 molecule.setAtom(vertex1, atom1);
                 molecule.setAtom(vertex2, atom2);
                 molecule.setEdge(vertex1, vertex2);
             }
         } catch(SQLException e){
             close();
+            e.printStackTrace();
+
             return null;
         } finally {
             close();
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println("Insert Time: " + duration/1000000 + "ms");
+        System.out.println("Find Time: " + duration/1000000 + "ms");
         return mapMolecule.values().toArray(new MoleculeDB[0]);
     }
 
@@ -321,6 +320,7 @@ public class H2DB {
             }
         } catch (SQLException e){
             close();
+            e.printStackTrace();
         } finally {
             close();
         }
@@ -345,6 +345,7 @@ public class H2DB {
             insertManyMolecules(molecules);
         } catch (SQLException e){
             close();
+            e.printStackTrace();
         } finally {
             close();
         }
@@ -364,6 +365,7 @@ public class H2DB {
             insertManyMolecules(molecules);
         } catch (SQLException e){
             close();
+            e.printStackTrace();
         } finally {
             close();
         }
@@ -453,6 +455,7 @@ public class H2DB {
             }
         } catch (SQLException e){
             close();
+            e.printStackTrace();
         } finally {
             close();
         }
