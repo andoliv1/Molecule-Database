@@ -1,6 +1,8 @@
 package main.java;
 
 
+import org.h2.jdbcx.JdbcConnectionPool;
+
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,34 +20,36 @@ public class H2DB {
     static final String Pw = "";
     static final String URL = "jdbc:h2:~/moleculedb";
     static final String Driver = "org.h2.Driver";
-
+    static JdbcConnectionPool cp;
+    H2DB(){
+        cp = JdbcConnectionPool.create(URL, User, Pw);
+    }
     /** Make connection to db.
      *
-     * @throws ClassNotFoundException
-     * @throws SQLException
      */
-    public Connection connect(){
+    public Connection connect() throws SQLException {
         // Load the MySQL driver
-        try {
-            Class.forName(Driver);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        // Setup the connection with  DB
-        Properties myProp = new Properties();
-        myProp.put("user", User);
-        myProp.put("password", Pw);
-        myProp.put("allowMultiQueries", "true");
-        try {
-            connect = DriverManager
-                    .getConnection(URL,
-                                    myProp);
-            connect.setAutoCommit(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return connect;
+//        try {
+//            Class.forName(Driver);
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        // Setup the connection with  DB
+//        Properties myProp = new Properties();
+//        myProp.put("user", User);
+//        myProp.put("password", Pw);
+//        myProp.put("allowMultiQueries", "true");
+//        try {
+//            connect = DriverManager
+//                    .getConnection(URL,
+//                                    myProp);
+//            connect.setAutoCommit(false);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return connect;
+        return cp.getConnection();
 
     }
 
@@ -65,18 +69,26 @@ public class H2DB {
         // Specifically for the WITH _ IN clause
         // https://github.com/h2database/h2database/issues/149
         // Timmy
+        try {
+            connect = connect();
 
-        String sql = "SELECT A1.mid AS mid, M.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n"+
-                " FROM\n"  +
-                " (SELECT A.mid, A.atom, A.vertex\n" +
-                " FROM atoms A WHERE A.mid IN (SELECT * FROM TABLE(x INTEGER = ? ) )) A1 \n" +
-                " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
-                " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
-                " JOIN molecules M on A1.mid = m.mid;";
-        preparedStatement = connect
-                .prepareStatement(sql);
-        preparedStatement.setObject(1, mids.toArray());
-        resultSet = preparedStatement.executeQuery();
+            String sql = "SELECT A1.mid AS mid, M.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n" +
+                    " FROM\n" +
+                    " (SELECT A.mid, A.atom, A.vertex\n" +
+                    " FROM atoms A WHERE A.mid IN (SELECT * FROM TABLE(x INTEGER = ? ) )) A1 \n" +
+                    " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
+                    " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
+                    " JOIN molecules M on A1.mid = m.mid;";
+            preparedStatement = connect
+                    .prepareStatement(sql);
+            preparedStatement.setObject(1, mids.toArray());
+            resultSet = preparedStatement.executeQuery();
+        } catch(SQLException e){
+            close();
+            return null;
+        } finally {
+            close();
+        }
 //        writeResultSet(resultSet);
 //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
 
@@ -92,11 +104,12 @@ public class H2DB {
      */
     public MoleculeDB[] findSameNumberAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
         long startTime = System.nanoTime();
-        connect = connect();
         // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
         HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>(1000);
 
         try {
+            connect = connect();
+
             // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
             // Specifically for the WITH _ IN clause
             // https://github.com/h2database/h2database/issues/149
@@ -167,67 +180,76 @@ public class H2DB {
      */
     public MoleculeDB[] findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
         long startTime = System.nanoTime();
-
-        // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
-        // Specifically for the WITH _ IN clause
-        // https://github.com/h2database/h2database/issues/149
-        // Timmy
-
-        // This query will extract the mid's of the molecules
-        // of the same number of atoms and of the same type of atoms
-        String sql =
-                "SELECT mid, name, num_atoms \n" +
-                "FROM molecules \n" +
-                "WHERE mid IN " +
-                " (SELECT A.mid \n" +
-                " FROM atoms A\n" +
-                " WHERE A.atom IN (SELECT * FROM TABLE(x VARCHAR = ? ))" +
-                " GROUP BY A.mid \n" +
-                " HAVING COUNT(A.mid) = ?) " +
-                "AND num_atoms = ?;";
-
-        preparedStatement = connect
-                .prepareStatement(sql);
-        preparedStatement.setObject(1, atoms.toArray());
-        preparedStatement.setInt(2, numAtoms);
-        preparedStatement.setInt(3, numAtoms);
-        resultSet = preparedStatement.executeQuery();
-//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
-
-        // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
         HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
-        ArrayList<Integer> mids = new ArrayList<>();
-        int mid;
-        String name;
-        // Iterate over each row from the SQL query
-        // Instantiate a main.java.MoleculeDB
-        // Their adjacency lists will be filled from the next query.
-        while(resultSet.next()){
-            mid = resultSet.getInt("mid");
-            name = resultSet.getString("name");
-            mapMolecule.put(mid, new MoleculeDB(mid, name, numAtoms));
-            mids.add(mid);
-        }
 
-        // Use the mids that we found earlier.
-        // Run queryAdjacencyList to grab all of the adjacency lists for those mids.
-        resultSet = queryAdjacencyList(mids);
+        try {
+            connect = connect();
 
-        // Populate the atoms, adjacency lists and matrices
-        MoleculeDB molecule;
-        int vertex1, vertex2;
-        String atom1, atom2;
-        while(resultSet.next()){
-            mid = resultSet.getInt("mid");
-            vertex1 = resultSet.getInt("vertex1");
-            vertex2 = resultSet.getInt("vertex2");
-            atom1 = resultSet.getString("atom1");
-            atom2 = resultSet.getString("atom1");
+            // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
+            // Specifically for the WITH _ IN clause
+            // https://github.com/h2database/h2database/issues/149
+            // Timmy
 
-            molecule = mapMolecule.get(mid);
-            molecule.setAtom(vertex1, atom1);
-            molecule.setAtom(vertex2, atom2);
-            molecule.setEdge(vertex1, vertex2);
+            // This query will extract the mid's of the molecules
+            // of the same number of atoms and of the same type of atoms
+            String sql =
+                    "SELECT mid, name, num_atoms \n" +
+                    "FROM molecules \n" +
+                    "WHERE mid IN " +
+                    " (SELECT A.mid \n" +
+                    " FROM atoms A\n" +
+                    " WHERE A.atom IN (SELECT * FROM TABLE(x VARCHAR = ? ))" +
+                    " GROUP BY A.mid \n" +
+                    " HAVING COUNT(A.mid) = ?) " +
+                    "AND num_atoms = ?;";
+
+            preparedStatement = connect
+                    .prepareStatement(sql);
+            preparedStatement.setObject(1, atoms.toArray());
+            preparedStatement.setInt(2, numAtoms);
+            preparedStatement.setInt(3, numAtoms);
+            resultSet = preparedStatement.executeQuery();
+    //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+
+            // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
+            ArrayList<Integer> mids = new ArrayList<>();
+            int mid;
+            String name;
+            // Iterate over each row from the SQL query
+            // Instantiate a main.java.MoleculeDB
+            // Their adjacency lists will be filled from the next query.
+            while(resultSet.next()){
+                mid = resultSet.getInt("mid");
+                name = resultSet.getString("name");
+                mapMolecule.put(mid, new MoleculeDB(mid, name, numAtoms));
+                mids.add(mid);
+            }
+
+            // Use the mids that we found earlier.
+            // Run queryAdjacencyList to grab all of the adjacency lists for those mids.
+            resultSet = queryAdjacencyList(mids);
+
+            // Populate the atoms, adjacency lists and matrices
+            MoleculeDB molecule;
+            int vertex1, vertex2;
+            String atom1, atom2;
+            while(resultSet.next()){
+                mid = resultSet.getInt("mid");
+                vertex1 = resultSet.getInt("vertex1");
+                vertex2 = resultSet.getInt("vertex2");
+                atom1 = resultSet.getString("atom1");
+                atom2 = resultSet.getString("atom1");
+
+                molecule = mapMolecule.get(mid);
+                molecule.setAtom(vertex1, atom1);
+                molecule.setAtom(vertex2, atom2);
+                molecule.setEdge(vertex1, vertex2);
+            }
+        } catch(SQLException e){
+            close();
+            return null;
+        } finally {
+            close();
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
@@ -311,14 +333,21 @@ public class H2DB {
      */
     public void insertMolecule(File[] files) throws SQLException {
         long startTime = System.nanoTime();
-        MoleculeText[] molecules = new MoleculeText[files.length];
-        // Get molecule information from text file
-        for(int i = 0; i < files.length; i++){
-            molecules[i] = new MoleculeText(files[i].getAbsolutePath());
+        try {
+            connect = connect();
+
+            MoleculeText[] molecules = new MoleculeText[files.length];
+            // Get molecule information from text file
+            for (int i = 0; i < files.length; i++) {
+                molecules[i] = new MoleculeText(files[i].getAbsolutePath());
+            }
+
+            insertManyMolecules(molecules);
+        } catch (SQLException e){
+            close();
+        } finally {
+            close();
         }
-
-        insertManyMolecules(molecules);
-
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
         System.out.println("Insert Time: " + duration/1000000 + "ms");
@@ -326,11 +355,18 @@ public class H2DB {
 
     public void insertRandomMolecules(int numberMolecules) throws SQLException {
         long startTime = System.nanoTime();
-        MoleculeRandomized[] molecules = new MoleculeRandomized[numberMolecules];
-        for (int i = 0; i< numberMolecules; i++){
-            molecules[i] = new MoleculeRandomized();
+        try {
+            connect = connect();
+            MoleculeRandomized[] molecules = new MoleculeRandomized[numberMolecules];
+            for (int i = 0; i< numberMolecules; i++){
+                molecules[i] = new MoleculeRandomized();
+            }
+            insertManyMolecules(molecules);
+        } catch (SQLException e){
+            close();
+        } finally {
+            close();
         }
-        insertManyMolecules(molecules);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
         System.out.println("Insert Time: " + duration/1000000 + "ms");
@@ -350,69 +386,75 @@ public class H2DB {
         String stmt = "INSERT INTO molecules (name, num_atoms) VALUES "
                 + sb.deleteCharAt( sb.length() -1 ).toString() + ";";
 
+        try {
+            connect = connect();
+            // SQL
+            // Return the auto incremented mids
+            preparedStatement = connect
+                    .prepareStatement(stmt, PreparedStatement.RETURN_GENERATED_KEYS);
 
-        // SQL
-        // Return the auto incremented mids
-        preparedStatement = connect
-                .prepareStatement(stmt, PreparedStatement.RETURN_GENERATED_KEYS);
+            for(int i = 0, j = 1; i < molecules.length; i++, j+=2){
+                preparedStatement.setString(j, molecules[i].getMoleculeName());
+                preparedStatement.setInt(j + 1, molecules[i].getNumVertices());
+            }
+            preparedStatement.executeUpdate();
+            connect.commit();
 
-        for(int i = 0, j = 1; i < molecules.length; i++, j+=2){
-            preparedStatement.setString(j, molecules[i].getMoleculeName());
-            preparedStatement.setInt(j + 1, molecules[i].getNumVertices());
-        }
-        preparedStatement.executeUpdate();
-        connect.commit();
+            // Grab the generated keys i.e the auto-incremented mids from the molecules query
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            ArrayList<Integer> mids = new ArrayList<>(molecules.length);
 
-        // Grab the generated keys i.e the auto-incremented mids from the molecules query
-        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-        ArrayList<Integer> mids = new ArrayList<>(molecules.length);
-
-        while (generatedKeys.next()) {
-            int id = generatedKeys.getInt(1);
-            mids.add(id);
-        }
-        // Check the size of queried mids - make sure it matches the number of molecules we are adding
-        // if they dont match, something went wrong. Need to rollback the database.
-        if (mids.size() != molecules.length){
-            System.out.println("mids size : " + mids.size());
-            connect.rollback();
-            preparedStatement.close();
-            connect.close();
-            throw new SQLException("Number of queried mids does not match the number of molecules in the directory.");
-        }
-
-        for(int i = 0; i < molecules.length; i++) {
-            MoleculeAbstract m = molecules[i];
-            for (int ii = 0; ii < m.numVertices; ii++) {
-                // Atoms table
-                preparedStatement = connect
-                        .prepareStatement("INSERT INTO atoms VALUES (default, ?, ?, ?)");
-
-                // mid, atom, vertex
-                preparedStatement.setInt(1, mids.get(i));
-                preparedStatement.setString(2, m.getAtomList().get(ii));
-                preparedStatement.setInt(3, ii);
-
-                preparedStatement.executeUpdate();
-                connect.commit();
+            while (generatedKeys.next()) {
+                int id = generatedKeys.getInt(1);
+                mids.add(id);
+            }
+            // Check the size of queried mids - make sure it matches the number of molecules we are adding
+            // if they dont match, something went wrong. Need to rollback the database.
+            if (mids.size() != molecules.length){
+                System.out.println("mids size : " + mids.size());
+                connect.rollback();
+                preparedStatement.close();
+                connect.close();
+                throw new SQLException("Number of queried mids does not match the number of molecules in the directory.");
             }
 
-            LinkedList<Integer>[] adjacencyList = m.getAdjacencyList();
-            for (int ii = 0; ii < m.numVertices; ii++) {
-                for (int vv : adjacencyList[ii]) {
-                    //Edges table
+            for(int i = 0; i < molecules.length; i++) {
+                MoleculeAbstract m = molecules[i];
+                for (int ii = 0; ii < m.numVertices; ii++) {
+                    // Atoms table
                     preparedStatement = connect
-                            .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
+                            .prepareStatement("INSERT INTO atoms VALUES (default, ?, ?, ?)");
 
-                    // mid, vertex1, vertex2
+                    // mid, atom, vertex
                     preparedStatement.setInt(1, mids.get(i));
-                    preparedStatement.setInt(2, ii);
-                    preparedStatement.setInt(3, vv);
+                    preparedStatement.setString(2, m.getAtomList().get(ii));
+                    preparedStatement.setInt(3, ii);
 
                     preparedStatement.executeUpdate();
                     connect.commit();
                 }
+
+                LinkedList<Integer>[] adjacencyList = m.getAdjacencyList();
+                for (int ii = 0; ii < m.numVertices; ii++) {
+                    for (int vv : adjacencyList[ii]) {
+                        //Edges table
+                        preparedStatement = connect
+                                .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
+
+                        // mid, vertex1, vertex2
+                        preparedStatement.setInt(1, mids.get(i));
+                        preparedStatement.setInt(2, ii);
+                        preparedStatement.setInt(3, vv);
+
+                        preparedStatement.executeUpdate();
+                        connect.commit();
+                    }
+                }
             }
+        } catch (SQLException e){
+            close();
+        } finally {
+            close();
         }
     }
     /** Prints the results of the query along with their columns;

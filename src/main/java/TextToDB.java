@@ -10,7 +10,11 @@ public class TextToDB {
     private File[] listOfFiles;
     TextToDB(){
         MyH2DB = new H2DB();
-        MyH2DB.connect();
+        try {
+            MyH2DB.connect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         // Folder
         moleculesDir = new File("molecules");

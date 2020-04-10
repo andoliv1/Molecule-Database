@@ -11,7 +11,11 @@ public class Operations {
     Operations(){
 //        search = new searchDumb();
         db = new H2DB();
-        db.connect();
+        try {
+            db.connect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -38,14 +42,18 @@ public class Operations {
         File[] listOfFiles = moleculesDir.listFiles();
         System.out.println(listOfFiles[6].getAbsolutePath());
 //        try{
-//            String s = listOfFiles[6].getAbsolutePath();
+            String s = listOfFiles[6].getAbsolutePath();
 //            Ops.insert(s);
 //            MoleculeText m = new MoleculeText(s);
 //             db.queryAdjacencyList(m.moleculeName);
 //            System.out.println(m.numVertices);
 //            System.out.println(m.toString());
 
+//        try {
 //            MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 ////            System.out.println(molecules.length);
 //            for (MoleculeDB molecule : molecules) {
 //                m.resetAtoms();
