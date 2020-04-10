@@ -175,16 +175,12 @@ public class MoleculeRandomized extends MoleculeAbstract{
 
     @Override
     public boolean changeLabels(String newlabel, int index){
-        ArrayList<String> newAtomList = new ArrayList<>();
-        for(int i = 0; i < atoms.size(); i++){
-            if(i != index){
-                newAtomList.add(atoms.get(i));
-            }
-            else{
-                newAtomList.add(newlabel);
-            }
-        }
-        atoms = newAtomList;
+        this.atoms.set(index, newlabel);
+        return true;
+    }
+
+    public boolean changeAtomList(ArrayList<String> newList){
+        this.atoms = newList;
         return true;
     }
 
@@ -196,8 +192,6 @@ public class MoleculeRandomized extends MoleculeAbstract{
         representation.append(Arrays.deepToString(adjacencyMatrix));
         return representation.toString();
     }
-
-
 
     public final static String[] periodicTable = new String[]{  "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na",
                                                                 "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti",
