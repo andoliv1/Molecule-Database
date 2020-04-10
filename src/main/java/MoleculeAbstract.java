@@ -18,4 +18,5 @@ public abstract class MoleculeAbstract {
     public abstract ArrayList<String> getAtomList();
     public abstract boolean changeLabels(String str, int index);
     public abstract String toString();
+    public abstract boolean changeAtomList(ArrayList<String> newList);
 }

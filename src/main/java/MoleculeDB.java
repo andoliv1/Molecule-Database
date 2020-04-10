@@ -88,4 +88,9 @@ public class MoleculeDB extends MoleculeAbstract {
         return representation.toString();
     }
 
+    public boolean changeAtomList(ArrayList<String> newList){
+        this.atoms = newList;
+        return true;
+    }
+
 }

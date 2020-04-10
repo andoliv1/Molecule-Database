@@ -193,6 +193,8 @@ public class searchDumb{
         int[][] adj1 = molecule1.getAdjacencyMatrix();
         int[][] adj2 = molecule2.getAdjacencyMatrix();
         //get the molecules vertex list
+        ArrayList<String> immutable_list = molecule1.getAtomList();
+        ArrayList<String> immutable_list2 = molecule2.getAtomList();
         ArrayList<String> ato1 = molecule1.getAtomList();
         ArrayList<String> ato2 = molecule2.getAtomList();
         //want to find duplicate atoms that have the same connections
@@ -291,10 +293,14 @@ public class searchDumb{
         //System.out.println("repreentation2");
         //System.out.println(representation2);
         if(isIsomorphicWithNumbers(molecule1,molecule2) == true){
+            molecule1.changeAtomList(immutable_list);
+            molecule2.changeAtomList(immutable_list2);
             return true;
         }
         //make all specific bijections and check if any of them are isomorphic
         boolean isomorphic = generate(duplicates_to_array.length,duplicates_to_array, molecule1, molecule2, duplicates_to_array);
+        molecule1.changeAtomList(immutable_list);
+        molecule2.changeAtomList(immutable_list2);
         return isomorphic;
     }
 
