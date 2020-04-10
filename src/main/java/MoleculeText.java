@@ -100,6 +100,11 @@ public class MoleculeText extends MoleculeAbstract {
         return representation.toString();
     }
 
+    public boolean changeAtomList(ArrayList<String> newList){
+        this.atoms = newList;
+        return true;
+    }
+
     public static void main(String[] args) {
 //        main.java.MoleculeText m = new main.java.MoleculeText("butane.txt");
 
