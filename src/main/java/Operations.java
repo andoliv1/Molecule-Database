@@ -11,12 +11,9 @@ public class Operations {
     Operations(){
 //        search = new searchDumb();
         db = new H2DB();
-        try {
-            db.connect();
-        } catch(SQLException | ClassNotFoundException e){
-        e.printStackTrace();
+        db.connect();
     }
-    }
+
 
     public void insert(String filename){
         try {
@@ -75,7 +72,7 @@ public class Operations {
 
                 // 1 iso
                 MoleculeText m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+                MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
 
@@ -122,6 +119,8 @@ public class Operations {
                 long endTime = System.nanoTime();
                 long duration = (endTime - startTime);
                 System.out.println("Operation Time: " + duration / 1000000 + "ms");
+                System.out.println("--------------------------------------------");
+
             } catch (SQLException e){
                 e.printStackTrace();
             }

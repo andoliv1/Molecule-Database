@@ -1,10 +1,12 @@
 package main.java;
 
+
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Properties;
 
 public class H2DB {
     private Connection connect;
@@ -12,98 +14,41 @@ public class H2DB {
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
 
-    H2DB(){
-        connect = null;
-        statement = null;
-        preparedStatement = null;
-        resultSet = null;
-    }
+    static final String User = "sa";
+    static final String Pw = "";
+    static final String URL = "jdbc:h2:~/moleculedb";
+    static final String Driver = "org.h2.Driver";
 
     /** Make connection to db.
      *
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public void connect() throws ClassNotFoundException, SQLException {
+    public Connection connect(){
         // Load the MySQL driver
-        Class.forName("org.h2.Driver");
+        try {
+            Class.forName(Driver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         // Setup the connection with  DB
-        connect = DriverManager
-                .getConnection("jdbc:h2:~/moleculedb",
-                        "sa",
-                        "");
-        connect.setAutoCommit(false);
+        Properties myProp = new Properties();
+        myProp.put("user", User);
+        myProp.put("password", Pw);
+        myProp.put("allowMultiQueries", "true");
+        try {
+            connect = DriverManager
+                    .getConnection(URL,
+                                    myProp);
+            connect.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-    }
-    public void readDataBase() throws Exception {
-
-        // Statements allow to issue SQL queries to the database
-        statement = connect.createStatement();
-
-
-        // Result set get the result of the SQL query
-        // This query statement will query all adjacency lists as well as show which atom is which vertex
-        resultSet = statement
-                .executeQuery("SELECT A1.mid AS mid, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2 FROM atoms A1 JOIN edges E ON (A1.mid=E.mid AND A1.vertex=E.vertex1) JOIN atoms A2 ON (A2.mid=E.mid AND A2.vertex=E.vertex2);");
-        writeResultSet(resultSet);
+        return connect;
 
     }
 
-
-    /** Query the adjacency list from the 3 tables.
-     *  First selects the atom table using mid
-     *  Secondly Joins that new table onto the Edges table using mid
-     *  Lastly Joins the newer table onto another Atoms table on the vertices
-     *  Returns the adjacency list.
-     *
-     * @param mid mid of the molecule
-     * @throws SQLException
-     */
-    public void queryAdjacencyList(int mid) throws SQLException {
-
-        String sql = "SELECT A1.mid AS mid, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n"+
-                " FROM\n"  +
-                " (SELECT A.mid, A.atom, A.vertex\n" +
-                " FROM atoms A WHERE A.mid = ?) A1 \n" +
-                " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
-                " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid);";
-        preparedStatement = connect
-                .prepareStatement(sql);
-        preparedStatement.setInt(1, mid);
-        resultSet = preparedStatement.executeQuery();
-        writeResultSet(resultSet);
-//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
-        // Next step is how should we store this
-        // What data structure?
-    }
-
-    /** Query the adjacency list from the 3 tables.
-     *  First Joins the molecule table onto the atom table using mid and the molecule name
-     *  Secondly Joins that new table onto the Edges table using mid
-     *  Lastly Joins the newer table onto another Atoms table on the vertices
-     *  Returns the adjacency list
-     *
-     * @param moleculeName name of the molecule
-     * @throws SQLException
-     */
-    public void queryAdjacencyList(String moleculeName) throws SQLException {
-
-        // This query will
-        String sql = "SELECT AM.mid AS mid, AM.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n"+
-                " FROM\n"  +
-                " (SELECT A1.mid, M.name, A1.atom, A1.vertex\n" +
-                " FROM molecules M JOIN atoms A1 ON M.mid=A1.mid WHERE M.name=?) AM\n" +
-                " JOIN edges E ON (AM.vertex=E.vertex1 AND AM.mid=E.mid)\n" +
-                " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid);";
-        preparedStatement = connect
-                .prepareStatement(sql);
-        preparedStatement.setString(1, moleculeName);
-        resultSet = preparedStatement.executeQuery();
-        writeResultSet(resultSet);
-//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
-        // Next step is how should we store this
-        // What data structure?
-    }
 
     /** Query the adjacency list from the 3 tables.
      *  First selects the atoms in the atom table using list of mids
@@ -147,64 +92,71 @@ public class H2DB {
      */
     public MoleculeDB[] findSameNumberAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
         long startTime = System.nanoTime();
-
-        // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
-        // Specifically for the WITH _ IN clause
-        // https://github.com/h2database/h2database/issues/149
-        // Timmy
-
-        // This query will extract the mid's of the molecules
-        // of the same number of atoms and of the same type of atoms
-        String sql =
-                "SELECT mid, name, num_atoms \n" +
-                        "FROM molecules \n" +
-                        "WHERE num_atoms = ?;";
-
-        preparedStatement = connect
-                .prepareStatement(sql);
-        preparedStatement.setInt(1, numAtoms);
-        resultSet = preparedStatement.executeQuery();
-//        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
-
+        connect = connect();
         // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
-        HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
-        ArrayList<Integer> mids = new ArrayList<>();
-        int mid;
-        String name;
-        // Iterate over each row from the SQL query
-        // Instantiate a main.java.MoleculeDB
-        // Their adjacency lists will be filled from the next query.
-        while(resultSet.next()){
-            mid = resultSet.getInt("mid");
-            name = resultSet.getString("name");
-            mapMolecule.put(mid, new MoleculeDB(mid, name, numAtoms));
-            mids.add(mid);
-        }
+        HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>(1000);
 
-        // Use the mids that we found earlier.
-        // Run queryAdjacencyList to grab all of the adjacency lists for those mids.
-        resultSet = queryAdjacencyList(mids);
+        try {
+            // THIS QUERY WAS MODIFIED TO BE USED WITH H2 DB
+            // Specifically for the WITH _ IN clause
+            // https://github.com/h2database/h2database/issues/149
+            // Timmy
 
-        // Populate the atoms, adjacency lists and matrices
-        MoleculeDB molecule;
-        int vertex1, vertex2;
-        String atom1, atom2;
-        while(resultSet.next()){
-            mid = resultSet.getInt("mid");
-            vertex1 = resultSet.getInt("vertex1");
-            vertex2 = resultSet.getInt("vertex2");
-            atom1 = resultSet.getString("atom1");
-            atom2 = resultSet.getString("atom2");
+            // This query will extract the mid's of the molecules
+            // of the same number of atoms and of the same type of atoms
+            String sql =
+                    "WITH find_mid AS(SELECT mid \n" +
+                            "FROM molecules \n" +
+                            "WHERE num_atoms = ?) \n" +
+                            "SELECT A1.mid AS mid, M.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2, M.name\n" +
+                            " FROM\n" +
+                            " (SELECT A.mid, A.atom, A.vertex\n" +
+                            " FROM atoms A WHERE A.mid IN (SELECT mid FROM find_mid )) A1 \n" +
+                            " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n" +
+                            " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
+                            " JOIN molecules M on A1.mid = m.mid;";
 
-            molecule = mapMolecule.get(mid);
-            molecule.setAtom(vertex1, atom1);
-            molecule.setAtom(vertex2, atom2);
-            molecule.setEdge(vertex1, vertex2);
+            preparedStatement = connect
+                    .prepareStatement(sql);
+            preparedStatement.setInt(1, numAtoms);
+            resultSet = preparedStatement.executeQuery();
+            //        System.out.println("QUERY THAT WAS RUN: \n" + preparedStatement.toString());
+
+
+            // Populate the atoms, adjacency lists and matrices
+            MoleculeDB molecule;
+            int mid;
+            String name;
+            int vertex1, vertex2;
+            String atom1, atom2;
+            while (resultSet.next()) {
+                mid = resultSet.getInt("mid");
+                vertex1 = resultSet.getInt("vertex1");
+                vertex2 = resultSet.getInt("vertex2");
+                atom1 = resultSet.getString("atom1");
+                atom2 = resultSet.getString("atom2");
+                name = resultSet.getString("name");
+
+                molecule = mapMolecule.get(mid);
+                if (molecule == null) {
+                    molecule = new MoleculeDB(mid, name, numAtoms);
+                    mapMolecule.put(mid, molecule);
+                }
+                molecule.setAtom(vertex1, atom1);
+                molecule.setAtom(vertex2, atom2);
+                molecule.setEdge(vertex1, vertex2);
+            }
+        } catch(SQLException e){
+            close();
+            return null;
+        } finally {
+            close();
         }
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println("Insert Time: " + duration/1000000 + "ms");
+        System.out.println("Find Time: " + duration / 1000000 + "ms");
         return mapMolecule.values().toArray(new MoleculeDB[0]);
+
     }
     /** Return Array of main.java.MoleculeDB's that have the same number of atoms and the same atoms.
      *
@@ -290,58 +242,65 @@ public class H2DB {
      */
     public void insertMolecule(String filename) throws SQLException {
 
-        // Get molecule information from text file
-        MoleculeText m = new MoleculeText(filename);
+        try {
+            connect = connect();
+            // Get molecule information from text file
+            MoleculeText m = new MoleculeText(filename);
 
-        // SQL
-        // PreparedStatements can use variables and are more efficient
-        preparedStatement = connect
-                .prepareStatement("INSERT INTO molecules VALUES (default, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
-
-        preparedStatement.setString(1, m.getMoleculeName());
-        preparedStatement.setInt(2, m.getNumVertices());
-        preparedStatement.executeUpdate();
-        connect.commit();
-        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-        int mid = -1;
-        if (generatedKeys.next()) {
-            mid = generatedKeys.getInt("mid");
-        } else{
-            connect.rollback();
-            preparedStatement.close();
-            connect.close();
-            throw new SQLException("Error inserting into molecules DB. The autogenerated mid was not outputted.");
-        }
-
-        for (int ii = 0; ii < m.numVertices; ii++) {
-            // Atoms table
+            // SQL
+            // PreparedStatements can use variables and are more efficient
             preparedStatement = connect
-                    .prepareStatement("INSERT INTO atoms VALUES (default, ?, ?, ?)");
+                    .prepareStatement("INSERT INTO molecules VALUES (default, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
 
-            // mid, atom, vertex
-            preparedStatement.setInt(1, mid);
-            preparedStatement.setString(2, m.getAtomList().get(ii));
-            preparedStatement.setInt(3, ii);
-
+            preparedStatement.setString(1, m.getMoleculeName());
+            preparedStatement.setInt(2, m.getNumVertices());
             preparedStatement.executeUpdate();
             connect.commit();
-        }
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            int mid = -1;
+            if (generatedKeys.next()) {
+                mid = generatedKeys.getInt("mid");
+            } else {
+                connect.rollback();
+                preparedStatement.close();
+                connect.close();
+                throw new SQLException("Error inserting into molecules DB. The autogenerated mid was not outputted.");
+            }
 
-        LinkedList<Integer>[] adjacencyList = m.getAdjacencyList();
-        for (int ii = 0; ii < m.numVertices; ii++){
-            for (int vv: adjacencyList[ii]) {
-                //Edges table
+            for (int ii = 0; ii < m.numVertices; ii++) {
+                // Atoms table
                 preparedStatement = connect
-                        .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
+                        .prepareStatement("INSERT INTO atoms VALUES (default, ?, ?, ?)");
 
-                // mid, vertex1, vertex2
+                // mid, atom, vertex
                 preparedStatement.setInt(1, mid);
-                preparedStatement.setInt(2, ii);
-                preparedStatement.setInt(3, vv);
+                preparedStatement.setString(2, m.getAtomList().get(ii));
+                preparedStatement.setInt(3, ii);
 
                 preparedStatement.executeUpdate();
                 connect.commit();
             }
+
+            LinkedList<Integer>[] adjacencyList = m.getAdjacencyList();
+            for (int ii = 0; ii < m.numVertices; ii++) {
+                for (int vv : adjacencyList[ii]) {
+                    //Edges table
+                    preparedStatement = connect
+                            .prepareStatement("INSERT INTO edges VALUES (default, ?, ?, ?)");
+
+                    // mid, vertex1, vertex2
+                    preparedStatement.setInt(1, mid);
+                    preparedStatement.setInt(2, ii);
+                    preparedStatement.setInt(3, vv);
+
+                    preparedStatement.executeUpdate();
+                    connect.commit();
+                }
+            }
+        } catch (SQLException e){
+            close();
+        } finally {
+            close();
         }
     }
 
