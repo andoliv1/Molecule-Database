@@ -14,7 +14,7 @@
       <element id="module-output" name="demo" />
       <element id="module-output" name="build" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/h2/bin/h2-1.4.200.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/mysql-connector-java-8.0.19/mysql-connector-java-8.0.19.jar" path-in-jar="/" />
+      <element id="library" level="project" name="mysql-connector-java-8.0.19" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-dbcp2-2.7.0/commons-dbcp2-2.7.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-dbcp2-2.7.0/commons-dbcp2-2.7.0-tests.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-dbcp2-2.7.0/commons-dbcp2-2.7.0-javadoc.jar" path-in-jar="/" />
