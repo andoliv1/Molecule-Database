@@ -2,6 +2,7 @@ package main.java;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Operations {
@@ -27,6 +28,27 @@ public class Operations {
         }
     }
 
+    public ArrayList<MoleculeAbstract> find(String filename){
+        ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
+        MoleculeText m = new MoleculeText(filename);
+        try {
+            MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+            for (MoleculeDB molecule : molecules) {
+                System.out.println(molecule.getMoleculeName());
+                if(this.checkIsomorphism(m, molecule)){
+                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                    isomorphicMolecules.add(molecule);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return isomorphicMolecules;
+    }
+
+
     public boolean checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
 
         boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
@@ -34,13 +56,100 @@ public class Operations {
         return false;
     }
 
-    public static void main(String[] args) {
-        Operations Ops = new Operations();
+    public void tenOpsCheck(){
         Random rand = new Random();
 
         File moleculesDir = new File("molecules");
         File[] listOfFiles = moleculesDir.listFiles();
         System.out.println(listOfFiles[6].getAbsolutePath());
+        for(int i = 0; i < 10; i++) {
+            try {
+                long startTime = System.nanoTime();
+
+                // Five inserts
+                insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+
+
+                // 1 iso
+                MoleculeText m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+//                MoleculeText m = new MoleculeText("isobutane.txt");
+                MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+
+                for (MoleculeDB molecule : molecules) {
+//                    System.out.println(molecule.getMoleculeName());
+                    if(this.checkIsomorphism(m, molecule))
+                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                }
+
+//                // 2 iso
+                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+
+                for (MoleculeDB molecule : molecules) {
+                    if(this.checkIsomorphism(m, molecule))
+                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                }
+
+                // 3 iso
+                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+
+                for (MoleculeDB molecule : molecules) {
+                    if(this.checkIsomorphism(m, molecule))
+                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                }
+
+                // 4 iso
+                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+
+                for (MoleculeDB molecule : molecules) {
+                    if(this.checkIsomorphism(m, molecule))
+                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                }
+
+                // 5 iso
+                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+
+                for (MoleculeDB molecule : molecules) {
+                    if(this.checkIsomorphism(m, molecule))
+                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                }
+//
+                long endTime = System.nanoTime();
+                long duration = (endTime - startTime);
+                System.out.println("Operation Time: " + duration / 1000000 + "ms");
+                System.out.println("--------------------------------------------");
+
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            db.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Operations Ops = new Operations();
+
+        System.out.println(args[0]);
+        System.out.println(args[1]);
+
+        if (args[0].equals("--addMolecule"))
+            Ops.insert(args[1]);
+        else if (args[0].equals("--findMolecule"))
+            Ops.find(args[1]);
+
 //        try{
 //            String s = listOfFiles[6].getAbsolutePath();
 //            Ops.insert(s);
@@ -83,80 +192,7 @@ public class Operations {
 //
 
 
-        for(int i = 0; i < 10; i++) {
-            try {
-                long startTime = System.nanoTime();
 
-                // Five inserts
-                Ops.insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                Ops.insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                Ops.insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                Ops.insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                Ops.insert(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-
-
-                // 1 iso
-                MoleculeText m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-//                MoleculeText m = new MoleculeText("isobutane.txt");
-                MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
-
-                for (MoleculeDB molecule : molecules) {
-//                    System.out.println(molecule.getMoleculeName());
-                    if(Ops.checkIsomorphism(m, molecule))
-                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-                }
-
-//                // 2 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
-
-                for (MoleculeDB molecule : molecules) {
-                    if(Ops.checkIsomorphism(m, molecule))
-                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-                }
-
-                // 3 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
-
-                for (MoleculeDB molecule : molecules) {
-                    if(Ops.checkIsomorphism(m, molecule))
-                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-                }
-
-                // 4 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
-
-                for (MoleculeDB molecule : molecules) {
-                    if(Ops.checkIsomorphism(m, molecule))
-                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-                }
-
-                // 5 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
-                molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
-
-                for (MoleculeDB molecule : molecules) {
-                    if(Ops.checkIsomorphism(m, molecule))
-                        System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-                }
-//
-                long endTime = System.nanoTime();
-                long duration = (endTime - startTime);
-                System.out.println("Operation Time: " + duration / 1000000 + "ms");
-                System.out.println("--------------------------------------------");
-
-            } catch (SQLException e){
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            db.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
     }
 }
