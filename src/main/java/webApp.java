@@ -6,6 +6,5 @@ public class webApp {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("/public");
         }).start(7777);
-        app.get("/", ctx -> ctx.result("Hello World"));
     }
 }
