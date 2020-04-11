@@ -8,7 +8,7 @@ public class Operations {
     private static H2DB db;
     //    searchDumb search;
 
-    Operations(){
+    public Operations(){
 //        search = new searchDumb();
         db = new H2DB();
         try {

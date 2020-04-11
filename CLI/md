@@ -10,9 +10,12 @@
 		case $1 in #two different
 			--add) 
 			echo "Add... molecule from $2"
+			java add.java $2
 			;;
 			--search) 
 			echo "Search... molecule from $2"
+			java search.java $2
+
 			;;
 		esac
 	fi

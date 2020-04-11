@@ -12,8 +12,8 @@
     <orderEntry type="library" name="h2-1.4.200" level="project" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="slf4j" level="project" />
+    <orderEntry type="module" module-name="java9" />
     <orderEntry type="module" module-name="java10" />
     <orderEntry type="module" module-name="java8" />
-    <orderEntry type="module" module-name="java9" />
   </component>
 </module>
