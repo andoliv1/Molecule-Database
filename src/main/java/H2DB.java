@@ -281,7 +281,7 @@ public class H2DB {
                 vertex1 = resultSet.getInt("vertex1");
                 vertex2 = resultSet.getInt("vertex2");
                 atom1 = resultSet.getString("atom1");
-                atom2 = resultSet.getString("atom1");
+                atom2 = resultSet.getString("atom2");
 //                System.out.println(name + " " + vertex1 + "   " + vertex2);
                 molecule = mapMolecule.get(mid);
                 if (molecule == null) {
