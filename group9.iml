@@ -12,6 +12,5 @@
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="dbunit-2.7.0" level="project" />
     <orderEntry type="library" name="json-20190722" level="project" />
-    <orderEntry type="module" module-name="h2" />
   </component>
 </module>
