@@ -5,8 +5,8 @@ import java.util.LinkedList;
 
 public abstract class MoleculeAbstract {
     protected Integer mid;
-    protected String moleculeName;
-    protected Integer numVertices;
+    public String moleculeName;
+    public Integer numVertices;
     protected ArrayList<String> atoms;
     protected LinkedList<Integer>[] adjacencyList;
     protected int[][] adjacencyMatrix;

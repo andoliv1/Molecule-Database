@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="molecules">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/molecules/molecules.zip!/" />
+      <root url="jar://$PROJECT_DIR$/molecules.zip!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
