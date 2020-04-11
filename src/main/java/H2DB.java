@@ -54,6 +54,56 @@ public class H2DB {
     }
 
 
+    public MoleculeDB queryMoleculeByName(String name) throws SQLException {
+        MoleculeDB molecule;
+        try {
+            connect = connect();
+
+            String sql = "WITH find_mid AS (SELECT mid, num_atoms \n" +
+                         "FROM molecules WHERE name = ?)" +
+                        "SELECT A1.mid AS mid, F.num_atoms, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n" +
+                        " FROM\n" +
+                        " find_mid F JOIN atoms A1" +
+                        " ON F.mid = A1.mid \n" +
+                        " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
+                        " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n";
+            preparedStatement = connect
+                    .prepareStatement(sql);
+            preparedStatement.setString(1, name);
+            resultSet = preparedStatement.executeQuery();
+
+
+            if (resultSet.next()){
+                int mid = resultSet.getInt("mid");
+                int numAtoms = resultSet.getInt("num_atoms");
+                 molecule = new MoleculeDB(mid, name, numAtoms);
+            }
+            else{
+                System.out.println("ereras");
+                // Found nothing
+                return null;
+}
+            int vertex1, vertex2;
+            String atom1, atom2;
+            while(resultSet.next()){
+                vertex1 = resultSet.getInt("vertex1");
+                vertex2 = resultSet.getInt("vertex2");
+                atom1 = resultSet.getString("atom1");
+                atom2 = resultSet.getString("atom2");
+                molecule.setAtom(vertex1, atom1);
+                molecule.setAtom(vertex2, atom2);
+                molecule.setEdge(vertex1, vertex2);
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+            close();
+            return null;
+        } finally {
+            close();
+        }
+        return molecule;
+    }
+
     /** Query the adjacency list from the 3 tables.
      *  First selects the atoms in the atom table using list of mids
      *  Secondly Joins that new table onto the Edges table using mid
@@ -500,29 +550,31 @@ public class H2DB {
 
         // Connect to Database
         H2DB dao = new H2DB();
-        dao.connect();
-//        for(int i = 0; i < 2; i++){
-//            dao.insertRandomMolecules(1);
-//            System.out.println("iter "+ i + " complete");
+//        dao.connect();
+////        for(int i = 0; i < 2; i++){
+////            dao.insertRandomMolecules(1);
+////            System.out.println("iter "+ i + " complete");
+////        }
+////        dao.insertMolecule("molecules");
+////        // You can provide the whole list of atoms
+////        // or you can just provide the UNIQUE list of atoms
+//        ArrayList<String> atoms = new ArrayList<>();
+//        atoms.add("C");
+//        atoms.add("H");
+//
+//        int numAtoms = 30;
+//
+//        // Find molecules that have only have Carbon and Hydrogen and have 14 total atoms.
+//        MoleculeDB[] molecules = dao.findSameAtoms(numAtoms, atoms);
+//
+//        // Print out the molecule names, vertices, adj matrix
+//        for (MoleculeDB m : molecules){
+//            System.out.println(m.getMoleculeName() + "\t" + m.getNumVertices());
+//            m.getAdjacencyMatrix();
+//            System.out.println("------------------------------------------------------");
 //        }
-//        dao.insertMolecule("molecules");
-//        // You can provide the whole list of atoms
-//        // or you can just provide the UNIQUE list of atoms
-        ArrayList<String> atoms = new ArrayList<>();
-        atoms.add("C");
-        atoms.add("H");
-
-        int numAtoms = 30;
-
-        // Find molecules that have only have Carbon and Hydrogen and have 14 total atoms.
-        MoleculeDB[] molecules = dao.findSameAtoms(numAtoms, atoms);
-
-        // Print out the molecule names, vertices, adj matrix
-        for (MoleculeDB m : molecules){
-            System.out.println(m.getMoleculeName() + "\t" + m.getNumVertices());
-            m.getAdjacencyMatrix();
-            System.out.println("------------------------------------------------------");
-        }
+        MoleculeDB m = dao.queryMoleculeByName("carbondioxide");
+        System.out.println(m.getMoleculeName());
 
     }
 }
