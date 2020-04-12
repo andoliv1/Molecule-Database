@@ -28,24 +28,9 @@ public class MoleculeDB extends MoleculeAbstract {
         return atoms;
     }
     public LinkedList<Integer>[] getAdjacencyList(){
-        System.out.println("Adjacency List");
-        for (int ii = 0; ii<this.numVertices; ii++){
-            System.out.print("Vertex " + ii + ":\t");
-            for (int s : adjacencyList[ii]) {
-                System.out.print(s +"\t");
-            }
-            System.out.println();
-        }
         return adjacencyList;
     }
     public int[][] getAdjacencyMatrix(){
-        System.out.println("Adjacency Matrix");
-        for (int ii = 0; ii<this.numVertices; ii++) {
-            for (int jj = 0; jj < this.numVertices; jj++) {
-                System.out.print(adjacencyMatrix[ii][jj] + "\t");
-            }
-            System.out.println();
-        }
         return adjacencyMatrix;
     }
 
