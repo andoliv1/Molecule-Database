@@ -197,63 +197,12 @@ public class Operations {
 //        Ops.tenOpsCheck();
         if (args[0].equals("--addMolecule"))
             Ops.insert(args[1]);
-<<<<<<< HEAD
         else if (args[0].equals("--findMolecule")){
             ArrayList<MoleculeAbstract> Ms = Ops.find(args[1]);
             if (Ms.size() == 0)
                 System.out.println("Not found");
         }
-=======
-        else if (args[0].equals("--findMolecule"))
-            Ops.find(args[1]);
         else if(args[0].equals("--findMostSimilar"))
             Ops.mostSimilar(args[1]);
-
-
-//        try{
-//            String s = listOfFiles[6].getAbsolutePath();
-//            Ops.insert(s);
-//            MoleculeText m = new MoleculeText(s);
-//             db.queryAdjacencyList(m.moleculeName);
-//            System.out.println(m.numVertices);
-//            System.out.println(m.toString());
-
-//        try {
-//            MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-////            System.out.println(molecules.length);
-//            for (MoleculeDB molecule : molecules) {
-//                m.resetAtoms();
-//                if (m.getMoleculeName().equals(molecule.getMoleculeName())){
-//                    System.out.println(m.getMoleculeName());
-//                    System.out.println(m.toString());
-//                    System.out.println(molecule.toString());
-//                }
-//                if(Ops.checkIsomorphism(m, molecule))
-//                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-//        }
-//        Ops.insert("isobutane.txt");
-//        Ops.insert("butane.txt");
-//        MoleculeText m1 = new MoleculeText("molecules/56aminopurin9yl4hydroxy2phosphonooxymethyltetrahydrofuran3yldihydrogenphosphate");
-//        MoleculeText m1 = new MoleculeText("butane.txt");
-//        MoleculeDB[] molecules = new MoleculeDB[0];
-//        try {
-//            molecules = db.findSameAtoms(m1.numVertices, m1.getAtomList());
-//            for (MoleculeDB molecule : molecules) {
-//                System.out.println(molecule.getMoleculeName());
-//                if(Ops.checkIsomorphism(m1, molecule))
-//                    System.out.println(m1.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-
-
-
-
->>>>>>> 71459f33a033eab504deb702f712b38f17038700
     }
 }
