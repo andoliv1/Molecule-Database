@@ -21,7 +21,7 @@ public class H2DB {
     static final String URL = "jdbc:h2:~/moleculedb";
     static final String Driver = "org.h2.Driver";
     static JdbcConnectionPool cp;
-    H2DB(){
+    public H2DB(){
         cp = JdbcConnectionPool.create(URL, User, Pw);
         cp.setMaxConnections(50);
     }
@@ -531,7 +531,22 @@ public class H2DB {
         System.out.println("Number of rows in query: " + size);
     }
 
-    /** Close the connections
+    public void SQLDump() throws SQLException {
+        try {
+            connect = connect();
+            preparedStatement = connect
+                    .prepareStatement("SCRIPT TO 'h2dump.sql'");
+            preparedStatement.execute();
+            connect.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            close();
+        } finally {
+            close();
+        }
+    }
+
+        /** Close the connections
      *
      */
     public void close() throws SQLException {

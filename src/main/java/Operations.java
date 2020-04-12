@@ -40,12 +40,12 @@ public class Operations {
     public ArrayList<MoleculeAbstract> find(String filename){
         ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
         MoleculeText m = new MoleculeText(filename);
+        System.out.println("Searching for Isomorphism for: " + m.getMoleculeName());
         try {
             MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
             for (MoleculeDB molecule : molecules) {
-                System.out.println(molecule.getMoleculeName());
                 if(this.checkIsomorphism(m, molecule)){
-                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                    System.out.println(m.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
                     isomorphicMolecules.add(molecule);
                 }
             }
@@ -159,7 +159,7 @@ public class Operations {
 
     public static void main(String[] args) {
         Operations Ops = new Operations();
-//
+//        Ops.tenOpsCheck();
         if (args[0].equals("--addMolecule"))
             Ops.insert(args[1]);
         else if (args[0].equals("--findMolecule")){

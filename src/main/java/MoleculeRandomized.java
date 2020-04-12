@@ -29,43 +29,45 @@ public class MoleculeRandomized extends MoleculeAbstract{
         this.atoms = new ArrayList<>(this.numVertices);
 
         for(int i =0 ; i < numVertices; i++){
-
             // Randomly select an atom
-            int prob = rand.nextInt(99); // 0-99 probability
-            // HYGROGEN
-            if(prob < CDF[0]){
-                atoms.add(periodicTable[0]);
-            }
-            // HELIUM
-            else if (prob >= CDF[0] && prob < CDF[1])
-                atoms.add(periodicTable[1]);
-            // Hydrogen
-            else if (prob >= CDF[1] && prob < CDF[2])
-                atoms.add(periodicTable[2]);
-            // Lithium
-            else if (prob >= CDF[2] && prob < CDF[3])
-                atoms.add(periodicTable[3]);
-            // Beryllium
-            else if (prob >= CDF[3] && prob < CDF[4])
-                atoms.add(periodicTable[4]);
-            // Carbon
-            else if (prob >= CDF[4] && prob < CDF[5])
-                atoms.add(periodicTable[5]);
-            //Nitrogen
-            else if (prob >= CDF[5] && prob < CDF[6])
-                atoms.add(periodicTable[6]);
-            // Oxygen
-            else if (prob >= CDF[6] && prob < CDF[7])
-                atoms.add(periodicTable[7]);
-            // Fluoride
-            else if (prob >= CDF[7] && prob < CDF[8])
-                atoms.add(periodicTable[8]);
 
-            //OTHER ATOMS
-            else{
-                int randomAtomIndex = rand.nextInt(periodicTable.length - 9) + 9;
-                atoms.add(periodicTable[randomAtomIndex]);
-            }
+            int r = rand.nextInt(periodicTable.length);
+            atoms.add(periodicTable[r]);
+//            int prob = rand.nextInt(99); // 0-99 probability
+//            // HYGROGEN
+//            if(prob < CDF[0]){
+//                atoms.add(periodicTable[0]);
+//            }
+//            // HELIUM
+//            else if (prob >= CDF[0] && prob < CDF[1])
+//                atoms.add(periodicTable[1]);
+//            // Hydrogen
+//            else if (prob >= CDF[1] && prob < CDF[2])
+//                atoms.add(periodicTable[2]);
+//            // Lithium
+//            else if (prob >= CDF[2] && prob < CDF[3])
+//                atoms.add(periodicTable[3]);
+//            // Beryllium
+//            else if (prob >= CDF[3] && prob < CDF[4])
+//                atoms.add(periodicTable[4]);
+//            // Carbon
+//            else if (prob >= CDF[4] && prob < CDF[5])
+//                atoms.add(periodicTable[5]);
+//            //Nitrogen
+//            else if (prob >= CDF[5] && prob < CDF[6])
+//                atoms.add(periodicTable[6]);
+//            // Oxygen
+//            else if (prob >= CDF[6] && prob < CDF[7])
+//                atoms.add(periodicTable[7]);
+//            // Fluoride
+//            else if (prob >= CDF[7] && prob < CDF[8])
+//                atoms.add(periodicTable[8]);
+//
+//            //OTHER ATOMS
+//            else{
+//                int randomAtomIndex = rand.nextInt(periodicTable.length - 9) + 9;
+//                atoms.add(periodicTable[randomAtomIndex]);
+//            }
         }
     }
 
