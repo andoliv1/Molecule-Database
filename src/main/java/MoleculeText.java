@@ -21,6 +21,11 @@ public class MoleculeText extends MoleculeAbstract {
         this.atoms = vertices;
     }
 
+    public MoleculeText(MoleculeAbstract mol){
+        this.adjacencyMatrix = mol.adjacencyMatrix;
+        this.atoms = mol.atoms;
+    }
+
     public void parseFile(String filename) {
         try {
             System.out.println("Parsing...");
@@ -49,12 +54,19 @@ public class MoleculeText extends MoleculeAbstract {
             int vertex1, vertex2;
             while ((st = br.readLine()) != null){
                 delimited = st.split("\\W+");
-                vertex1 = Integer.parseInt(delimited[0]);
-                vertex2 = Integer.parseInt(delimited[1]);
+                try {
+                    vertex1 = Integer.parseInt(delimited[0]);
+                    vertex2 = Integer.parseInt(delimited[1]);
 
-                this.adjacencyList[vertex1].add(vertex2);
-                this.adjacencyMatrix[vertex1][vertex2] += 1;
-                this.adjacencyMatrix[vertex2][vertex1] += 1;
+
+                    this.adjacencyList[vertex1].add(vertex2);
+                    this.adjacencyMatrix[vertex1][vertex2] += 1;
+                    this.adjacencyMatrix[vertex2][vertex1] += 1;
+                }
+                catch(NumberFormatException e){
+                    System.out.println("End of connection list");
+                }
+
             }
             System.out.println("Adjacency List");
             for (int ii = 0; ii<this.numVertices; ii++){
@@ -87,7 +99,8 @@ public class MoleculeText extends MoleculeAbstract {
     }
 
     public ArrayList<String> getAtomList(){
-        return atoms;
+        ArrayList<String> atoms_ret = new ArrayList<>(atoms);
+        return atoms_ret;
     }
 
     public LinkedList<Integer>[] getAdjacencyList(){
@@ -99,16 +112,7 @@ public class MoleculeText extends MoleculeAbstract {
     }
 
     public boolean changeLabels(String newlabel, int index){
-        ArrayList<String> newAtomList = new ArrayList<>();
-        for(int i = 0; i < atoms.size(); i++){
-            if(i != index){
-                newAtomList.add(atoms.get(i));
-            }
-            else{
-                newAtomList.add(newlabel);
-            }
-        }
-        atoms = newAtomList;
+        atoms.set(index,newlabel);
         return true;
     }
 
