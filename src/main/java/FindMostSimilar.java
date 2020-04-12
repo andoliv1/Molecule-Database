@@ -38,16 +38,16 @@ import static java.lang.Math.abs;
  * he can keep pulling the molecules until he finds one he likes (whatever that may be anyways).
  */
 public class FindMostSimilar {
-    private ArrayList<MoleculeAbstract> comparisonMolecules;
-    private ArrayList<MoleculeAbstract> baseMolecules;
-    public PriorityQueue<Pair<Integer,MoleculeAbstract>> minHeap;
+    private ArrayList<MoleculeText> comparisonMolecules;
+    private ArrayList<MoleculeText> baseMolecules;
+    public PriorityQueue<Pair<Integer,MoleculeText>> minHeap;
 
-    public FindMostSimilar(ArrayList<MoleculeAbstract> comparisonMolecules, ArrayList<MoleculeAbstract> baseMolecules) {
+    public FindMostSimilar(ArrayList<MoleculeText> comparisonMolecules, ArrayList<MoleculeText> baseMolecules) {
         this.comparisonMolecules = comparisonMolecules;
         this.baseMolecules = baseMolecules;
-        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,MoleculeAbstract>>() {
+        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,MoleculeText>>() {
             @Override
-            public int compare(Pair<Integer,MoleculeAbstract> o1,Pair<Integer,MoleculeAbstract> o2) {
+            public int compare(Pair<Integer,MoleculeText> o1,Pair<Integer,MoleculeText> o2) {
                 return Integer.compare(o1.getKey(),o2.getKey());
             }});
 
@@ -70,12 +70,39 @@ public class FindMostSimilar {
                 }
                 compMol.changeAtomList(oldList);
             }
-            System.out.println(distance + " for " + compMol.toString());
+            //System.out.println(distance + " for " + compMol.toString());
+            minHeap.offer(new Pair(distance,compMol));
+        }
+    }
+    public FindMostSimilar(ArrayList<MoleculeText> comparisonMolecules, MoleculeText base) {
+        this.comparisonMolecules = comparisonMolecules;
+        this.baseMolecules = baseMolecules;
+        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,MoleculeText>>() {
+            @Override
+            public int compare(Pair<Integer,MoleculeText> o1,Pair<Integer,MoleculeText> o2) {
+                return Integer.compare(o1.getKey(),o2.getKey());
+            }});
+
+        for (MoleculeAbstract compMol : comparisonMolecules) {
+            ArrayList<String> oldList = compMol.getAtomList();
+            int rOneChange = rankOneChange(compMol, base);
+            int rTwoChange = rankTwoChange(compMol, base);
+            int matrixTotal = getSumofMatrix(base.adjacencyMatrix);
+            if(rTwoChange > matrixTotal){
+                rTwoChange = matrixTotal;
+            }
+            int distance = 1 * rOneChange + 4 * rTwoChange;
+            compMol.changeAtomList(oldList);
+            //System.out.println(distance + " for " + compMol.toString());
             minHeap.offer(new Pair(distance,compMol));
         }
     }
 
-    public Pair<Integer,MoleculeAbstract> extractNextClosest(){
+    public PriorityQueue<Pair<Integer,MoleculeText>> getMinHeap(){
+        return this.minHeap;
+    }
+
+    public Pair<Integer,MoleculeText> extractNextClosest(){
         return this.minHeap.poll();
     }
 
@@ -95,7 +122,7 @@ public class FindMostSimilar {
                 temp_distance = 0;
             }
         }
-        System.out.println(distance + " for " + compMol.toString());
+        //System.out.println(distance + " for " + compMol.toString());
         minHeap.offer(new Pair(distance,compMol));
     }
 
@@ -144,9 +171,10 @@ public class FindMostSimilar {
                 counter++;
             }
         }
-        System.out.println("Total Rank One Changes " + atom_changes.size());
+        //System.out.println("Total Rank One Changes " + atom_changes.size());
         return atom_changes.size();
     }
+
     /**
      * Method used to compare two Pairs. A pair consists of the a 3 char string and an integer denoting the number of
      * connections made from an origin atom to the atom inside the Pair.
@@ -354,10 +382,10 @@ public class FindMostSimilar {
           MoleculeText poro = new MoleculeText("poro.txt");
           MoleculeText weird_mol1 = new MoleculeText("weirdmol1.txt");
           MoleculeText weird_mol3 = new MoleculeText("weirdmol3.txt");
-          ArrayList<MoleculeAbstract> mols = new ArrayList<>();
+          ArrayList<MoleculeText> mols = new ArrayList<>();
           mols.add(weird_mol1);
           mols.add(weird_mol3);
-          ArrayList<MoleculeAbstract> base_mols = new ArrayList<>();
+          ArrayList<MoleculeText> base_mols = new ArrayList<>();
           base_mols.add(koro);
           base_mols.add(poro);
           //System.out.println(koro.toString());

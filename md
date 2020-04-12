@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-  echo "help for commands"
+  echo "Type help for commands"
 
   if [ "$1" == help ]
   then
-      echo "command args"
+      echo "commands"
       echo "--addMolecule 'filename'        to add a molecule to the database"
       echo "--findMolecule 'filename'       to find molecules that are isomorphic to the input"
       echo "--initdb                        to create the database tables with some molecules. This needs to be run beforehand."

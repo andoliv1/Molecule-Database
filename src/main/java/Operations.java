@@ -1,8 +1,12 @@
 package main.java;
 
+import javafx.util.Pair;
+
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Operations {
@@ -63,12 +67,39 @@ public class Operations {
 
 
     public boolean checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
-
         boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
         if(weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
         return false;
     }
 
+    public void mostSimilar(String filename){
+        ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
+        MoleculeText m = new MoleculeText(filename);
+        try {
+            MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
+            for (MoleculeDB molecule : molecules) {
+                System.out.println(molecule.getMoleculeName());
+                if(this.checkIsomorphism(m, molecule)){
+                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                    isomorphicMolecules.add(molecule);
+                }
+            }
+            ArrayList<MoleculeText> moleculesList = new ArrayList<>();
+            for(int i = 0; i < molecules.length; i++){
+                ArrayList<String> atomsList = molecules[i].getAtomList();
+                int[][] adj = molecules[i].getAdjacencyMatrix();
+                moleculesList.add(new MoleculeText(adj,atomsList));
+            }
+            //System.out.println(moleculesList.toString());
+            FindMostSimilar fd = new FindMostSimilar(moleculesList,m);
+            Pair<Integer,MoleculeText> k = fd.extractNextClosest();
+            System.out.println("This is the distance with our metric " + k.getKey());
+            System.out.println("This is the molecule with the smallest distance " + k.getValue().toString());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("No molecules with that many atoms found");
+        }
+    }
 
     /**
      * Function to see if we are able to get ten operations per second.
@@ -166,10 +197,63 @@ public class Operations {
 //        Ops.tenOpsCheck();
         if (args[0].equals("--addMolecule"))
             Ops.insert(args[1]);
+<<<<<<< HEAD
         else if (args[0].equals("--findMolecule")){
             ArrayList<MoleculeAbstract> Ms = Ops.find(args[1]);
             if (Ms.size() == 0)
                 System.out.println("Not found");
         }
+=======
+        else if (args[0].equals("--findMolecule"))
+            Ops.find(args[1]);
+        else if(args[0].equals("--findMostSimilar"))
+            Ops.mostSimilar(args[1]);
+
+
+//        try{
+//            String s = listOfFiles[6].getAbsolutePath();
+//            Ops.insert(s);
+//            MoleculeText m = new MoleculeText(s);
+//             db.queryAdjacencyList(m.moleculeName);
+//            System.out.println(m.numVertices);
+//            System.out.println(m.toString());
+
+//        try {
+//            MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+////            System.out.println(molecules.length);
+//            for (MoleculeDB molecule : molecules) {
+//                m.resetAtoms();
+//                if (m.getMoleculeName().equals(molecule.getMoleculeName())){
+//                    System.out.println(m.getMoleculeName());
+//                    System.out.println(m.toString());
+//                    System.out.println(molecule.toString());
+//                }
+//                if(Ops.checkIsomorphism(m, molecule))
+//                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+//        }
+//        Ops.insert("isobutane.txt");
+//        Ops.insert("butane.txt");
+//        MoleculeText m1 = new MoleculeText("molecules/56aminopurin9yl4hydroxy2phosphonooxymethyltetrahydrofuran3yldihydrogenphosphate");
+//        MoleculeText m1 = new MoleculeText("butane.txt");
+//        MoleculeDB[] molecules = new MoleculeDB[0];
+//        try {
+//            molecules = db.findSameAtoms(m1.numVertices, m1.getAtomList());
+//            for (MoleculeDB molecule : molecules) {
+//                System.out.println(molecule.getMoleculeName());
+//                if(Ops.checkIsomorphism(m1, molecule))
+//                    System.out.println(m1.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+
+
+
+
+>>>>>>> 71459f33a033eab504deb702f712b38f17038700
     }
 }
