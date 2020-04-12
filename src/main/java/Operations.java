@@ -75,8 +75,9 @@ public class Operations {
 
 
                 // 1 iso
-                MoleculeText m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+//                MoleculeText m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
 //                MoleculeText m = new MoleculeText("isobutane.txt");
+                MoleculeRandomized m = new MoleculeRandomized(3,7);
                 MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
@@ -86,7 +87,8 @@ public class Operations {
                 }
 
 //                // 2 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+//                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                m = new MoleculeRandomized(3,7);
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
@@ -95,7 +97,8 @@ public class Operations {
                 }
 
                 // 3 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+//                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                m = new MoleculeRandomized(3,7);
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
@@ -104,7 +107,8 @@ public class Operations {
                 }
 
                 // 4 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+//                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                m = new MoleculeRandomized(3,7);
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
@@ -113,7 +117,8 @@ public class Operations {
                 }
 
                 // 5 iso
-                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+//                m = new MoleculeText(listOfFiles[rand.nextInt(listOfFiles.length)].getAbsolutePath());
+                m = new MoleculeRandomized(3,7);
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
@@ -141,10 +146,10 @@ public class Operations {
 
     public static void main(String[] args) {
         Operations Ops = new Operations();
-
-        System.out.println(args[0]);
-        System.out.println(args[1]);
-
+//        Ops.tenOpsCheck();
+//        System.out.println(args[0]);
+//        System.out.println(args[1]);
+//
         if (args[0].equals("--addMolecule"))
             Ops.insert(args[1]);
         else if (args[0].equals("--findMolecule"))
