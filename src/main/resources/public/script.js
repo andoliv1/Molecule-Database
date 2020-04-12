@@ -90,8 +90,48 @@ function resetFileList(file, i) {
 
 function search_val() {
   var search_val = document.getElementById("mySearch").value;
-  getAndDraw(search_val);
+
   document.getElementById("test").innerHTML = "You have entered \"" + search_val + "\"";
+  $.ajax({
+    type: "POST",
+    url: "/searchByName",
+    contentType: "string",
+    data: search_val,
+    dataType: "string",
+    success: function(response) {
+      checkIfExists(search_val);
+      console.log(response);
+    },
+    error: function(err) {
+      checkIfExists(search_val);
+      console.log(err);
+    }
+  });
+
+}
+
+function checkIfExists(search_val) {//This is where you add the
+  $.ajax({
+    type: "GET",
+    url: "/checkIfExists",
+    success: function (res) {
+      if(res == "!null") {
+        getAndDraw(search_val);
+        get_search();
+      }
+      else {
+        myCanvas = new ChemDoodle.ViewerCanvas('id', 150, 150);
+        myCanvas.styles.bonds_width_2D = 1.2;
+        myCanvas.styles.bonds_saturationWidthAbs_2D = 5.2;
+        myCanvas.styles.bonds_hashSpacing_2D = 5;
+        myCanvas.styles.atoms_font_size_2D = 20;
+        myCanvas.styles.atoms_useJMOLColors = true;
+        myCanvas.emptyMessage = 'Molecule not found';
+        myCanvas.repaint();
+        document.getElementById("demo").innerHTML = "Molecule not found";
+      }
+    }
+  });
 }
 
 

@@ -43,6 +43,19 @@ public class webApp {
             ctx.status(201);
         });
 
+        app.post( "/searchByName", ctx -> {
+            w.fileName = ctx.body();
+            ctx.status(201);
+        });
+
+        app.get( "/checkIfExists", ctx -> {
+            MoleculeAbstract m = Ops.queryMolecule(w.fileName);
+            if(m != null)
+                ctx.result("!null");
+            else
+                ctx.result("null");
+        });
+
         // check for isomorphism
         app.get("/isomorphism", ctx -> {
             System.out.println("Checking iso with fileName " + w.fileName);
