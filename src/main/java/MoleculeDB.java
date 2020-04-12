@@ -25,7 +25,8 @@ public class MoleculeDB extends MoleculeAbstract {
         return numVertices;
     }
     public ArrayList<String> getAtomList(){
-        return atoms;
+        ArrayList<String> atoms_ret = new ArrayList<>(atoms);
+        return atoms_ret;
     }
     public LinkedList<Integer>[] getAdjacencyList(){
         return adjacencyList;

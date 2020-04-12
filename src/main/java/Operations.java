@@ -3,6 +3,7 @@ package main.java;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Operations {
@@ -50,10 +51,38 @@ public class Operations {
 
 
     public boolean checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
-
         boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
         if(weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
         return false;
+    }
+
+    public MoleculeAbstract mostSimilar(String filename){
+        ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
+        MoleculeText m = new MoleculeText(filename);
+        try {
+            MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
+            for (MoleculeDB molecule : molecules) {
+                System.out.println(molecule.getMoleculeName());
+                if(this.checkIsomorphism(m, molecule)){
+                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
+                    isomorphicMolecules.add(molecule);
+                }
+            }
+            ArrayList<MoleculeText> moleculesList = new ArrayList<>();
+            for(int i = 0; i < molecules.length; i++){
+                ArrayList<String> atomsList = molecules[i].getAtomList();
+                int[][] adj = molecules[i].getAdjacencyMatrix();
+                moleculesList.add(new MoleculeText(adj,atomsList));
+            }
+            FindMostSimilar fd = new FindMostSimilar(moleculesList,m);
+            return fd.extractNextClosest().getValue();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
     }
 
     public void tenOpsCheck(){
@@ -154,6 +183,9 @@ public class Operations {
             Ops.insert(args[1]);
         else if (args[0].equals("--findMolecule"))
             Ops.find(args[1]);
+        else if(args[0].equals("--findMostSimilar"))
+            Ops.mostSimilar(args[1]);
+
 
 //        try{
 //            String s = listOfFiles[6].getAbsolutePath();
