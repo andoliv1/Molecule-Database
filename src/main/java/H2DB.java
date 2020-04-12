@@ -73,9 +73,9 @@ public class H2DB {
             preparedStatement.setString(1, name);
             resultSet = preparedStatement.executeQuery();
 
-
+            int mid;
             if (resultSet.next()){
-                int mid = resultSet.getInt("mid");
+                mid = resultSet.getInt("mid");
                 int numAtoms = resultSet.getInt("num_atoms");
                  molecule = new MoleculeDB(mid, name, numAtoms);
             }
@@ -83,10 +83,11 @@ public class H2DB {
                 System.out.println("ereras");
                 // Found nothing
                 return null;
-}
+            }
             int vertex1, vertex2;
             String atom1, atom2;
             while(resultSet.next()){
+                if(resultSet.getInt("mid") != mid) break;
                 vertex1 = resultSet.getInt("vertex1");
                 vertex2 = resultSet.getInt("vertex2");
                 atom1 = resultSet.getString("atom1");
