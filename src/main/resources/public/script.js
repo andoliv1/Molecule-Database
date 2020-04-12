@@ -52,6 +52,8 @@ function initializeProgress(numFiles) {
 }
 
 function updateProgress(fileNumber, percent) {
+        alert("hello")
+
   uploadProgress[fileNumber] = percent
   let total = uploadProgress.reduce((tot, curr) => tot + curr, 0) / uploadProgress.length
   console.debug('update', fileNumber, percent, total)
@@ -69,6 +71,7 @@ function handleFiles(files) {
 }
 
 function resetFileList(file, i) {
+    
   $.ajax({
     type: "POST",
     url: "/reset",
@@ -124,7 +127,7 @@ function addToDB() {
 }
 
 function add() {
-  document.getElementById("demo").innerHTML = "adding";
+  document.getElementById("demo").innerHTML = "Adding Molecule to Database";
   $.ajax({
     type: "POST",
     url: "/add",
