@@ -64,8 +64,11 @@ public class searchDumb{
         //ending conditions for comparing two atoms
         else if (o1.getKey().length() > 1) {
             return 1;
-        } else {
+        } else if (o2.getKey().length() > 1){
             return -1;
+        }
+        else{
+            return 0;
         }
     }
 
@@ -728,5 +731,9 @@ public class searchDumb{
         else{
             System.out.println("The are not even weakly isomorphic");
         }
+        MoleculeText m1 = new MoleculeText("carbon_dioxide.txt");
+        MoleculeText m2 = new MoleculeText("carbon_dioxide2.txt");
+        System.out.println(isIsomorphicWithNumbers(m1,m2));
+        System.out.println(verify_rigorous_isomorphism(m1,m2));
     }
 }
