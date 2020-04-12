@@ -6,8 +6,8 @@ import java.util.*;
 public class MoleculeRandomized extends MoleculeAbstract{
 
     Random rand = new Random();
-    MoleculeRandomized() {
-        this.numVertices = rand.nextInt(10000) + 1000; //20 - 70 vertices
+    MoleculeRandomized(int min, int max) {
+        this.numVertices = rand.nextInt(max-min) + min; //20 - 70 vertices
 
         this.adjacencyList = new LinkedList[this.numVertices];
         this.adjacencyMatrix = new int[this.numVertices][this.numVertices];
@@ -97,7 +97,10 @@ public class MoleculeRandomized extends MoleculeAbstract{
             sb.append(atom);
             sb.append(hm.get(atom));
         }
-        return sb.toString().substring(0,10);
+        int length = sb.toString().length();
+        if (length > 10)
+            length = 10;
+        return sb.toString().substring(0,length);
     }
 
     /**
@@ -208,7 +211,7 @@ public class MoleculeRandomized extends MoleculeAbstract{
                                                     //H  HE  Li  Be  B   C   N   O   F
     public final static double[] CDF = new double[]{25, 40, 44, 46, 50, 60, 70, 80, 85 };
     public static void main(String[] args) {
-        MoleculeRandomized m = new MoleculeRandomized();
+        MoleculeRandomized m = new MoleculeRandomized(3,8);
         System.out.println(m.getMoleculeName());
     }
 }

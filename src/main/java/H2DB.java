@@ -23,6 +23,7 @@ public class H2DB {
     static JdbcConnectionPool cp;
     H2DB(){
         cp = JdbcConnectionPool.create(URL, User, Pw);
+        cp.setMaxConnections(50);
     }
     /** Make connection to db.
      *
@@ -244,17 +245,18 @@ public class H2DB {
             // of the same number of atoms and of the same type of atoms
             String sql =
                     "WITH same_atoms  AS " +
+                            " (SELECT A.atom, A.vertex, AA.mid, AA.name, A.id FROM" +
                             "(SELECT A.mid, M.name \n" +
                             " FROM molecules M JOIN atoms A ON M.mid = A.mid\n" +
                             " WHERE M.num_atoms=? AND A.atom IN (SELECT x FROM TABLE(x VARCHAR = ? ))" +
                             " GROUP BY A.mid \n" +
-                            " HAVING COUNT(A.mid) = ?) " +
-                    "SELECT A1.mid AS mid, F.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n" +
-                    " FROM\n" +
-                    " same_atoms F JOIN atoms A1" +
-                    " ON F.mid = A1.mid \n" +
-                    " JOIN atoms A2 ON (A2.vertex=E.vertex2 AND A2.mid=E.mid)\n" +
-                    " JOIN edges E ON (A1.vertex=E.vertex1 AND A1.mid=E.mid)\n";
+                            " HAVING COUNT(A.mid) = ?) AA join atoms A ON AA.mid = A.mid)" +
+                    "SELECT A1.mid AS mid, A1.name, A1.atom AS atom1, A2.atom AS atom2, E.vertex1, E.vertex2\n " +
+                    " FROM\n " +
+                    " same_atoms A1 " +
+                    " JOIN same_atoms A2 ON (A1.mid = A2.mid AND A1.id!=A2.id) \n" +
+                    " JOIN edges E ON (A1.mid=E.mid)\n " +
+                    " WHERE A1.vertex = E.vertex1 AND A2.vertex = E.vertex2 ";
 
             preparedStatement = connect
                     .prepareStatement(sql);
@@ -410,7 +412,7 @@ public class H2DB {
             connect = connect();
             MoleculeRandomized[] molecules = new MoleculeRandomized[numberMolecules];
             for (int i = 0; i< numberMolecules; i++){
-                molecules[i] = new MoleculeRandomized();
+                molecules[i] = new MoleculeRandomized(3,7);
             }
             insertManyMolecules(molecules);
         } catch (SQLException e){
@@ -551,10 +553,10 @@ public class H2DB {
         // Connect to Database
         H2DB dao = new H2DB();
 //        dao.connect();
-////        for(int i = 0; i < 2; i++){
-////            dao.insertRandomMolecules(1);
-////            System.out.println("iter "+ i + " complete");
-////        }
+        for(int i = 0; i < 40; i++){
+            dao.insertRandomMolecules(25000);
+            System.out.println("iter "+ i + " complete");
+        }
 ////        dao.insertMolecule("molecules");
 ////        // You can provide the whole list of atoms
 ////        // or you can just provide the UNIQUE list of atoms
@@ -573,8 +575,8 @@ public class H2DB {
 //            m.getAdjacencyMatrix();
 //            System.out.println("------------------------------------------------------");
 //        }
-        MoleculeDB m = dao.queryMoleculeByName("carbondioxide");
-        System.out.println(m.getMoleculeName());
+//        MoleculeDB m = dao.queryMoleculeByName("carbondioxide");
+//        System.out.println(m.getMoleculeName());
 
     }
 }
