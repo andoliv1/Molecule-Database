@@ -7,7 +7,6 @@
 <body>
 <div id="includedContent"></div>
 </body>
-</html>
 
 <html>
 
@@ -46,7 +45,7 @@
         <h4> To add molecules: </h4>
         <p>Enter the molecules into the search bar, drag and drop the file, or draw the molecule. Then press the add button</p>
         <h4> Results </h4>
-        <p> Results will be shown in the bottom after you click on the add or search button <p>
+        <p> Results will be shown in the bottom after you click on the add or search button </p>
         </form>
       </div>
 	
@@ -81,16 +80,13 @@
                 <p> search by file input ... </p>
                     <div id="drop-area">
                         <form class="my-form">
-                                <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+                                <input type="file" id="fileElem" multiple accept="*" onchange="handleFiles(this.files)">
                                 <label class="button" for="fileElem">Select some files</label>
                         </form>
                         <progress id="progress-bar" max=100 value=0></progress>
                         <div id="gallery" /></div>
                     </div>
                 <p id="check"></p>
-                <!-- DRAW MOLECULE INPUT SECTION -->
-                <p> search by molecule drawing ... </p>
-          
          <!-- SEARCH SECTION -->
 	     <h2>Search Results </h2>
             <div id="wrapper"> 
@@ -98,8 +94,8 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <label class="button2" onclick="add()"> Add Molecule </label>
             </div>
-      
-            <div id="result"> 
+
+            <div id="result">
                 <p id="demo"> </p>
                 <p id="choice"></p>
             </div>

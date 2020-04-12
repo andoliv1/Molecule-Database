@@ -32,11 +32,11 @@ function unhighlight(e) {
   dropArea.classList.remove('active')
 }
 
+var files = null
+
 function handleDrop(e) {
   var dt = e.dataTransfer
-  var files = dt.files
-
-  handleFiles(files)
+  files = dt.files
 }
 
 let uploadProgress = []
@@ -58,52 +58,28 @@ function updateProgress(fileNumber, percent) {
   progressBar.value = total
 }
 
+let filesList = null
+let addCount = 0
+
 function handleFiles(files) {
-
-  files = [...files]
-  initializeProgress(files.length)
-  files.forEach(uploadFile)
-  files.forEach(previewFile)
+  filesList = [...files]
+  initializeProgress(filesList.length)
+  addCount = 0
+  resetFileList()
 }
 
-function previewFile(file) {
-  let reader = new FileReader()
-  reader.readAsDataURL(file)
-
-  reader.onloadend = function() {
-    let img = document.createElement('img')
-    img.src = reader.result
-    document.getElementById('gallery').appendChild(img)
-  }
-}
-
-function uploadFile(file, i) {
-  document.getElementById("check").innerHTML = "You have entered \"" + file + "\"";
-
-  var url = 'https://api.cloudinary.com/v1_1/joezimim007/image/upload'
-  var xhr = new XMLHttpRequest()
-  var formData = new FormData()
-  xhr.open('POST', url, true)
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-
-  // Update progress (can be used to show progress indicator)
-  xhr.upload.addEventListener("progress", function(e) {
-    updateProgress(i, (e.loaded * 100.0 / e.total) || 100)
-  })
-
-  xhr.addEventListener('readystatechange', function(e) {
-    if (xhr.readyState == 4 && xhr.status == 200) {
-      updateProgress(i, 100) // <- Add this
+function resetFileList(file, i) {
+  $.ajax({
+    type: "POST",
+    url: "/reset",
+    data: "reset",
+    success: function(response) {
+      console.log(response);
+    },
+    error: function(err) {
+      console.log(err);
     }
-    else if (xhr.readyState == 4 && xhr.status != 200) {
-      // Error. Inform the user
-    }
-  })
-
-  formData.append('upload_preset', 'ujpu6gyk')
-  formData.append('file', file)
-  xhr.send(formData)
-  
+  });
 }
 
 // ************************ Search Input ***************** //
@@ -121,14 +97,63 @@ function search_val() {
 
 //***********************RESULT OUTPUT**********************//
 
-function get_search(){//This is where you add the 
-  document.getElementById("demo").innerHTML = "searching by default";
+function get_search(){//This is where you add the
+  $.ajax({
+    type: "GET",
+    url: "/isomorphism",
+    success: function(res) {
+      document.getElementById("demo").innerHTML = res;
+    }
+  });
 }
 
-function add(){ 
-    
+function addToDB() {
+  $.ajax({
+    type: "POST",
+    url: "/addToDB",
+    contentType: "string",
+    data: "addToDB",
+    dataType: "string",
+    success: function(response) {
+      console.log(response);
+    },
+    error: function(err) {
+      console.log(err);
+    }
+  });
+}
+
+function add() {
   document.getElementById("demo").innerHTML = "adding";
- 
+  $.ajax({
+    type: "POST",
+    url: "/add",
+    contentType: "string",
+    data: filesList[addCount].name,
+    dataType: "string",
+    success: function(response) {
+      addCount += 1
+      updateProgress(addCount-1, 100);
+      if (addCount === filesList.length) {
+        addToDB()
+      }
+      else {
+        add()
+      }
+      console.log("Count is " + addCount + " "+ filesList.length);
+    },
+    error: function(err) {
+      addCount += 1
+      updateProgress(addCount-1, 100);
+      if (addCount === filesList.length) {
+        addToDB()
+      }
+      else {
+        add()
+      }
+      console.log("Count is " + addCount + " "+ filesList.length);
+    }
+  });
 }
 
 // Periodic table
