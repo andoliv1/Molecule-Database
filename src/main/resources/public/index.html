@@ -39,13 +39,13 @@
       <div class="sidebar">
         <!-- insert your sidebar items here -->
         <h3>Instructions</h3>
-        <h4>To Search molecules:</h4>
-        <p>Enter the molecules into the search bar, drag and drop the file, or draw the molecule. Then press the search button</p>
-        <p></p>
-        <h4> To add molecules: </h4>
-        <p>Enter the molecules into the search bar, drag and drop the file, or draw the molecule. Then press the add button</p>
+        <h4>To search molecules by molecule name:</h4>
+        <p>Enter the molecule name in the search bar and press enter. The resulting molecule will show in the draw area and isomorphic results in the results area. </p>
+        <h4> To search molecules by file name: </h4>
+        <p>Drag and drop or select files into the drop area. Click add button then search button to see isomorphic results on
+        the first molecule added.</p>
         <h4> Results </h4>
-        <p> Results will be shown in the bottom after you click on the add or search button </p>
+        <p> Results will be shown in the bottom or in the draw area. </p>
         </form>
       </div>
 	
@@ -90,14 +90,14 @@
          <!-- SEARCH SECTION -->
 	     <h2>Search Results </h2>
             <div id="wrapper"> 
-                <label class="button2" onclick="get_search()" > Search Molecule </label>
+                <label class="button2" onclick="search()" > Search Molecule </label>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <label class="button2" onclick="add()"> Add Molecule </label>
             </div>
 
             <div id="result">
                 <p id="demo"> </p>
-                <p id="choice"></p>
+                <p id="choice"> </p>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@
 <!-- FOOTER BODY CONTENT-->
 
     <div id="footer">
-      Designed by Edwin Sun, part of Team 9 (including Andreas, Esteban, Timmy, and Danny) </a>
+      Designed by Edwin, part of Team 9 (including Andreas, Esteban, Timmy, and Danny) </a>
     </div>
     
   </div>

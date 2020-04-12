@@ -497,7 +497,7 @@ public class searchDumb{
         water_matrix2[2][0] = 1;
         MoleculeText water = new MoleculeText(water_matrix,water_atoms);
         MoleculeText water2 = new MoleculeText(water_matrix2,water_atom2);
-        boolean weakIsomorphic = isIsomorphicWithNumbers(water,water);
+        boolean weakIsomorphic = isIsomorphicWithNumbers(water,water2);
         boolean isomorphic;
         System.out.println("Molecule 1 name: water");
         System.out.println("representation: ");

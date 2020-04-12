@@ -19,6 +19,10 @@ public class Operations {
         }
     }
 
+    public MoleculeAbstract queryMolecule(String filename) throws SQLException {
+        return db.queryMoleculeByName(filename);
+    }
+
 
     /**
      * Helper function to insert into DB
