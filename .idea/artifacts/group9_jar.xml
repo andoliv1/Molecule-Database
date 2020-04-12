@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="group9:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/group9_jar</output-path>
+  <artifact type="jar" build-on-make="true" name="group9:jar">
+    <output-path>$PROJECT_DIR$</output-path>
     <root id="archive" name="group9.jar">
       <element id="module-output" name="generated" />
       <element id="module-output" name="java8" />
