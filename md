@@ -18,13 +18,13 @@
 
   elif [ "$1" == --insertPubchem ] #checks if the options parameters exist
   then
-      echo "Search... molecule from $2"
+      echo "Creating a 10,000 molecule database. 1,000 of which are from PubChem."
       java -cp lib/h2/bin/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:~/moleculedb -user sa -script h2dump-PubChem.sql*
 
   elif [ "$1" == --insertTenMillion ] #checks if the options parameters exist
-    then
-        echo "Search... molecule from $2"
-        java -cp lib/h2/bin/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:~/moleculedb -user sa -script h2dump-ten-million.sql*
+  then
+      echo "Creating the ten million random molecule database."
+      java -cp lib/h2/bin/h2-1.4.200.jar org.h2.tools.RunScript -url jdbc:h2:~/moleculedb -user sa -script h2dump-ten-million.sql*
 
   else
     if [ ! -f "$2" ] #checks to see if filename parameter is in exist
