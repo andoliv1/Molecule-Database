@@ -30,7 +30,6 @@ public class webApp {
         app.post("/add", ctx -> {
             w.fileName = ctx.body();
             w.fileList.add(w.fileName);
-            System.out.println("Filename is " + w.fileName);
             ctx.status(201);
         });
 
@@ -39,7 +38,6 @@ public class webApp {
             for (String fileName : w.fileList) {
                 Ops.insert("molecules/"+ fileName);
             }
-            System.out.println("add to db");
             ctx.status(201);
         });
 
@@ -59,10 +57,8 @@ public class webApp {
         // check for isomorphism
         app.get("/isomorphism", ctx -> {
             if (w.fileName.length() != 0) {
-                System.out.println("Checking iso with fileName " + w.fileName);
                 ArrayList<MoleculeAbstract> iso = Ops.find("molecules/" + w.fileName);
                 String isoString = w.fileName + " is isomorphic with the following:<br>";
-                System.out.println(isoString);
                 for (MoleculeAbstract mol : iso)
                     isoString += mol.moleculeName + "<br>";
                 ctx.result(isoString);

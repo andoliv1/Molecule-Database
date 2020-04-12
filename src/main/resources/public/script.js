@@ -52,8 +52,6 @@ function initializeProgress(numFiles) {
 }
 
 function updateProgress(fileNumber, percent) {
-        alert("hello")
-
   uploadProgress[fileNumber] = percent
   let total = uploadProgress.reduce((tot, curr) => tot + curr, 0) / uploadProgress.length
   console.debug('update', fileNumber, percent, total)
@@ -179,6 +177,7 @@ function add() {
       updateProgress(addCount-1, 100);
       if (addCount === filesList.length) {
         addToDB()
+        addCount = 0;
       }
       else {
         add()
@@ -190,9 +189,51 @@ function add() {
       updateProgress(addCount-1, 100);
       if (addCount === filesList.length) {
         addToDB()
+        addCount = 0;
       }
       else {
         add()
+      }
+      console.log("Count is " + addCount + " "+ filesList.length);
+    }
+  });
+}
+
+function search()
+{
+  addCount = 0;
+  search_add();
+}
+
+function search_add() {
+  document.getElementById("demo").innerHTML = "Searching Molecule in Database";
+  $.ajax({
+    type: "POST",
+    url: "/add",
+    contentType: "string",
+    data: filesList[addCount].name,
+    dataType: "string",
+    success: function(response) {
+      addCount += 1
+      updateProgress(addCount-1, 100);
+      if (addCount != filesList.length) {
+        search_add()
+      }
+      else {
+        get_search();
+        addCount = 0;
+      }
+      console.log("Count is " + addCount + " "+ filesList.length);
+    },
+    error: function(err) {
+      addCount += 1
+      updateProgress(addCount-1, 100);
+      if (addCount != filesList.length) {
+        search_add()
+      }
+      else {
+        get_search();
+        addCount = 0;
       }
       console.log("Count is " + addCount + " "+ filesList.length);
     }
