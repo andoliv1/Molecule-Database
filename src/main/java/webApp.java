@@ -58,13 +58,18 @@ public class webApp {
 
         // check for isomorphism
         app.get("/isomorphism", ctx -> {
-            System.out.println("Checking iso with fileName " + w.fileName);
-            ArrayList<MoleculeAbstract> iso = Ops.find("molecules/" + w.fileName);
-            String isoString = w.fileName + " is isomorphic with the following:<br>";
-            System.out.println(isoString);
-            for (MoleculeAbstract mol : iso)
-                isoString += mol.moleculeName + "<br>";
-            ctx.result(isoString);
+            if (w.fileName.length() != 0) {
+                System.out.println("Checking iso with fileName " + w.fileName);
+                ArrayList<MoleculeAbstract> iso = Ops.find("molecules/" + w.fileName);
+                String isoString = w.fileName + " is isomorphic with the following:<br>";
+                System.out.println(isoString);
+                for (MoleculeAbstract mol : iso)
+                    isoString += mol.moleculeName + "<br>";
+                ctx.result(isoString);
+            }
+            else{
+                ctx.result("Please add molecule into DB first before searching");
+            }
         });
     }
 }
