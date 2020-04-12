@@ -27,7 +27,7 @@ public class SQLUnit extends DatabaseTestCase {
 
     @Override
     protected IDatabaseConnection getConnection() throws Exception{
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        Class.forName("org.h2.Driver");
         jdbcConnection = DriverManager
                 .getConnection("jdbc:h2:~/moleculedb",
                         "sa",

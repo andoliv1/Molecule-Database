@@ -19,7 +19,7 @@ public class DatabaseExport {
     public static void main(String[] args) throws Exception
     {
         // database connection
-        Class driverClass = Class.forName("com.mysql.cj.jdbc.Driver");
+        Class driverClass = Class.forName("org.h2.Driver");
         Connection jdbcConnection = DriverManager
                                     .getConnection("jdbc:h2:~/moleculedb",
                                             "sa",
