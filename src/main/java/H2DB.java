@@ -155,7 +155,6 @@ public class H2DB {
      * @throws SQLException
      */
     public MoleculeDB[] findSameNumberAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
-        long startTime = System.nanoTime();
         // mapMolecule is a dictionary that takes the  <key, value> = <mid, main.java.MoleculeDB>
         HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>(1000);
 
@@ -217,9 +216,7 @@ public class H2DB {
         } finally {
             close();
         }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        System.out.println("Find Time: " + duration / 1000000 + "ms");
+
         return mapMolecule.values().toArray(new MoleculeDB[0]);
 
     }
@@ -231,7 +228,6 @@ public class H2DB {
      * @throws SQLException
      */
     public MoleculeDB[] findSameAtoms(int numAtoms, ArrayList<String> atoms) throws SQLException {
-        long startTime = System.nanoTime();
         HashMap<Integer, MoleculeDB> mapMolecule = new HashMap<>();
 
         try {
@@ -303,9 +299,7 @@ public class H2DB {
         } finally {
             close();
         }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        System.out.println("Find Time: " + duration/1000000 + "ms");
+
         return mapMolecule.values().toArray(new MoleculeDB[0]);
     }
 

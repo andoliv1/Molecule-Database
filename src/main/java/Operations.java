@@ -46,6 +46,8 @@ public class Operations {
      * @return
      */
     public ArrayList<MoleculeAbstract> find(String filename){
+        long startTime = System.nanoTime();
+
         ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
         MoleculeText m = new MoleculeText(filename);
         System.out.println("Searching for Isomorphism for: " + m.getMoleculeName());
@@ -61,7 +63,10 @@ public class Operations {
             e.printStackTrace();
             return null;
         }
-
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println("Operation Time: " + duration / 1000000 + "ms");
+        System.out.println("--------------------------------------------");
         return isomorphicMolecules;
     }
 
