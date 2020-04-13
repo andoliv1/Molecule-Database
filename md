@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+  java -version
   echo "Type help for commands"
 
   if [ "$1" == help ]
