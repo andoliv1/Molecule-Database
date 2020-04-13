@@ -39,6 +39,7 @@ In this project, we will be exploring ways to efficiently store and access molec
 ## List of Features
 
    ![](images/terminal.png)
+   ![](images/webui.png)
 
 - Implemented:
     
@@ -46,6 +47,7 @@ In this project, we will be exploring ways to efficiently store and access molec
     (The web framework used is a Java framework similar to Flask called Javalin. POST and GET functions are called along with Ajax calls to communicate to and from the server. Users can add molecules to the H2DB database and search for isomorphism by name or by file.)
 
     - Ability to handle core operations on a database of at least 10 million molecules at a rate of 10 operations per second on a lab computer.
+    We randomly created 10 million molecules of 3 to 8 atoms. You can use the database with the command ./md --insertTenMillion. In our unit test, SmallSystemsTest.java, we test the time required to add 10 carbon molecules and check if that time elapsed is less than 1 second. We also do 10 "find" operations of the carbon molecule. The add command is a simple SQL query that inserts the molecule into our database. The find command will first query all molecules that have the same number of atoms and have the same type of atoms as the input molecule. Then we run our isomorphism algorithm described in the previous section.
 
     - Ability to search for the most similar molecule to a given molecule, if an exact match does not exist, under some reasonable graph similarity metric.
     (The relevant data structures for the similar are the same as the Graph Isomorphism code. We used an adjacency matrix to get the smallest edge distance calculation and an array list to get the vertex distance.)
@@ -81,7 +83,6 @@ Carletti, V., Foggia, P., Saggese, A., & Vento, M. (2018). Challenging the Time 
 
     Also, I have created and designed the webUI with html (adds static page), css (adds style), and javascript (adds interactability). It accepts inputs by molecule name and file name. Molecule name is accepted into a search bar, and file can be dropped into the drag-and-drop area that will read the file into the database. Searching the molecules in the database is done locally via Javalin (implemented by Danny to work with the database). Once search is done, results are displayed in the draw area and results section. 
     
-    ![](images/webui.png)
 
 - Esteban Hernandez (inactive): Android app for user interface (not implemented).
 
