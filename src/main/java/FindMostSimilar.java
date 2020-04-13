@@ -70,7 +70,7 @@ public class FindMostSimilar {
                 }
                 compMol.changeAtomList(oldList);
             }
-            System.out.println(distance + " for " + compMol.toString());
+            //System.out.println(distance + " for " + compMol.toString());
             minHeap.offer(new Pair(distance,compMol));
         }
     }
@@ -93,7 +93,7 @@ public class FindMostSimilar {
             }
             int distance = 1 * rOneChange + 4 * rTwoChange;
             compMol.changeAtomList(oldList);
-            System.out.println(distance + " for " + compMol.toString());
+            //System.out.println(distance + " for " + compMol.toString());
             minHeap.offer(new Pair(distance,compMol));
         }
     }
@@ -122,7 +122,7 @@ public class FindMostSimilar {
                 temp_distance = 0;
             }
         }
-        System.out.println(distance + " for " + compMol.toString());
+        //System.out.println(distance + " for " + compMol.toString());
         minHeap.offer(new Pair(distance,compMol));
     }
 
@@ -171,7 +171,7 @@ public class FindMostSimilar {
                 counter++;
             }
         }
-        System.out.println("Total Rank One Changes " + atom_changes.size());
+        //System.out.println("Total Rank One Changes " + atom_changes.size());
         return atom_changes.size();
     }
 

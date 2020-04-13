@@ -1,9 +1,12 @@
 package main.java;
 
+import javafx.util.Pair;
+
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Operations {
@@ -56,7 +59,7 @@ public class Operations {
         return false;
     }
 
-    public MoleculeAbstract mostSimilar(String filename){
+    public void mostSimilar(String filename){
         ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
         MoleculeText m = new MoleculeText(filename);
         try {
@@ -74,15 +77,15 @@ public class Operations {
                 int[][] adj = molecules[i].getAdjacencyMatrix();
                 moleculesList.add(new MoleculeText(adj,atomsList));
             }
+            //System.out.println(moleculesList.toString());
             FindMostSimilar fd = new FindMostSimilar(moleculesList,m);
-            return fd.extractNextClosest().getValue();
-
+            Pair<Integer,MoleculeText> k = fd.extractNextClosest();
+            System.out.println("This is the distance with our metric " + k.getKey());
+            System.out.println("This is the molecule with the smallest distance " + k.getValue().toString());
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            System.out.println("No molecules with that many atoms found");
         }
-
-
     }
 
     public void tenOpsCheck(){
