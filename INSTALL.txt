@@ -41,8 +41,13 @@ I. Open the group9 project in Intelli-J
 		iii. Set the output folder to the folder named out in the project root.
 	b. Import maven projects 
 II. In order to run the web UI you need to do the following steps:
-	a. Set Up an application:
-		i. To run the webUI, the user has to have an internet connection because 		some APIs are restful commands. The webUI has its own standalone main in 		the intellij project called webApp. After running the main, the url 			provided is http://localhost:7777/. The user can search for isomorphic 			compounds by name if it exists in the H2DB database, search for isomorphic 		compounds by file, and add compounds to the H2DB database by files.
+	a. Set Up an application (webApp.java):
+		i. To run the webUI, the user has to have an internet connection because 		
+			some APIs are restful commands. The webUI has its own standalone main in 		
+			the intellij project called webApp. 
+			After running the main, the url provided is http://localhost:7777/. 
+			The user can search for isomorphic compounds by name if it exists in the H2DB database, search for isomorphic	compounds by file, and add compounds to the H2DB database by files.
+			
 	b. In order to run the command line interface simply run any of the commands:	
 
 		./md initdb (If you haven’t initialized the database than make sure to run 		this command first)
