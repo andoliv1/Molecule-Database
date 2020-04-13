@@ -69,6 +69,7 @@ function handleFiles(files) {
 }
 
 function resetFileList(file, i) {
+    
   $.ajax({
     type: "POST",
     url: "/reset",
@@ -87,8 +88,48 @@ function resetFileList(file, i) {
 
 function search_val() {
   var search_val = document.getElementById("mySearch").value;
-  getAndDraw(search_val);
+
   document.getElementById("test").innerHTML = "You have entered \"" + search_val + "\"";
+  $.ajax({
+    type: "POST",
+    url: "/searchByName",
+    contentType: "string",
+    data: search_val,
+    dataType: "string",
+    success: function(response) {
+      checkIfExists(search_val);
+      console.log(response);
+    },
+    error: function(err) {
+      checkIfExists(search_val);
+      console.log(err);
+    }
+  });
+
+}
+
+function checkIfExists(search_val) {//This is where you add the
+  $.ajax({
+    type: "GET",
+    url: "/checkIfExists",
+    success: function (res) {
+      if(res == "!null") {
+        getAndDraw(search_val);
+        get_search();
+      }
+      else {
+        myCanvas = new ChemDoodle.ViewerCanvas('id', 150, 150);
+        myCanvas.styles.bonds_width_2D = 1.2;
+        myCanvas.styles.bonds_saturationWidthAbs_2D = 5.2;
+        myCanvas.styles.bonds_hashSpacing_2D = 5;
+        myCanvas.styles.atoms_font_size_2D = 20;
+        myCanvas.styles.atoms_useJMOLColors = true;
+        myCanvas.emptyMessage = 'Molecule not found';
+        myCanvas.repaint();
+        document.getElementById("demo").innerHTML = "Molecule not found";
+      }
+    }
+  });
 }
 
 
@@ -124,7 +165,7 @@ function addToDB() {
 }
 
 function add() {
-  document.getElementById("demo").innerHTML = "adding";
+  document.getElementById("demo").innerHTML = "Adding Molecule to Database";
   $.ajax({
     type: "POST",
     url: "/add",
@@ -136,6 +177,7 @@ function add() {
       updateProgress(addCount-1, 100);
       if (addCount === filesList.length) {
         addToDB()
+        addCount = 0;
       }
       else {
         add()
@@ -147,9 +189,51 @@ function add() {
       updateProgress(addCount-1, 100);
       if (addCount === filesList.length) {
         addToDB()
+        addCount = 0;
       }
       else {
         add()
+      }
+      console.log("Count is " + addCount + " "+ filesList.length);
+    }
+  });
+}
+
+function search()
+{
+  addCount = 0;
+  search_add();
+}
+
+function search_add() {
+  document.getElementById("demo").innerHTML = "Searching Molecule in Database";
+  $.ajax({
+    type: "POST",
+    url: "/add",
+    contentType: "string",
+    data: filesList[addCount].name,
+    dataType: "string",
+    success: function(response) {
+      addCount += 1
+      updateProgress(addCount-1, 100);
+      if (addCount != filesList.length) {
+        search_add()
+      }
+      else {
+        get_search();
+        addCount = 0;
+      }
+      console.log("Count is " + addCount + " "+ filesList.length);
+    },
+    error: function(err) {
+      addCount += 1
+      updateProgress(addCount-1, 100);
+      if (addCount != filesList.length) {
+        search_add()
+      }
+      else {
+        get_search();
+        addCount = 0;
       }
       console.log("Count is " + addCount + " "+ filesList.length);
     }
