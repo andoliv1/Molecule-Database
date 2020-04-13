@@ -43,6 +43,7 @@ In this project, we will be exploring ways to efficiently store and access molec
 - Implemented:
     
     - Develop a web page and corresponding server-side executable for accessing the database
+    (The web framework used is a Java framework similar to Flask called Javalin. POST and GET functions are called along with Ajax calls to communicate to and from the server. Users can add molecules to the H2DB database and search for isomorphism by name or by file.)
 
     - Ability to handle core operations on a database of at least 10 million molecules at a rate of 10 operations per second on a lab computer.
 
@@ -57,7 +58,7 @@ In this project, we will be exploring ways to efficiently store and access molec
 - Additional New Features Implemented:
 
     - Download 1,000 known compounds from an existing database (e.g., ChemSpider) into your molecular database. We downloaded molecules using the PubChem API.
-    (We decided that having meaningful compounds in our database would improve various different aspects of the user experience. Having known compounds, we are able to look up bond information (X-Y coordinates) to plot various locations of atoms.)
+    (We decided that having meaningful compounds in our database would improve various different aspects of the user experience. Having known compounds, we are able to look up bond information (X-Y coordinates) to plot various locations of atoms. The implementation is done by restful API calls to pubChem as opposed ChemSpider. ChemSpider did not have the bond information we needed for drawing molecules. Every result is obtained and parsed in JSON format.)
 
 ## References
 
