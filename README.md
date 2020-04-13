@@ -25,7 +25,7 @@ In this project, we will be exploring ways to efficiently store and access molec
     - The relevant data structures for the implementation of graph isomorphism were adjacency matrices implemented as two dimensional integer arrays, hash sets were used for the tracking of ambiguous atoms along with arrayLists. In the future for the more optimized version of the graph isomorphism code where we don’t create useless permutations we will be using HashSets to store the possible solutions and to update the possible solutions, it will still require us the same O(V^3*logV*V!) in the worst case but ultimately it will help a lot to remove the useless permutations as those can take the majority of the runtime. 
     
 - Database:
-
+    - Using the H2 Database Engine as our database manager. 
     - Created 3 tables for molecules, atoms, edges
     
     ![](images/database.png)
