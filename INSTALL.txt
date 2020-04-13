@@ -26,8 +26,9 @@ Unit Test descriptions:
 
 	-FindMostSimilarUnitTest.java: Test with findmostsimilar function in arraylist of 	carbon dioxide, water, weirdmol1...
 
-	-smallsystemtestes.java: Test searching for molecules for two carbon dioxide2 (		both are permutations of the other) and checking for weak/strong isomorphism
-
+	-smallsystemtestes.java: Test inserting 2 isomorphic molecules into the database
+													Searches weak/strong isomorphism for one of those molecules.
+													
 	-sqlunit.java: Test sql operations loading datasets and checking edges, atoms, 		molecules … rows 
 
 	-externalParserUnit.java: Test the various external data parser functions (eg. grabbing molecule name, bond information, number of atoms...
