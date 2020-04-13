@@ -27,7 +27,9 @@ In this project, we will be exploring ways to efficiently store and access molec
 - Database:
 
     - Created 3 tables for molecules, atoms, edges
+    
     ![](images/database.png)
+    
     - In the Molecules table, each row holds a single molecule with columns: name and num_atoms.
     - In the Atoms table, the mid field is a foreign key which we use to relate the vertex id and atom name to a specific molecule. Several rows in the Atoms table can be related to a single molecule.
     - In the Edges table, the mid field is also a foreign key which we use to relate the edge of one vertex to another vertex of the same molecule. Several rows in the Edges table can be related to a single molecule.
