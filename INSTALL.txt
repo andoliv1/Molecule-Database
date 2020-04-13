@@ -44,6 +44,7 @@ I. Open the group9 project in Intelli-J
 	b. Import maven projects 
 
 II.
+	Warning - Lab computers seem to default to Java 1.7. You will need to change that to Java 1.8.
 	a. In order to run the command line interface simply run any of the commands:	
 
 		./md initdb (If you haven’t initialized the database than make sure to run this command first)
