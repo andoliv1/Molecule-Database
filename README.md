@@ -6,15 +6,15 @@ In this project, we will be exploring ways to efficiently store and access molec
 
 ## Group Members
 
-- Andreas: andoliv@bu.edu
+- Andreas Francisco: andoliv@bu.edu
 
-- Esteban: hesteban@bu.edu
+- Esteban Hernandez: hesteban@bu.edu
 
-- Timmy: hoangt@bu.edu
+- Timmy Hoang: hoangt@bu.edu
 
-- Danny: djtrinh@bu.edu
+- Danny Trinh: djtrinh@bu.edu
 
-- Edwin: edsun@bu.edu
+- Edwin Sun: edsun@bu.edu
 
 ## Description of the implementation
 
@@ -80,7 +80,7 @@ Carletti, V., Foggia, P., Saggese, A., & Vento, M. (2018). Challenging the Time 
 
     Also, I have created and designed the webUI with html (adds static page), css (adds style), and javascript (adds interactability). It accepts inputs by molecule name and file name. Molecule name is accepted into a search bar, and file can be dropped into the drag-and-drop area that will read the file into the database. Searching the molecules in the database is done locally via Javalin (implemented by Danny to work with the database). Once search is done, results are displayed in the draw area and results section. 
     
-       ![](images/webui.png)
+    ![](images/webui.png)
 
 - Esteban Hernandez (inactive): Android app for user interface (not implemented).
 
