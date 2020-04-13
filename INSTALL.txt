@@ -19,6 +19,7 @@ Imported Libraries:
 	Json
 
 Unit Test descriptions:
+	Located in src/test/
 
 	-DatabaseExport.java: Test with checking connection to database and add table
 
