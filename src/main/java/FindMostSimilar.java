@@ -378,35 +378,6 @@ public class FindMostSimilar {
     }
 
     public static void main(String[] args){
-          MoleculeText koro = new MoleculeText("koro.txt");
-          MoleculeText poro = new MoleculeText("poro.txt");
-          MoleculeText weird_mol1 = new MoleculeText("weirdmol1.txt");
-          MoleculeText weird_mol3 = new MoleculeText("weirdmol3.txt");
-          ArrayList<MoleculeText> mols = new ArrayList<>();
-          mols.add(weird_mol1);
-          mols.add(weird_mol3);
-          ArrayList<MoleculeText> base_mols = new ArrayList<>();
-          base_mols.add(koro);
-          base_mols.add(poro);
-          //System.out.println(koro.toString());
-          ArrayList<String> ato1 = weird_mol3.getAtomList();
-          //System.out.println("ato1 " +ato1.toString());
-          //System.out.println(weird_mol1.toString());
-          //rankOneChange(weird_mol3,koro);
-          //System.out.println(weird_mol1.toString());
-          //System.out.println(koro.toString());
-          //rankTwoChange(weird_mol3,koro);
-          //weird_mol3.changeAtomList(ato1);
-          //System.out.println("ato1 " + ato1.toString());
-          //System.out.println(weird_mol3.toString());
-          //rankOneChange(weird_mol3,poro);
-          //System.out.println(weird_mol3.toString());
-          //System.out.println(poro.toString());
-          //rankTwoChange(weird_mol3,poro);
-          FindMostSimilar fd = new FindMostSimilar(mols,base_mols);
-          System.out.println("First extraction");
-          System.out.println(fd.extractNextClosest().toString());
-          System.out.println("Second extraction");
-          System.out.println(fd.extractNextClosest());
+
     }
 }
