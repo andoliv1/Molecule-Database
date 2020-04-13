@@ -1,9 +1,0 @@
-second carbon dioxide
-3
-O
-C
-O
-0 1
-0 1
-1 2
-1 2

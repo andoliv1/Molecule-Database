@@ -1,0 +1,70 @@
+1) Pre-conditions
+
+Required Hardware: 
+
+	Lab Machines from PHO 307: Lenovo ThinkCentre M91p workstations; 8GB ram; 3GHz 		Quad core processors; 24″ 1920×1200 Dell monitors; Centos 7
+
+
+2) Supporting Files
+
+Imported Libraries:
+
+	Java.io
+	h2-1.4.200
+	Javalin
+	Java.net
+	Java.nio
+	dbunit
+	Junit
+	Json
+
+Unit Test descriptions:
+
+	-DatabaseExport.java: Test with checking connection to database and add table
+
+	-GraphisomorphismUnit.java: Test with strong or weak isomorphism with molecules: 	salt, water, carbon dioxide...
+
+	-FindMostSimilarUnitTest.java: Test with findmostsimilar function in arraylist of 	carbon dioxide, water, weirdmol1...
+
+	-smallsystemtestes.java: Test inserting 2 isomorphic molecules into the database
+													Searches weak/strong isomorphism for one of those molecules.
+													
+	-sqlunit.java: Test sql operations loading datasets and checking edges, atoms, 		molecules … rows 
+
+	-externalParserUnit.java: Test the various external data parser functions (eg. grabbing molecule name, bond information, number of atoms...
+
+3) Instruction Steps 
+
+I. Open the group9 project in Intelli-J
+      	a. Set Up the Project Structure:
+            	i. Java Language Level 8 
+         	ii. SDK - 1.8
+		iii. Set the output folder to the folder named out in the project root.
+	b. Import maven projects 
+II. In order to run the web UI you need to do the following steps:
+	a. Set Up an application (webApp.java):
+		i. To run the webUI, the user has to have an internet connection because 		
+			some APIs are restful commands. The webUI has its own standalone main in 		
+			the intellij project called webApp. 
+			After running the main, the url provided is http://localhost:7777/. 
+			The user can search for isomorphic compounds by name if it exists in the H2DB database, search for isomorphic	compounds by file, and add compounds to the H2DB database by files.
+			
+	b. In order to run the command line interface simply run any of the commands:	
+
+		./md initdb (If you haven’t initialized the database than make sure to run 		this command first)
+
+		./md --insertPubChem
+
+		./md --insertTenMillion
+
+		./md --findMolecule <name of the file that contains your molecule>
+
+		./md --addMolecule <name of the file that contains your molecule>
+
+		./md --findMostSimilar <name of the file that contains your molecule>
+
+		./md help (to get more information of what commands to run)
+
+
+
+

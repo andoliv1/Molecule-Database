@@ -80,7 +80,7 @@ public class H2DB {
                  molecule = new MoleculeDB(mid, name, numAtoms);
             }
             else{
-                System.out.println("ereras");
+                System.out.println("Found nothing");
                 // Found nothing
                 return null;
             }

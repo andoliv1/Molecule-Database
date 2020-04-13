@@ -34,25 +34,31 @@ public class externalDatabaseParser {
 
         // Grab the molecule name. Only IUAPC field has the correct name so we search for it
         public static String getMoleculeName(JSONObject json, int moleculeCounter){
-                JSONArray arr = json.getJSONArray("PC_Compounds");
-                JSONObject obj = arr.getJSONObject(moleculeCounter);
-                arr = obj.getJSONArray("props");
-                String molecularName = "";
-                for(int index=0; index<arr.length(); index++){
-                        obj = arr.getJSONObject(index);
-                        if(obj.has("urn")) {
-                                JSONObject urn = obj.getJSONObject("urn");
-                                if (urn.has("label")) {
-                                        Object o = urn.get("label");
-                                        if(o.equals("IUPAC Name")) {
-                                                JSONObject value = obj.getJSONObject("value");
-                                                molecularName = value.get("sval").toString();
-                                                break;
+                try {
+                        JSONArray arr = json.getJSONArray("PC_Compounds");
+                        JSONObject obj = arr.getJSONObject(moleculeCounter);
+                        arr = obj.getJSONArray("props");
+                        String molecularName = "";
+                        for (int index = 0; index < arr.length(); index++) {
+                                obj = arr.getJSONObject(index);
+                                if (obj.has("urn")) {
+                                        JSONObject urn = obj.getJSONObject("urn");
+                                        if (urn.has("label")) {
+                                                Object o = urn.get("label");
+                                                if (o.equals("IUPAC Name")) {
+                                                        JSONObject value = obj.getJSONObject("value");
+                                                        molecularName = value.get("sval").toString();
+                                                        break;
+                                                }
                                         }
                                 }
                         }
+                        return molecularName;
                 }
-                return molecularName;
+                catch(NullPointerException e)
+                {
+                        return "";
+                }
         }
 
         // Grab atomic elements and get the length of the array for # of vertices
