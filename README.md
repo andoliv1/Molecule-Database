@@ -38,6 +38,8 @@ In this project, we will be exploring ways to efficiently store and access molec
 
 ## List of Features
 
+   ![](images/terminal.png)
+
 - Implemented:
     
     - Develop a web page and corresponding server-side executable for accessing the database
@@ -73,13 +75,18 @@ Carletti, V., Foggia, P., Saggese, A., & Vento, M. (2018). Challenging the Time 
 
 - Timmy Hoang:  A working SQL database that stores a molecule onto three tables where table one holds the molecule id, molecule name. Table two contains the molecule atom/vertex list. Table three contains the molecules adjacency list. Created the H2DB class that will be used to query and insert into the database. Designed a MoleculeAbstract, MoleculeText, MoleculeS classes that will be used depending on where the molecule will be parsed from. Also wrote Unit Tests for the database, and a small scale systems test. Integrated the database, search functions, and command line interface.
 
+
 - Edwin Sun: Bash script that creates an executable file that adds a custom terminal command for adding and searching molecules. It needs to be saved in /usr/bin and be given appropriate permissions so that anybody using the terminal can execute the command. It error checks the parameters, options and filename if they exist. For each individual command, it runs a jar package for the search and add functions. 
 
     Also, I have created and designed the webUI with html (adds static page), css (adds style), and javascript (adds interactability). It accepts inputs by molecule name and file name. Molecule name is accepted into a search bar, and file can be dropped into the drag-and-drop area that will read the file into the database. Searching the molecules in the database is done locally via Javalin (implemented by Danny to work with the database). Once search is done, results are displayed in the draw area and results section. 
+    
+       ![](images/webui.png)
 
 - Esteban Hernandez (inactive): Android app for user interface (not implemented).
 
+
 - Andreas Francisco: Implemented an initial algorithm to determine whether molecules were “weakly” isomorphic. After the initial pre-filter step of “weak” isomorphism implemented a more rigorous search that verifies the isomorphism by creating all possible bijections between vertices of molecule 1 to vertices of molecule 2. The rigorous search has several steps and was described in the code and later on this report. Created simple unit tests and harder unit tests where “weak” isomorphism might hold between two molecules while isomorphism doesn’t. Created a metric for finding similar molecules. Implemented the metric to work with the database and find the most similar molecule in the database provided a given molecule which has the same number of atoms as the similar ones (for now). Implemented a small unit test for the find similar algorithm. Added some additional methods to MoleculeAbstract the child classes in order to provide more functionality for the isomorphism and find similar algorithms.
+
 
 - Danny Trinh Extracting Compounds from the Internet: Completed extraction of a large number of compounds from pubChem. Creating Lewis dot structures is an approach to determining the molecular bond of atoms in compounds. Because of this, chemspider makes it difficult to determine the bond information without the Lewis dot structures. PubChem provides bond information through a JSON format for each compound. The databaseParser class grabs the JSON 2D representations of compounds, extracts the molecule name, atomic vertices mapping to periodicTable.csv, extraction of bond connections, and outputs the multigraph formatted file into a directory for SQL data processing. JSON in Java jar used.
 
