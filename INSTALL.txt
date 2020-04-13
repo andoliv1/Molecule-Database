@@ -41,17 +41,11 @@ I. Open the group9 project in Intelli-J
          	ii. SDK - 1.8
 		iii. Set the output folder to the folder named out in the project root.
 	b. Import maven projects 
-II. In order to run the web UI you need to do the following steps:
-	a. Set Up an application (webApp.java):
-		i. To run the webUI, the user has to have an internet connection because 		
-			some APIs are restful commands. The webUI has its own standalone main in 		
-			the intellij project called webApp. 
-			After running the main, the url provided is http://localhost:7777/. 
-			The user can search for isomorphic compounds by name if it exists in the H2DB database, search for isomorphic	compounds by file, and add compounds to the H2DB database by files.
-			
-	b. In order to run the command line interface simply run any of the commands:	
 
-		./md initdb (If you haven’t initialized the database than make sure to run 		this command first)
+II.
+	a. In order to run the command line interface simply run any of the commands:	
+
+		./md initdb (If you haven’t initialized the database than make sure to run this command first)
 
 		./md --insertPubChem
 
@@ -66,5 +60,26 @@ II. In order to run the web UI you need to do the following steps:
 		./md help (to get more information of what commands to run)
 
 
+		Here are some sample commands to get you started.
+		./md --initdb
+		./md --addMolecule carbon_dioxide.txt
+		./md --addMolecule carbon_dioxide2.txt
+		./md --findMolecule carbon_dioxide.txt
 
+		The above commands will initialize the database, 
+		insert two different versions of carbon dioxide,
+		then search the database for an isomorphic graph
+		corresponding to the structure listed in carbon_dioxide.txt
 
+	b. --insertPubchem and --insertTenMillion run sql scripts to populate your database.
+
+III. In order to run the web UI you need to do the following steps:
+	a. Set Up an application (webApp.java):
+		i. run the CLI commands to initialize the database if you haven't done so already.
+    ii. Run ./md --insertPubChem OR ./md --insertTenMillion to populate your database.
+		iii. To run the webUI, the user has to have an internet connection because 		
+			some APIs are restful commands. The webUI has its own standalone main in 		
+			the intellij project called webApp. 
+			After running the main, the url provided is http://localhost:7777/. 
+			The user can search for isomorphic compounds by name if it exists in the H2DB database, search for isomorphic	compounds by file, and add compounds to the H2DB database by files.
+			
