@@ -32,7 +32,7 @@ Unit Test descriptions:
 													
 	-sqlunit.java: Test sql operations loading datasets and checking edges, atoms, 		molecules … rows 
 
-	-externalParserUnit.java: Test the various external data parser functions (eg. grabbing molecule name, bond information, number of atoms...
+	-externalParserUnit.java: Test the various external data parser functions (eg. grabbing molecule name, bond information, number of atoms...)
 
 3) Instruction Steps 
 
