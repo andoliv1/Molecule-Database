@@ -5,16 +5,10 @@ package main.java;
 Instructions: the code is well commented and by running main you should see the tests we have created to check our
 isomorphism algorithm.
  */
-import com.sun.tools.doclets.internal.toolkit.taglets.LiteralTaglet;
 import javafx.util.Pair;
-import org.omg.DynamicAny.DynSequence;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class searchDumb{
-    private static Object NullPointerException;
-
     /**
      * Method used to compare two Pairs. A pair consists of the a 3 char string and an integer denoting the number of
      * connections made from an origin atom to the atom inside the Pair.
