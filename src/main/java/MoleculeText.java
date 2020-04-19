@@ -19,12 +19,20 @@ public class MoleculeText extends MoleculeAbstract {
     public MoleculeText(int[][] matrix, ArrayList<String> vertices){
         this.adjacencyMatrix = matrix;
         this.atoms = vertices;
+        this.numVertices = vertices.size();
     }
 
     public MoleculeText(MoleculeAbstract mol){
-        this.adjacencyMatrix = mol.adjacencyMatrix;
-        this.atoms = mol.atoms;
+        this.numVertices = mol.numVertices;
+        this.adjacencyMatrix = new int[numVertices][numVertices];
+        for(int i = 0; i <numVertices; i++)
+            for(int j = 0; j <numVertices; j++)
+                this.adjacencyMatrix[i][j] = mol.getAdjacencyMatrix()[i][j];
+        this.atoms = new ArrayList<>();
+        for(String atom: mol.atoms)
+            this.atoms.add(atom);
     }
+
 
     public void parseFile(String filename) {
         try {
@@ -109,8 +117,14 @@ public class MoleculeText extends MoleculeAbstract {
         return true;
     }
 
+    public int hashCode(){
+        return this.adjacencyMatrix.hashCode();
+    }
+
     public static void main(String[] args) {
 //        main.java.MoleculeText m = new main.java.MoleculeText("butane.txt");
 
     }
+
+
 }

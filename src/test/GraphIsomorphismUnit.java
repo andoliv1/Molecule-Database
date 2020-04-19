@@ -171,10 +171,10 @@ public class GraphIsomorphismUnit {
             System.out.println("The are not even weakly isomorphic");
         }
 
-        /**
-         * The following is an example by David Epstein on graph isomorphism and how two graphs with the same degree sequence
-         * may not be isomorphic.
-         */
+//        /**
+//         * The following is an example by David Epstein on graph isomorphism and how two graphs with the same degree sequence
+//         * may not be isomorphic.
+//         */
         ArrayList<String> Na_Cl_atoms = new ArrayList<String>();
         Na_Cl_atoms.add("Na");
         Na_Cl_atoms.add("Cl");
@@ -233,7 +233,7 @@ public class GraphIsomorphismUnit {
         System.out.println(Na_Cl2.toString());
         System.out.println("Are the two different molecules weakly isomorphic?"); // weakly isomorphic means I can match a vertex to another vertex in the respective molecules this is not
         //a mathematical definition just something to illustrate how we will test isomorphism of different molecules.
-        weakIsomorphic = isIsomorphicWithNumbers(Na_Cl,Na_Cl2);
+         weakIsomorphic = isIsomorphicWithNumbers(Na_Cl,Na_Cl2);
         assert(weakIsomorphic);
         if(weakIsomorphic == true){
             System.out.println("Yes");
@@ -254,5 +254,10 @@ public class GraphIsomorphismUnit {
         MoleculeText m2 = new MoleculeText("carbon_dioxide2.txt");
         assert(isIsomorphicWithNumbers(m1,m2));
         assert(verify_rigorous_isomorphism(m1,m2));
+
+        MoleculeText but = new MoleculeText("butane.txt");
+        MoleculeText but2 = new MoleculeText("isobutane.txt");
+        assert(!isIsomorphicWithNumbers(but,but2));
+        assert(!verify_rigorous_isomorphism(but,but2));
     }
 }

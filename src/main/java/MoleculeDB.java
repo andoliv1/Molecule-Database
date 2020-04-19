@@ -74,9 +74,13 @@ public class MoleculeDB extends MoleculeAbstract {
         return representation.toString();
     }
 
-    public boolean changeAtomList(ArrayList<String> newList){
+    public boolean changeAtomList(ArrayList<String> newList) {
         this.atoms = newList;
         return true;
     }
+    public int hashCode(){
+        return this.adjacencyMatrix.hashCode();
+    }
+
 
 }
