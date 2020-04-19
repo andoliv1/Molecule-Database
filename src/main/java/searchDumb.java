@@ -9,6 +9,8 @@ import javafx.util.Pair;
 import java.util.*;
 
 public class searchDumb{
+    private static Object NullPointerException;
+
     /**
      * Method used to compare two Pairs. A pair consists of the a 3 char string and an integer denoting the number of
      * connections made from an origin atom to the atom inside the Pair.
@@ -327,6 +329,7 @@ public class searchDumb{
                     sortAtomListNumbers(atom_connec2);
 //                    System.out.println(counter);
 //                    System.out.println(ato1.get(counter));
+//                    System.out.println(dup);
 //                    System.out.println(atom_connec.toString());
 //                    System.out.println(atom_connec2.toString());
 
@@ -676,6 +679,11 @@ public class searchDumb{
                 boolean found = true;
                 for(String str2 : base.getValue()){
                     if(!list.contains(str2)){
+                        found = false;
+                    }
+                }
+                for(String str2 : list){
+                    if(!base.getValue().contains(str2)){
                         found = false;
                     }
                 }
