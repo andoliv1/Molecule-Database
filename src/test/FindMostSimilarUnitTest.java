@@ -10,9 +10,9 @@ import java.util.ArrayList;
 public class FindMostSimilarUnitTest {
     @Test
     public void FM(){
-        MoleculeText carbon_dioxide = new MoleculeText("carbon_dioxide.txt");
-        MoleculeText water = new MoleculeText("water.txt");
-        MoleculeText weird_mol1 = new MoleculeText("weirdmol1.txt");
+        MoleculeText carbon_dioxide = new MoleculeText("molecules/carbon_dioxide.txt");
+        MoleculeText water = new MoleculeText("molecules/water.txt");
+        MoleculeText weird_mol1 = new MoleculeText("molecules/weirdmol1.txt");
         ArrayList<MoleculeText> base_mols = new ArrayList<>();
         base_mols.add(carbon_dioxide);
         base_mols.add(water);

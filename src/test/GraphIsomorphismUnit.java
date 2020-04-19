@@ -250,21 +250,21 @@ public class GraphIsomorphismUnit {
         else{
             System.out.println("The are not even weakly isomorphic");
         }
-        MoleculeText m1 = new MoleculeText("carbon_dioxide.txt");
-        MoleculeText m2 = new MoleculeText("carbon_dioxide2.txt");
+        MoleculeText m1 = new MoleculeText("molecules/carbon_dioxide.txt");
+        MoleculeText m2 = new MoleculeText("molecules/carbon_dioxide2.txt");
         assert(isIsomorphicWithNumbers(m1,m2));
         assert(verify_rigorous_isomorphism(m1,m2));
 
-        MoleculeText but = new MoleculeText("butane.txt");
-        MoleculeText but2 = new MoleculeText("isobutane.txt");
+        MoleculeText but = new MoleculeText("molecules/butane.txt");
+        MoleculeText but2 = new MoleculeText("molecules/isobutane.txt");
         assert(!isIsomorphicWithNumbers(but,but2));
         assert(!verify_rigorous_isomorphism(but,but2));
     }
 
     @Test
     public void largeMoleculeTest(){
-        MoleculeText fakeMol1 = new MoleculeText("fake_mol1.txt");
-        MoleculeText fakeMol2 = new MoleculeText("fake_mol2.txt");
+        MoleculeText fakeMol1 = new MoleculeText("molecules/fake_mol1.txt");
+        MoleculeText fakeMol2 = new MoleculeText("molecules/fake_mol2.txt");
         assert(isIsomorphicWithNumbers(fakeMol1,fakeMol2));
         assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2));
 
