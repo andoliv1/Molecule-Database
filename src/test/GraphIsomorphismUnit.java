@@ -262,9 +262,17 @@ public class GraphIsomorphismUnit {
     }
 
     @Test
-    public void largeMoleculeTest(){
+    public void largeMoleculeTest20Atoms(){
         MoleculeText fakeMol1 = new MoleculeText("molecules/fake_mol1.txt");
         MoleculeText fakeMol2 = new MoleculeText("molecules/fake_mol2.txt");
+        assert(isIsomorphicWithNumbers(fakeMol1,fakeMol2));
+        assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2));
+    }
+
+    @Test
+    public void largeMoleculeTest13Atoms(){
+        MoleculeText fakeMol1 = new MoleculeText("molecules/fake_mol1_13atom.txt");
+        MoleculeText fakeMol2 = new MoleculeText("molecules/fake_mol2_13atom.txt");
         assert(isIsomorphicWithNumbers(fakeMol1,fakeMol2));
         assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2));
 
