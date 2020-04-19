@@ -42,14 +42,22 @@ I. Open the group9 project in Intelli-J
          	ii. SDK - 1.8
 		iii. Set the output folder to the folder named out in the project root.
 	b. Import maven projects 
+	
 
 II.
 	Warning - Lab computers seem to default to Java 1.7. You will need to change that to Java 1.8.
+
+	It is required to initialize the database before doing anything. 
+	The H2DB library is contained in lib/h2/.
+	The database will be created and populated with some molecules with the following terminal command:
+	./md --initdb.
+	
+
 	a. In order to run the command line interface simply run any of the commands:	
 
-		./md initdb (If you haven’t initialized the database than make sure to run this command first)
+		./md --initdb (If you haven’t initialized the database than make sure to run this command first)
 
-		./md --insertPubChem
+		./md --insertPubchem
 
 		./md --insertTenMillion
 
