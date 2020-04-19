@@ -260,4 +260,13 @@ public class GraphIsomorphismUnit {
         assert(!isIsomorphicWithNumbers(but,but2));
         assert(!verify_rigorous_isomorphism(but,but2));
     }
+
+    @Test
+    public void largeMoleculeTest(){
+        MoleculeText fakeMol1 = new MoleculeText("fake_mol1.txt");
+        MoleculeText fakeMol2 = new MoleculeText("fake_mol2.txt");
+        assert(isIsomorphicWithNumbers(fakeMol1,fakeMol2));
+        assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2));
+
+    }
 }
