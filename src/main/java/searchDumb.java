@@ -6,7 +6,12 @@ Instructions: the code is well commented and by running main you should see the 
 isomorphism algorithm.
  */
 import javafx.util.Pair;
+import org.dbunit.util.concurrent.LinkedQueue;
+import sun.awt.image.ImageWatched;
+
+import java.sql.Array;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class searchDumb{
     private static Object NullPointerException;
@@ -92,12 +97,12 @@ public class searchDumb{
     }
 
     public static class Solutions{
-        HashSet<MoleculeAbstract> currentSolutions;
-        public Solutions(HashSet<MoleculeAbstract> solutions){
+        Queue<MoleculeAbstract> currentSolutions;
+        public Solutions(LinkedList<MoleculeAbstract> solutions){
             this.currentSolutions = solutions;
         }
         public Solutions(MoleculeAbstract mol){
-            this.currentSolutions = new HashSet<>();
+            this.currentSolutions = new LinkedList<>();
             this.currentSolutions.add(mol);
         }
         public Solutions(Solutions sol){
@@ -113,41 +118,41 @@ public class searchDumb{
             return str.toString();
         }
         public boolean addSolution(MoleculeAbstract mol){
-            Iterator<MoleculeAbstract> molecule = this.currentSolutions.iterator();
-            int[][] molAdjMatrix = mol.getAdjacencyMatrix();
-            ArrayList<String> molAtomList = mol.getAtomList();
-            boolean found = true;
-            while(molecule.hasNext()){
-                MoleculeText tempMol = new MoleculeText(molecule.next());
-                int[][] tempAdjMatrix = tempMol.getAdjacencyMatrix();
-                ArrayList<String> tempAtom = tempMol.getAtomList();
-                for(int i = 0; i < tempAdjMatrix.length; i++){
-                    for(int j = 0; j < tempAdjMatrix.length; j++){
-                        if(tempAdjMatrix[i][j] != molAdjMatrix[i][j]){
-                           found = false;
-                           break;
-                        }
-                    }
-                }
-                for(int i = 0; i < molAtomList.size(); i++){
-                    if(molAtomList.get(i).equals(tempAtom.get(i)) == false){
-                        found = false;
-                        break;
-                    }
-                }
-                if(found == true){
-                    break;
-                }
-            }
-            if(found == false){
-                currentSolutions.add(mol);
-                return true;
-            }
-            else{
-                return false;
-            }
-
-
+//            Iterator<MoleculeAbstract> molecule = this.currentSolutions.iterator();
+//            int[][] molAdjMatrix = mol.getAdjacencyMatrix();
+//            ArrayList<String> molAtomList = mol.getAtomList();
+//            boolean found = true;
+//            while(molecule.hasNext()){
+//                MoleculeText tempMol = new MoleculeText(molecule.next());
+//                int[][] tempAdjMatrix = tempMol.getAdjacencyMatrix();
+//                ArrayList<String> tempAtom = tempMol.getAtomList();
+//                for(int i = 0; i < tempAdjMatrix.length; i++){
+//                    for(int j = 0; j < tempAdjMatrix.length; j++){
+//                        if(tempAdjMatrix[i][j] != molAdjMatrix[i][j]){
+//                           found = false;
+//                           break;
+//                        }
+//                    }
+//                }
+//                for(int i = 0; i < molAtomList.size(); i++){
+//                    if(molAtomList.get(i).equals(tempAtom.get(i)) == false){
+//                        found = false;
+//                        break;
+//                    }
+//                }
+//                if(found == true){
+//                    break;
+//                }
+//            }
+//            if(found == false){
+//                currentSolutions.add(mol);
+//                return true;
+//            }
+//            else{
+//                return false;
+//            }
+            currentSolutions.add(mol);
+            return true;
         }
         public boolean removeSolution(MoleculeAbstract mol){
             if(this.currentSolutions.contains(mol)){
@@ -172,7 +177,7 @@ public class searchDumb{
      * the numbers that need to be permuted and the int[] indices hold where the permuted numbers will be appended to the atom.
      * The concept is better explained in the function verify_rigorous isomorphism
      */
-    public static boolean generate(int n, int[] a, MoleculeAbstract molecule1, MoleculeAbstract molecule2, int[] indices,Solutions solutions) {
+    public static boolean generate(int n, int[] a, MoleculeAbstract molecule1, MoleculeAbstract molecule2, int[] indices,Queue<MoleculeText> solutions) {
         // Placeholder for swapping values
         int tmp;
         // If a new permutation has been found then change the respective indices of the vertices that needed to have a key assigned to it
@@ -200,7 +205,7 @@ public class searchDumb{
             if(isIso){
                 System.out.println("Solution");
                 System.out.println(newMolecule.toString());
-                solutions.addSolution(newMolecule);
+                solutions.add(newMolecule);
                 //System.out.println(solutions.toString());
                 return true;
             }
@@ -327,11 +332,6 @@ public class searchDumb{
                     //sort both atom connections
                     sortAtomListNumbers(atom_connec);
                     sortAtomListNumbers(atom_connec2);
-//                    System.out.println(counter);
-//                    System.out.println(ato1.get(counter));
-//                    System.out.println(dup);
-//                    System.out.println(atom_connec.toString());
-//                    System.out.println(atom_connec2.toString());
 
                     int w = 0;
                     while (w < atom_connec.size() && w < atom_connec2.size()) {
@@ -386,9 +386,12 @@ public class searchDumb{
         ArrayList<String> atoms_to_make_sure_not_duplicate = new ArrayList<>();
         boolean isomorphic = false;
         //System.out.println("got here");
-        Iterator<MoleculeAbstract> molecule = molecules_valid.currentSolutions.iterator();
-
-        while(molecule.hasNext()){
+        //ListIterator<MoleculeAbstract> molecule = molecules_valid.currentSolutions.listIterator();
+        Queue<MoleculeText> moleculeQueue = new LinkedList<>();
+        moleculeQueue.add(new MoleculeText(molecule1));
+        System.out.println(Arrays.toString(duplicates_to_array));
+        System.out.print("This is the init corresp " + initialCorrespondence.toString());
+        while(!moleculeQueue.isEmpty()){
             /**
              * The following steps go until the "END"
              * The idea of the lines below:
@@ -398,41 +401,54 @@ public class searchDumb{
              * 3) After you create labels you will create an initial correspondence between molecules 1 and 2
              * 4) Change the molecules atoms list so they can include the correspondence
              */
-            MoleculeText tempMolecule = new MoleculeText(molecule.next());
-            for (int i = 0; i < duplicates_to_array.length; i++) {
-                String str = ato1.get(duplicates_to_array[i]);
-                str = str.replaceAll("[0-9]", "");
-//                System.out.println(str + " This is the first str");
-                if (!atoms_to_make_sure_not_duplicate.contains(str)) {
-                    //System.out.println(str);
-                    atoms_to_make_sure_not_duplicate.add(str);
-                    ArrayList<Integer> a_list = new ArrayList<>();
-                    a_list.add(duplicates_to_array[i]);
-                    for (int j = 0; j < duplicates_to_array.length; j++) {
-                        String str2 = ato1.get(duplicates_to_array[j]);
-                        str2 = str2.replaceAll("[0-9]", "");
-                        if (str2.equals(str) && j != i) {
-//                            System.out.println(str2 + " ok");
-                            a_list.add(duplicates_to_array[j]);
-                        }
+            MoleculeText tempMolecule = moleculeQueue.remove();
+            System.out.println("ok");
+            System.out.println("Hello it's a me mario \n" +  tempMolecule.toString());
+            ArrayList<Integer> a_list = new ArrayList<>();
+            int i;
+            for(i = 0; i < duplicates_to_array.length; i++) {
+                boolean found = false;
+                for (String atom : tempMolecule.getAtomList()) {
+                    if (atom.indexOf(Integer.toString(duplicates_to_array[i])) != -1) {
+                        found = true;
+                        break;
                     }
-                    int[] a = new int[a_list.size()];
-                    int counter5 = 0;
-                    for (Integer a_el : a_list) {
-                        a[counter5] = a_el;
-                        counter5++;
-                    }
-                    int[] indices_dis = new int[a.length];
-                    for (int k = 0; k < a.length; k++) {
-                        indices_dis[k] = a[k];
-                    }
+                }
+                if (found == false) {
+                    break;
+                }
+            }
+            //System.out.print(i);
+            a_list.add(duplicates_to_array[i]);
+            String atom = tempMolecule.getAtomList().get(duplicates_to_array[i]);
+            String atom_temp = new String(atom);
+            atom_temp = atom_temp.replaceAll("[0-9]", "");
+            //System.out.println("This is the atom at position " + duplicates_to_array[i] + " "  + atom_temp);
+            for (int j = 0; j < ato1.size(); j++) {
+               // System.out.println(ato1.get(j));
+                String str2 = ato1.get(j);
+                str2 = str2.replaceAll("[0-9]", "");
+                if (str2.equals(atom_temp) && j != duplicates_to_array[i] && duplicates_final.contains(j)) {
+                    a_list.add(j);
+                }
+            }
+            int[] a = new int[a_list.size()];
+            int counter5 = 0;
+            for (Integer a_el : a_list) {
+                a[counter5] = a_el;
+                counter5++;
+            }
+            int[] indices_dis = new int[a.length];
+            for (int k = 0; k < a.length; k++) {
+                indices_dis[k] = a[k];
+            }
+            //System.out.print("temp \n" + tempMolecule.toString());
+            for (int k = 0; k < a.length; k++) {
+                String newLabel = (String) tempMolecule.getAtomList().get(a[k]) + a[k];
+                tempMolecule.changeLabels(newLabel, a[k]);
+                molecule2.changeLabels(newLabel, initialCorrespondence.indexOf(a[k]));
+            }
 
-                    for (int k = 0; k < a.length; k++) {
-                        String newLabel = (String) tempMolecule.getAtomList().get(a[k]) + a[k];
-                        tempMolecule.changeLabels(newLabel, a[k]);
-                        molecule2.changeLabels(newLabel, initialCorrespondence.indexOf(a[k]));
-                    }
-                    //System.out.println(tempMolecule.toString());
                     //System.out.println(molecule2.toString());
                     /**
                      * End
@@ -452,39 +468,31 @@ public class searchDumb{
                      */
 //                    System.out.println("Here is the array a " + Arrays.toString(a));
 //                    System.out.println("Here is the current molecule \n" + tempMolecule.toString());
-                    //System.out.println("This is mol2 \n" + molecule2.toString());
-                    //System.out.println("This is indices dis " + Arrays.toString(indices_dis));
-                    if(!hashSetsEqual(build_dup,all_dup)){
-                        for(int l = 0; l < indices_dis.length; l++){
-                            build_dup.add(indices_dis[l]);
-                        }
+                //System.out.println("This is mol2 \n" + molecule2.toString());
+                //System.out.println("This is indices dis " + Arrays.toString(indices_dis));
+                if(!hashSetsEqual(build_dup,all_dup)){
+                    for(int l = 0; l < indices_dis.length; l++){
+                        build_dup.add(indices_dis[l]);
                     }
-
-//                    System.out.println("This is the original molecule \n" + molecule2.toString());
-//                    System.out.println("This is the permuted molecule \n" + tempMolecule.toString());
-//                    System.out.println("These are the indices " + Arrays.toString(indices_dis));
-                    System.out.println(Arrays.toString(a));
-                    isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, molecules_valid);
-                    System.out.println("here are the current molecules");
-                    System.out.println(molecules_valid.toString());
-                    if(molecules_valid.size() == 1){
-                        return false;
-                    }
-                    //System.out.println("Build dup " + build_dup.toString());
-                    //System.out.println("Total dup " + all_dup.toString());
-                    if(hashSetsEqual(build_dup,all_dup)){
-//                        System.out.println("hello amigo");
-                        if(isomorphic){
-                            return true;
-                        }
+                }
+                int temp = molecules_valid.size();
+                System.out.println("This is the original molecule \n" + molecule2.toString());
+                System.out.println("This is the permuted molecule \n" + tempMolecule.toString());
+                System.out.println("These are the indices " + Arrays.toString(indices_dis));
+                System.out.println(Arrays.toString(a));
+                isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeQueue);
+                System.out.println("here are the current molecules");
+                System.out.println(moleculeQueue.toString());
+                if(hashSetsEqual(build_dup,all_dup)){
+                    if(isomorphic){
+                        return true;
                     }
                 }
             }
-        }
         //generate(duplicates_to_array.length,indices, molecule1, molecule2, duplicates_to_array,break_out);
         molecule1.changeAtomList(immutable_list);
         molecule2.changeAtomList(immutable_list2);
-        return isomorphic;
+        return false;
     }
 
     /**
@@ -518,7 +526,7 @@ public class searchDumb{
             //i at molecule 1.
             //System.out.println("This is the atom we are trying to find a correspondence " + ato1.get(i) + " this is its index" + i);
             while(found == false && j < ato2.size()) {
-                //System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
+               // System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
                 //check if the vertex you are at in molecule2 has already been matched to a vertex in molecule1
                 if (ato1.get(i).equals(ato2.get(j)) && (used.contains(j) == false)) {
                     //check the vertex connections
@@ -538,12 +546,17 @@ public class searchDumb{
                     //sort both atom connections
                     sortAtomListNumbers(atom_connections);
                     sortAtomListNumbers(atom_connections2);
+                    System.out.println(atom_connections.toString());
+                    System.out.println(atom_connections2.toString());
                     int w = 0;
                     while (w < atom_connections.size() && w < atom_connections2.size()) {
                         //if the connections are not the same then we don't want to use the vertex
-                        if (atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) == false &&
+                        if (atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) == false ||
                                 atom_connections.get(w).getValue().equals(atom_connections2.get(w).getValue()) == false) {
                             found = false;
+                            //System.out.println("hello");
+                            w--;
+                            break;
                         }
                         w++;
                     }
@@ -560,10 +573,12 @@ public class searchDumb{
             //if you parsed through all vertices in molecule2 and all vertices don't match the connections of vertex i
             //in molecule 1 than they are not isomorphic.
             if(found == false){
+                System.out.println("Como estas Danny?");
                 return null;
             }
             i++;
         }
+
         //if we checked every vertex and could find a mapping from a vertex i in molecule 1 to a vertex j in molecule 2
         //then the molecules are isomorphic so return true.
         return used;
@@ -624,8 +639,6 @@ public class searchDumb{
                     int w = 0;
                     while (w < atom_connections.size() && w < atom_connections2.size()) {
                         //if the connections are not the same then we don't want to use the vertex
-//                        System.out.println(atom_connections.get(w).getKey());
-//                        System.out.println(atom_connections2.get(w).getKey());
                         if (!atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) ||
                                 !atom_connections.get(w).getValue().equals(atom_connections2.get(w).getValue())) {
                             //System.out.println("entered false loop");

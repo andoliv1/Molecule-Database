@@ -72,8 +72,13 @@ public class Operations {
 
 
     public boolean checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
-        boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
-        if(weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
+        try {
+            boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
+            if (weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
+        }
+        catch (NullPointerException e) {
+            return false;
+        }
         return false;
     }
 
