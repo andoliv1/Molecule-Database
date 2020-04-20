@@ -66,7 +66,6 @@ public class webApp {
 
         app.get("/isomorphismByName", ctx -> {
             if (w.fileName.length() != 0) {
-                System.out.println("ISO check on name " + w.fileName);
                 ArrayList<MoleculeAbstract> iso = Ops.findByName(w.fileName);
                 String isoString = w.fileName + " is isomorphic with the following:<br>";
                 for (MoleculeAbstract mol : iso)

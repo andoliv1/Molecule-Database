@@ -16,9 +16,6 @@ let dropArea = document.getElementById("drop-area")
   dropArea.addEventListener(eventName, unhighlight, false)
 })
 
-// // Handle dropped files
-// dropArea.addEventListener('drop', handleDrop, false)
-
 function preventDefaults (e) {
   e.preventDefault()
   e.stopPropagation()
@@ -31,13 +28,6 @@ function highlight(e) {
 function unhighlight(e) {
   dropArea.classList.remove('active')
 }
-
-// var files = null
-
-// function handleDrop(e) {
-//   var dt = e.dataTransfer
-//   files = dt.files
-// }
 
 function uploadFiles()
 {
@@ -90,12 +80,9 @@ function updateProgress(fileNumber, percent) {
 
 let filesList = null
 let addCount = 0
-let filesUpload = null
 
 function handleFiles(files) {
   this.files = files
-  console.log(files)
-  filesUpload = files
   filesList = [...files]
   initializeProgress(filesList.length)
   addCount = 0
@@ -103,7 +90,6 @@ function handleFiles(files) {
 }
 
 function resetFileList(file, i) {
-    
   $.ajax({
     type: "POST",
     url: "/reset",
@@ -150,6 +136,7 @@ function checkIfExists(search_val) {//This is where you add the
       if(res == "!null") {
         getAndDraw(search_val);
         get_search_by_name();
+        document.getElementById("demo").innerHTML = "Searching for isomorphism";
       }
       else {
         myCanvas = new ChemDoodle.ViewerCanvas('id', 150, 150);
@@ -160,7 +147,7 @@ function checkIfExists(search_val) {//This is where you add the
         myCanvas.styles.atoms_useJMOLColors = true;
         myCanvas.emptyMessage = 'Molecule not found';
         myCanvas.repaint();
-        document.getElementById("demo").innerHTML = "Molecule not found";
+        document.getElementById("demo").innerHTML = "Molecule not found in database. Consider adding first";
       }
     }
   });
@@ -226,7 +213,6 @@ function add() {
       else {
           add()
       }
-      console.log("Count is " + addCount + " "+ filesList.length);
     },
     error: function(err) {
       addCount += 1
@@ -238,7 +224,6 @@ function add() {
       else {
           add()
       }
-      console.log("Count is " + addCount + " "+ filesList.length);
     }
   });
 }
@@ -251,7 +236,7 @@ function search()
 
 function search_add() {
   if (filesList != null) {
-    document.getElementById("demo").innerHTML = "Searching Molecule in Database";
+    document.getElementById("demo").innerHTML = "Searching for isomorphism";
     $.ajax({
       type: "POST",
       url: "/add",
@@ -268,7 +253,6 @@ function search_add() {
           get_search();
           addCount = 0;
         }
-        console.log("Count is " + addCount + " "+ filesList.length);
       },
       error: function(err) {
         addCount += 1
@@ -280,7 +264,6 @@ function search_add() {
           get_search();
           addCount = 0;
         }
-        console.log("Count is " + addCount + " "+ filesList.length);
       }
     });
   }
