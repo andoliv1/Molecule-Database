@@ -74,18 +74,26 @@ public class H2DB {
             resultSet = preparedStatement.executeQuery();
 
             int mid;
+            int vertex1, vertex2;
+            String atom1, atom2;
             if (resultSet.next()){
                 mid = resultSet.getInt("mid");
                 int numAtoms = resultSet.getInt("num_atoms");
                  molecule = new MoleculeDB(mid, name, numAtoms);
+                vertex1 = resultSet.getInt("vertex1");
+                vertex2 = resultSet.getInt("vertex2");
+                atom1 = resultSet.getString("atom1");
+                atom2 = resultSet.getString("atom2");
+                System.out.println(atom1 + "\t" + atom2);
+                molecule.setAtom(vertex1, atom1);
+                molecule.setAtom(vertex2, atom2);
+                molecule.setEdge(vertex1, vertex2);
             }
             else{
                 System.out.println("Found nothing");
                 // Found nothing
                 return null;
             }
-            int vertex1, vertex2;
-            String atom1, atom2;
             while(resultSet.next()){
                 if(resultSet.getInt("mid") != mid) break;
                 vertex1 = resultSet.getInt("vertex1");
