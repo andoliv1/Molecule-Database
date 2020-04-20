@@ -3,23 +3,20 @@
   <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="5" column-count="10" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="596" height="400"/>
+      <xy x="27" y="20" width="589" height="471"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <vspacer id="f4f69">
-        <constraints>
-          <grid row="0" column="0" row-span="2" col-span="10" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <component id="27732" class="javax.swing.JTextPane" binding="textPane1" default-binding="true">
         <constraints>
           <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <editable value="false"/>
+        </properties>
       </component>
       <component id="2bd1a" class="javax.swing.JButton" binding="performActionButton" default-binding="true">
         <constraints>
@@ -62,6 +59,15 @@
           <text value=""/>
         </properties>
       </component>
+      <grid id="47331" binding="graphPanel" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="f"/>
+        <children/>
+      </grid>
     </children>
   </grid>
 </form>
