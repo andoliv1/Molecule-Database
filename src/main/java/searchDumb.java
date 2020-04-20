@@ -87,90 +87,6 @@ public class searchDumb{
         return atomList;
     }
 
-    /**
-    Simple helper function for swaping the elements of an array
-     **/
-    public static void swap(int[] input, int a, int b) {
-        int tmp = input[a];
-        input[a] = input[b];
-        input[b] = tmp;
-    }
-
-    public static class Solutions{
-        Queue<MoleculeAbstract> currentSolutions;
-        public Solutions(LinkedList<MoleculeAbstract> solutions){
-            this.currentSolutions = solutions;
-        }
-        public Solutions(MoleculeAbstract mol){
-            this.currentSolutions = new LinkedList<>();
-            this.currentSolutions.add(mol);
-        }
-        public Solutions(Solutions sol){
-            this.currentSolutions = sol.currentSolutions;
-        }
-        public String toString(){
-            Iterator<MoleculeAbstract> mol = currentSolutions.iterator();
-            StringBuilder str = new StringBuilder();
-            while(mol.hasNext()){
-               str.append(mol.next().toString());
-               str.append("\n");
-            }
-            return str.toString();
-        }
-        public boolean addSolution(MoleculeAbstract mol){
-//            Iterator<MoleculeAbstract> molecule = this.currentSolutions.iterator();
-//            int[][] molAdjMatrix = mol.getAdjacencyMatrix();
-//            ArrayList<String> molAtomList = mol.getAtomList();
-//            boolean found = true;
-//            while(molecule.hasNext()){
-//                MoleculeText tempMol = new MoleculeText(molecule.next());
-//                int[][] tempAdjMatrix = tempMol.getAdjacencyMatrix();
-//                ArrayList<String> tempAtom = tempMol.getAtomList();
-//                for(int i = 0; i < tempAdjMatrix.length; i++){
-//                    for(int j = 0; j < tempAdjMatrix.length; j++){
-//                        if(tempAdjMatrix[i][j] != molAdjMatrix[i][j]){
-//                           found = false;
-//                           break;
-//                        }
-//                    }
-//                }
-//                for(int i = 0; i < molAtomList.size(); i++){
-//                    if(molAtomList.get(i).equals(tempAtom.get(i)) == false){
-//                        found = false;
-//                        break;
-//                    }
-//                }
-//                if(found == true){
-//                    break;
-//                }
-//            }
-//            if(found == false){
-//                currentSolutions.add(mol);
-//                return true;
-//            }
-//            else{
-//                return false;
-//            }
-            currentSolutions.add(mol);
-            return true;
-        }
-        public boolean removeSolution(MoleculeAbstract mol){
-            if(this.currentSolutions.contains(mol)){
-                this.currentSolutions.remove(mol);
-                return true;
-            }
-            else{
-                System.out.println("This solutions has already been removed");
-                return false;
-            }
-        }
-
-        public int size(){
-            return this.currentSolutions.size();
-        }
-
-    }
-
 
     /**
      * Here we want to generate all possible isomorphism mappings and verify that one of them work for the molecule. The int[] a holds
@@ -353,7 +269,7 @@ public class searchDumb{
                     break;
                 }
                 else if (found){
-                   break;
+                    break;
                 }
                 else{
                     counter++;
@@ -382,7 +298,6 @@ public class searchDumb{
         //System.out.println(all_dup.toString());
         HashSet<Integer> build_dup = new HashSet<>();
         //System.out.println("Molecule Inserted at First" + molecule1.toString());
-        Solutions molecules_valid = new Solutions(molecule1);
         ArrayList<String> atoms_to_make_sure_not_duplicate = new ArrayList<>();
         boolean isomorphic = false;
         //System.out.println("got here");
@@ -425,7 +340,7 @@ public class searchDumb{
             atom_temp = atom_temp.replaceAll("[0-9]", "");
             //System.out.println("This is the atom at position " + duplicates_to_array[i] + " "  + atom_temp);
             for (int j = 0; j < ato1.size(); j++) {
-               // System.out.println(ato1.get(j));
+                // System.out.println(ato1.get(j));
                 String str2 = ato1.get(j);
                 str2 = str2.replaceAll("[0-9]", "");
                 if (str2.equals(atom_temp) && j != duplicates_to_array[i] && duplicates_final.contains(j)) {
@@ -449,46 +364,47 @@ public class searchDumb{
                 molecule2.changeLabels(newLabel, initialCorrespondence.indexOf(a[k]));
             }
 
-                    //System.out.println(molecule2.toString());
-                    /**
-                     * End
-                     */
+            //System.out.println(molecule2.toString());
+            /**
+             * End
+             */
 
-                    /**
-                     * Now we want to be able to permutate the atoms that are ambiguous and so we call the function generate
-                     * which takes in the following important parameters:
-                     * a - this is the array of numbers (which corresponds to the indices in molecule 1 that have ambiguous atoms of one kind (and to be clear one kind meaning only one atom))
-                     * tempMolecule - molecule that will be permuted
-                     * molecule2 - a unique unchanged molecule
-                     * indices_dis - This is actually the same as parameter "a"  but this array won't be permuted and will serve to hold the spots that are permuted
-                     * molecules_valid - This is an object of type Solutions, every time the generate function finds a suitable solution given the permuted labels
-                     * it adds the solutions to the hashSet contained in molecules_valid.
-                     * After it adds all valid solutions then the HashSet grows (n/c)! in size worst case.
-                     * Also please refer to line (157) to see where my current problem is.
-                     */
+            /**
+             * Now we want to be able to permutate the atoms that are ambiguous and so we call the function generate
+             * which takes in the following important parameters:
+             * a - this is the array of numbers (which corresponds to the indices in molecule 1 that have ambiguous atoms of one kind (and to be clear one kind meaning only one atom))
+             * tempMolecule - molecule that will be permuted
+             * molecule2 - a unique unchanged molecule
+             * indices_dis - This is actually the same as parameter "a"  but this array won't be permuted and will serve to hold the spots that are permuted
+             * molecules_valid - This is an object of type Solutions, every time the generate function finds a suitable solution given the permuted labels
+             * it adds the solutions to the hashSet contained in molecules_valid.
+             * After it adds all valid solutions then the HashSet grows (n/c)! in size worst case.
+             * Also please refer to line (157) to see where my current problem is.
+             */
 //                    System.out.println("Here is the array a " + Arrays.toString(a));
 //                    System.out.println("Here is the current molecule \n" + tempMolecule.toString());
-                //System.out.println("This is mol2 \n" + molecule2.toString());
-                //System.out.println("This is indices dis " + Arrays.toString(indices_dis));
-                if(!hashSetsEqual(build_dup,all_dup)){
-                    for(int l = 0; l < indices_dis.length; l++){
-                        build_dup.add(indices_dis[l]);
-                    }
-                }
-                int temp = molecules_valid.size();
-                System.out.println("This is the original molecule \n" + molecule2.toString());
-                System.out.println("This is the permuted molecule \n" + tempMolecule.toString());
-                System.out.println("These are the indices " + Arrays.toString(indices_dis));
-                System.out.println(Arrays.toString(a));
-                isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeQueue);
-                System.out.println("here are the current molecules");
-                System.out.println(moleculeQueue.toString());
-                if(hashSetsEqual(build_dup,all_dup)){
-                    if(isomorphic){
-                        return true;
-                    }
+            //System.out.println("This is mol2 \n" + molecule2.toString());
+            //System.out.println("This is indices dis " + Arrays.toString(indices_dis));
+            if(!hashSetsEqual(build_dup,all_dup)){
+                for(int l = 0; l < indices_dis.length; l++){
+                    build_dup.add(indices_dis[l]);
                 }
             }
+            System.out.println("This is the original molecule \n" + molecule2.toString());
+            System.out.println("This is the permuted molecule \n" + tempMolecule.toString());
+            System.out.println("These are the indices " + Arrays.toString(indices_dis));
+            System.out.println(Arrays.toString(a));
+            isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeQueue);
+            System.out.println("here are the current molecules");
+            System.out.println(moleculeQueue.toString());
+            if(hashSetsEqual(build_dup,all_dup)){
+                if(isomorphic){
+                    molecule1.changeAtomList(immutable_list);
+                    molecule2.changeAtomList(immutable_list2);
+                    return true;
+                }
+            }
+        }
         //generate(duplicates_to_array.length,indices, molecule1, molecule2, duplicates_to_array,break_out);
         molecule1.changeAtomList(immutable_list);
         molecule2.changeAtomList(immutable_list2);
@@ -526,7 +442,8 @@ public class searchDumb{
             //i at molecule 1.
             //System.out.println("This is the atom we are trying to find a correspondence " + ato1.get(i) + " this is its index" + i);
             while(found == false && j < ato2.size()) {
-               // System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
+
+                // System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
                 //check if the vertex you are at in molecule2 has already been matched to a vertex in molecule1
                 if (ato1.get(i).equals(ato2.get(j)) && (used.contains(j) == false)) {
                     //check the vertex connections
@@ -655,7 +572,7 @@ public class searchDumb{
                     //in molecule 1 and won't be using to describe other vertices in molecule1 even if they have the same
                     //atom connections
                     if (w == atom_connections.size() && w == atom_connections2.size()) {
-                       // System.out.println("hello");
+                        // System.out.println("hello");
                         used.add(j);
                         found = true;
                     }
@@ -669,7 +586,7 @@ public class searchDumb{
             }
             i++;
         }
-       // System.out.println("found right solution");
+        // System.out.println("found right solution");
         return true;
     }
 

@@ -92,4 +92,5 @@ III. In order to run the web UI you need to do the following steps:
 			the intellij project called webApp. 
 			After running the main, the url provided is http://localhost:7777/. 
 			The user can search for isomorphic compounds by name if it exists in the H2DB database, search for isomorphic	compounds by file, and add compounds to the H2DB database by files.
+                        Current limitations is that the molecules have to be in the molecules folder. The names also have to match the filename. Future updates will try to fix this.
 			
