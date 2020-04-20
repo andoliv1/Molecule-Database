@@ -70,6 +70,31 @@ public class Operations {
         return isomorphicMolecules;
     }
 
+    public ArrayList<MoleculeAbstract> findByName(String moleculeName) throws SQLException {
+        MoleculeAbstract mol = queryMolecule(moleculeName);
+        long startTime = System.nanoTime();
+
+        ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
+        MoleculeText m = new MoleculeText(mol);
+        System.out.println("Searching for Isomorphism for: " + m.getMoleculeName());
+        try {
+            MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
+            for (MoleculeDB molecule : molecules) {
+                if(this.checkIsomorphism(m, molecule)){
+                    System.out.println(m.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
+                    isomorphicMolecules.add(molecule);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println("Operation Time: " + duration / 1000000 + "ms");
+        System.out.println("--------------------------------------------");
+        return isomorphicMolecules;
+    }
 
     public boolean checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
         boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);

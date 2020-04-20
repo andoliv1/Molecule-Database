@@ -79,9 +79,9 @@
                 <!-- FILE INPUT SECTION -->
                 <p> search by file input ... </p>
                     <div id="drop-area">
-                        <form class="my-form">
-                                <input type="file" id="fileElem" multiple accept="*" onchange="handleFiles(this.files)">
-                                <label class="button" for="fileElem">Select some files</label>
+                        <form method="post" action="/upload" enctype="multipart/form-data" id="fileUploadForm">
+                            <input type="file" name="files" id="fileElem" multiple onchange="handleFiles(this.files)">
+                            <label class="button" for="fileElem">Select some files</label>
                         </form>
                         <progress id="progress-bar" max=100 value=0></progress>
                         <div id="gallery" /></div>
@@ -92,7 +92,7 @@
             <div id="wrapper"> 
                 <label class="button2" onclick="search()" > Search Molecule </label>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <label class="button2" onclick="add()"> Add Molecule </label>
+                <label class="button2" onclick="uploadFiles()"> Add Molecule </label>
             </div>
 
             <div id="result">

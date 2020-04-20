@@ -16,8 +16,8 @@ let dropArea = document.getElementById("drop-area")
   dropArea.addEventListener(eventName, unhighlight, false)
 })
 
-// Handle dropped files
-dropArea.addEventListener('drop', handleDrop, false)
+// // Handle dropped files
+// dropArea.addEventListener('drop', handleDrop, false)
 
 function preventDefaults (e) {
   e.preventDefault()
@@ -32,11 +32,41 @@ function unhighlight(e) {
   dropArea.classList.remove('active')
 }
 
-var files = null
+// var files = null
 
-function handleDrop(e) {
-  var dt = e.dataTransfer
-  files = dt.files
+// function handleDrop(e) {
+//   var dt = e.dataTransfer
+//   files = dt.files
+// }
+
+function uploadFiles()
+{
+  var form = $('#fileUploadForm')[0];
+  var data = new FormData(form);
+  $.ajax({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: "/upload",
+    data: data,
+    processData: false,
+    contentType: false,
+    cache: false,
+    timeout: 600000,
+    success: function (data) {
+      console.log("SUCCESS");
+      if (filesList != null)
+        add()
+      else
+        document.getElementById("demo").innerHTML = "Please select files first";
+    },
+    error: function (e) {
+      console.log("ERROR");
+      if (filesList != null)
+        add()
+      else
+        document.getElementById("demo").innerHTML = "Please select files first";
+    }
+  });
 }
 
 let uploadProgress = []
@@ -60,8 +90,12 @@ function updateProgress(fileNumber, percent) {
 
 let filesList = null
 let addCount = 0
+let filesUpload = null
 
 function handleFiles(files) {
+  this.files = files
+  console.log(files)
+  filesUpload = files
   filesList = [...files]
   initializeProgress(filesList.length)
   addCount = 0
@@ -115,7 +149,7 @@ function checkIfExists(search_val) {//This is where you add the
     success: function (res) {
       if(res == "!null") {
         getAndDraw(search_val);
-        get_search();
+        get_search_by_name();
       }
       else {
         myCanvas = new ChemDoodle.ViewerCanvas('id', 150, 150);
@@ -142,6 +176,16 @@ function get_search(){//This is where you add the
   $.ajax({
     type: "GET",
     url: "/isomorphism",
+    success: function(res) {
+      document.getElementById("demo").innerHTML = res;
+    }
+  });
+}
+
+function get_search_by_name(){//This is where you add the
+  $.ajax({
+    type: "GET",
+    url: "/isomorphismByName",
     success: function(res) {
       document.getElementById("demo").innerHTML = res;
     }
@@ -180,7 +224,7 @@ function add() {
         addCount = 0;
       }
       else {
-        add()
+          add()
       }
       console.log("Count is " + addCount + " "+ filesList.length);
     },
@@ -192,7 +236,7 @@ function add() {
         addCount = 0;
       }
       else {
-        add()
+          add()
       }
       console.log("Count is " + addCount + " "+ filesList.length);
     }
@@ -206,38 +250,42 @@ function search()
 }
 
 function search_add() {
-  document.getElementById("demo").innerHTML = "Searching Molecule in Database";
-  $.ajax({
-    type: "POST",
-    url: "/add",
-    contentType: "string",
-    data: filesList[addCount].name,
-    dataType: "string",
-    success: function(response) {
-      addCount += 1
-      updateProgress(addCount-1, 100);
-      if (addCount != filesList.length) {
-        search_add()
+  if (filesList != null) {
+    document.getElementById("demo").innerHTML = "Searching Molecule in Database";
+    $.ajax({
+      type: "POST",
+      url: "/add",
+      contentType: "string",
+      data: filesList[addCount].name,
+      dataType: "string",
+      success: function(response) {
+        addCount += 1
+        updateProgress(addCount-1, 100);
+        if (addCount != filesList.length) {
+          search_add()
+        }
+        else {
+          get_search();
+          addCount = 0;
+        }
+        console.log("Count is " + addCount + " "+ filesList.length);
+      },
+      error: function(err) {
+        addCount += 1
+        updateProgress(addCount-1, 100);
+        if (addCount != filesList.length) {
+          search_add()
+        }
+        else {
+          get_search();
+          addCount = 0;
+        }
+        console.log("Count is " + addCount + " "+ filesList.length);
       }
-      else {
-        get_search();
-        addCount = 0;
-      }
-      console.log("Count is " + addCount + " "+ filesList.length);
-    },
-    error: function(err) {
-      addCount += 1
-      updateProgress(addCount-1, 100);
-      if (addCount != filesList.length) {
-        search_add()
-      }
-      else {
-        get_search();
-        addCount = 0;
-      }
-      console.log("Count is " + addCount + " "+ filesList.length);
-    }
-  });
+    });
+  }
+  else
+    document.getElementById("demo").innerHTML = "Please select files first";
 }
 
 // Periodic table

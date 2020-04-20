@@ -24,6 +24,9 @@ public class MoleculeText extends MoleculeAbstract {
     public MoleculeText(MoleculeAbstract mol){
         this.adjacencyMatrix = mol.adjacencyMatrix;
         this.atoms = mol.atoms;
+        this.numVertices = mol.numVertices;
+        this.adjacencyList = mol.adjacencyList;
+        this.moleculeName = mol.moleculeName;
     }
 
     public void parseFile(String filename) {

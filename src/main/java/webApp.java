@@ -1,4 +1,5 @@
 import io.javalin.Javalin;
+import io.javalin.core.util.FileUtil;
 import main.java.MoleculeAbstract;
 import main.java.Operations;
 import java.util.ArrayList;
@@ -41,11 +42,6 @@ public class webApp {
             ctx.status(201);
         });
 
-        app.post( "/searchByName", ctx -> {
-            w.fileName = ctx.body();
-            ctx.status(201);
-        });
-
         app.get( "/checkIfExists", ctx -> {
             MoleculeAbstract m = Ops.queryMolecule(w.fileName);
             if(m != null)
@@ -66,6 +62,37 @@ public class webApp {
             else{
                 ctx.result("Please add molecule into DB first before searching");
             }
+        });
+
+        app.get("/isomorphismByName", ctx -> {
+            if (w.fileName.length() != 0) {
+                System.out.println("ISO check on name " + w.fileName);
+                ArrayList<MoleculeAbstract> iso = Ops.findByName(w.fileName);
+                String isoString = w.fileName + " is isomorphic with the following:<br>";
+                for (MoleculeAbstract mol : iso)
+                    isoString += mol.moleculeName + "<br>";
+                ctx.result(isoString);
+            }
+            else{
+                ctx.result("Please add molecule into DB first before searching");
+            }
+        });
+
+        app.post( "/searchByName", ctx -> {
+                        w.fileName = ctx.body();
+                        ctx.status(201);
+                    });
+
+        app.post("/upload", ctx -> {
+            try {
+                ctx.uploadedFiles("files").forEach(uploadedFile -> {
+                    FileUtil.streamToFile(uploadedFile.getContent(), "molecules/" + uploadedFile.getFilename());
+                });
+            } catch (NullPointerException n)
+            {
+                ctx.status(400);
+            }
+            ctx.status(201);
         });
     }
 }
