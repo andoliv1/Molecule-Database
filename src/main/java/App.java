@@ -73,6 +73,8 @@ public class App {
                 }
             }
         });
+
+
         performActionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -85,28 +87,44 @@ public class App {
                         Ops.insert(moleculeFile);
                         createGraph(graphPanel1, new MoleculeText(moleculeFile));
                     } else if (findButton.isSelected()) {
-                        ArrayList<MoleculeAbstract> molecules = Ops.find(moleculeFile);
-                        textPane1.setText("");
-                        StyledDocument doc = textPane1.getStyledDocument();
 
-                        if (molecules.size() > 0) {
-                            Graph graph1 = createGraph(graphPanel1, new MoleculeText(moleculeFile));
-                            for (MoleculeAbstract m : molecules) {
+                        // Runs outside of the Swing UI thread
+                        new Thread(new Runnable() {
+                            public void run() {
+                                ArrayList<MoleculeAbstract> molecules = Ops.find(moleculeFile);
+
+                                // Runs inside of the Swing UI thread
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        textPane1.setText("");
+                                        StyledDocument doc = textPane1.getStyledDocument();
+
+                                        if (molecules.size() > 0) {
+                                            Graph graph1 = createGraph(graphPanel1, new MoleculeText(moleculeFile));
+                                            for (MoleculeAbstract m : molecules) {
+                                                try {
+
+                                                    doc.insertString(doc.getLength(), m.moleculeName + "\n", null);
+                                                } catch (BadLocationException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                            Graph graph2 = createGraph(graphPanel2, molecules.get(0));
+                                        } else {
+                                            try {
+                                                doc.insertString(doc.getLength(), "No isomorphic molecules found.\n", null);
+                                            } catch (BadLocationException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                });
                                 try {
-
-                                    doc.insertString(doc.getLength(), m.moleculeName + "\n", null);
-                                } catch (BadLocationException e) {
-                                    e.printStackTrace();
+                                    java.lang.Thread.sleep(100);
                                 }
+                                catch(Exception e) { }
                             }
-                            Graph graph2 = createGraph(graphPanel2, molecules.get(0));
-                        } else{
-                            try {
-                                doc.insertString(doc.getLength(), "No isomorphic molecules found.\n", null);
-                            } catch (BadLocationException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        }).start();
                     }
                 }
 
