@@ -1,0 +1,21 @@
+graph {
+	fill-color: white;
+}
+
+node {
+	size: 30px, 30px;
+	shape: circle;
+    fill-mode: dyn-plain;
+	fill-color:  #9400D3, #4B0082, #0000FF, #00FF00, #FFFF00, #FF7F00, #FF0000;
+
+
+	stroke-mode: plain;
+	text-color: black;
+	text-alignment: center;
+	text-size: 14;
+}
+
+edge{
+    size:12px;
+    fill-color: #a9a9a9;
+}
