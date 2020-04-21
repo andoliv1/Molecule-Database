@@ -36,8 +36,8 @@ public class GraphIsomorphismUnit {
         MoleculeText water2 = new MoleculeText(water_matrix2, water_atom2);
         boolean weakIso = isIsomorphicWithNumbers(water, water2);
         assert (weakIso);
-        boolean strongIso = verify_rigorous_isomorphism(water, water2);
-        assert (strongIso);
+        ArrayList<Integer> strongIso = verify_rigorous_isomorphism(water, water2);
+        assert (strongIso != null);
 
         ArrayList<String> salt_atoms = new ArrayList<String>();
         salt_atoms.add("Na");
@@ -65,8 +65,9 @@ public class GraphIsomorphismUnit {
         if (weakIsomorphic == true) {
             System.out.println("Yes");
             System.out.println("Are they actually isomorphic?");
-            boolean isomorphic = verify_rigorous_isomorphism(salt_mol, salt_mol2);
-            if (isomorphic == true) {
+            ArrayList<Integer> isomorphic = verify_rigorous_isomorphism(salt_mol, salt_mol2);
+            assert(isomorphic == null);
+            if (isomorphic != null) {
                 System.out.println("The two molecules are actually isomorphic and you can find a bijection among them");
             } else {
                 System.out.println("They are not isomorphic");
@@ -122,8 +123,9 @@ public class GraphIsomorphismUnit {
         if (weakIsomorphic == true) {
             System.out.println("Yes");
             System.out.println("Are they actually isomorphic?");
-            boolean isomorphic = verify_rigorous_isomorphism(carbon_dioxide_mol, carbon_dioxide_mol2);
-            if (isomorphic == true) {
+            ArrayList<Integer> isomorphic = verify_rigorous_isomorphism(carbon_dioxide_mol, carbon_dioxide_mol2);
+            assertNull(isomorphic);
+            if (isomorphic != null) {
                 System.out.println("The two molecules are actually isomorphic and you can find a bijection among them");
             } else {
                 System.out.println("They are not isomorphic");
@@ -155,9 +157,9 @@ public class GraphIsomorphismUnit {
         if (weakIsomorphic == true) {
             System.out.println("Yes");
             System.out.println("Are they actually isomorphic?");
-            boolean isomorphic = verify_rigorous_isomorphism(carbon_dioxide_mol, carbon_dioxide_mol3);
-            assert (isomorphic);
-            if (isomorphic == true) {
+            ArrayList<Integer> isomorphic = verify_rigorous_isomorphism(carbon_dioxide_mol, carbon_dioxide_mol3);
+            assert(isomorphic != null);
+            if (isomorphic != null) {
                 System.out.println("The two molecules are actually isomorphic and you can find a bijection among them");
             } else {
                 System.out.println("They are not isomorphic");
@@ -237,9 +239,9 @@ public class GraphIsomorphismUnit {
         if (weakIsomorphic == true) {
             System.out.println("Yes");
             System.out.println("Are they actually isomorphic?");
-            boolean isomorphic = verify_rigorous_isomorphism(Na_Cl, Na_Cl2);
-            assert (!isomorphic);
-            if (isomorphic == true) {
+            ArrayList<Integer> isomorphic = verify_rigorous_isomorphism(Na_Cl, Na_Cl2);
+            assertNull(isomorphic);
+            if (isomorphic != null) {
                 System.out.println("The two molecules are actually isomorphic and you can find a bijection among them");
             } else {
                 System.out.println("They are not isomorphic");
@@ -253,14 +255,19 @@ public class GraphIsomorphismUnit {
         MoleculeText m1 = new MoleculeText("molecules/carbon_dioxide.txt");
         MoleculeText m2 = new MoleculeText("molecules/carbon_dioxide2.txt");
         assert(isIsomorphicWithNumbers(m1,m2));
-        assert(verify_rigorous_isomorphism(m1,m2));
+        assert(verify_rigorous_isomorphism(m1,m2) != null);
     }
     @Test
     public void AddtionalGI_2(){
         MoleculeText but = new MoleculeText("molecules/butane.txt");
         MoleculeText but2 = new MoleculeText("molecules/isobutane.txt");
         assert(!isIsomorphicWithNumbers(but,but2));
-        assertNull(verify_rigorous_isomorphism(but,but2));
+        try{
+            assert(verify_rigorous_isomorphism(but,but2) == null);
+        }
+        catch(NullPointerException e){
+            System.out.println("They weren't weakly isomorphic");
+        }
     }
 
     @Test
@@ -268,7 +275,7 @@ public class GraphIsomorphismUnit {
         MoleculeText fakeMol1 = new MoleculeText("molecules/fake_mol1.txt");
         MoleculeText fakeMol2 = new MoleculeText("molecules/fake_mol2.txt");
         assert(isIsomorphicWithNumbers(fakeMol1,fakeMol2));
-        assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2));
+        assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2) != null);
     }
 
     @Test
@@ -278,6 +285,6 @@ public class GraphIsomorphismUnit {
         System.out.println(fakeMol1.toString());
         System.out.println(fakeMol2.toString());
         assert(isIsomorphicWithNumbers(fakeMol1,fakeMol2));
-        assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2));
+        assert(verify_rigorous_isomorphism(fakeMol1,fakeMol2) != null);
     }
 }

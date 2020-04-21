@@ -6,14 +6,9 @@ Instructions: the code is well commented and by running main you should see the 
 isomorphism algorithm.
  */
 import javafx.util.Pair;
-import sun.awt.image.ImageWatched;
-
-import java.sql.Array;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class searchDumb{
-    private static Object NullPointerException;
 
     /**
      * Method used to compare two Pairs. A pair consists of the a 3 char string and an integer denoting the number of
@@ -92,7 +87,7 @@ public class searchDumb{
      * the numbers that need to be permuted and the int[] indices hold where the permuted numbers will be appended to the atom.
      * The concept is better explained in the function verify_rigorous isomorphism
      */
-    public static boolean generate(int n, int[] a, MoleculeAbstract molecule1, MoleculeAbstract molecule2, int[] indices,Queue<MoleculeText> solutions) {
+    public static boolean generate(int n, int[] a, MoleculeAbstract molecule1, MoleculeAbstract molecule2, int[] indices,Deque<MoleculeText> solutions) {
         // Placeholder for swapping values
         int tmp;
         // If a new permutation has been found then change the respective indices of the vertices that needed to have a key assigned to it
@@ -106,11 +101,8 @@ public class searchDumb{
                 str += a[i];
                 newMolecule.changeLabels(str,indices[i]);
             }
-            //System.out.println(Arrays.toString(a));
             //call the isomorphic function on the new molecules
-            //System.out.println("This is the currently tested molecule \n" + newMolecule.toString());
             isIso = isIsomorphicWithNumbers( newMolecule,  molecule2);
-            //System.out.println(isIso);
             //if the resulting permutation results in an Isomorphism than it means the two molecules are isomorphic
             /**
              * This right here is the part I am having trouble with. Whenever I create a different labeling of a molecule that is
@@ -118,10 +110,7 @@ public class searchDumb{
              * all to be the same molecule which is the new molecule I created. PLEASE HELP LOL.
              */
             if(isIso){
-                System.out.println("Solution");
-                System.out.println(newMolecule.toString());
-                solutions.add(newMolecule);
-                //System.out.println(solutions.toString());
+                solutions.push(newMolecule);
                 return true;
             }
             else{
@@ -184,7 +173,7 @@ public class searchDumb{
      * @param molecule2
      * @returne
      */
-    public static boolean verify_rigorous_isomorphism(MoleculeAbstract molecule1, MoleculeAbstract molecule2){
+    public static ArrayList<Integer> verify_rigorous_isomorphism(MoleculeAbstract molecule1, MoleculeAbstract molecule2){
         int[][] adj1 = molecule1.getAdjacencyMatrix();
         int[][] adj2 = molecule2.getAdjacencyMatrix();
         //get the molecules vertex list
@@ -294,17 +283,12 @@ public class searchDumb{
             indices[i] = duplicates_to_array[i];
             all_dup.add(duplicates_to_array[i]);
         }
-        //System.out.println(all_dup.toString());
         HashSet<Integer> build_dup = new HashSet<>();
-        //System.out.println("Molecule Inserted at First" + molecule1.toString());
         ArrayList<String> atoms_to_make_sure_not_duplicate = new ArrayList<>();
         boolean isomorphic = false;
-        //System.out.println("got here");
         //ListIterator<MoleculeAbstract> molecule = molecules_valid.currentSolutions.listIterator();
-        Queue<MoleculeText> moleculeQueue = new LinkedList<>();
+        Deque<MoleculeText> moleculeQueue = new ArrayDeque<>();
         moleculeQueue.add(new MoleculeText(molecule1));
-        System.out.println(Arrays.toString(duplicates_to_array));
-        System.out.print("This is the init corresp " + initialCorrespondence.toString());
         while(!moleculeQueue.isEmpty()){
             /**
              * The following steps go until the "END"
@@ -315,9 +299,7 @@ public class searchDumb{
              * 3) After you create labels you will create an initial correspondence between molecules 1 and 2
              * 4) Change the molecules atoms list so they can include the correspondence
              */
-            MoleculeText tempMolecule = moleculeQueue.remove();
-            System.out.println("ok");
-            System.out.println("Hello it's a me mario \n" +  tempMolecule.toString());
+            MoleculeText tempMolecule = moleculeQueue.pop();
             ArrayList<Integer> a_list = new ArrayList<>();
             int i;
             for(i = 0; i < duplicates_to_array.length; i++) {
@@ -332,14 +314,11 @@ public class searchDumb{
                     break;
                 }
             }
-            //System.out.print(i);
             a_list.add(duplicates_to_array[i]);
             String atom = tempMolecule.getAtomList().get(duplicates_to_array[i]);
             String atom_temp = new String(atom);
             atom_temp = atom_temp.replaceAll("[0-9]", "");
-            //System.out.println("This is the atom at position " + duplicates_to_array[i] + " "  + atom_temp);
             for (int j = 0; j < ato1.size(); j++) {
-                // System.out.println(ato1.get(j));
                 String str2 = ato1.get(j);
                 str2 = str2.replaceAll("[0-9]", "");
                 if (str2.equals(atom_temp) && j != duplicates_to_array[i] && duplicates_final.contains(j)) {
@@ -356,14 +335,13 @@ public class searchDumb{
             for (int k = 0; k < a.length; k++) {
                 indices_dis[k] = a[k];
             }
-            //System.out.print("temp \n" + tempMolecule.toString());
+
             for (int k = 0; k < a.length; k++) {
                 String newLabel = (String) tempMolecule.getAtomList().get(a[k]) + a[k];
                 tempMolecule.changeLabels(newLabel, a[k]);
                 molecule2.changeLabels(newLabel, initialCorrespondence.indexOf(a[k]));
             }
 
-            //System.out.println(molecule2.toString());
             /**
              * End
              */
@@ -380,34 +358,27 @@ public class searchDumb{
              * After it adds all valid solutions then the HashSet grows (n/c)! in size worst case.
              * Also please refer to line (157) to see where my current problem is.
              */
-//                    System.out.println("Here is the array a " + Arrays.toString(a));
-//                    System.out.println("Here is the current molecule \n" + tempMolecule.toString());
-            //System.out.println("This is mol2 \n" + molecule2.toString());
-            //System.out.println("This is indices dis " + Arrays.toString(indices_dis));
             if(!hashSetsEqual(build_dup,all_dup)){
                 for(int l = 0; l < indices_dis.length; l++){
                     build_dup.add(indices_dis[l]);
                 }
             }
-            System.out.println("This is the original molecule \n" + molecule2.toString());
-            System.out.println("This is the permuted molecule \n" + tempMolecule.toString());
-            System.out.println("These are the indices " + Arrays.toString(indices_dis));
-            System.out.println(Arrays.toString(a));
             isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeQueue);
-            System.out.println("here are the current molecules");
-            System.out.println(moleculeQueue.toString());
             if(hashSetsEqual(build_dup,all_dup)){
                 if(isomorphic){
+                    MoleculeText tempMolecule_prime = new MoleculeText(moleculeQueue.pop());
+                    ArrayList<Integer> final_correspondence = initialCorrespondence(molecule2,tempMolecule_prime);
                     molecule1.changeAtomList(immutable_list);
                     molecule2.changeAtomList(immutable_list2);
-                    return true;
+                    System.out.println("This is the bijection " + final_correspondence.toString());
+                    return final_correspondence;
                 }
             }
         }
         //generate(duplicates_to_array.length,indices, molecule1, molecule2, duplicates_to_array,break_out);
         molecule1.changeAtomList(immutable_list);
         molecule2.changeAtomList(immutable_list2);
-        return false;
+        return null;
     }
 
     /**
@@ -439,10 +410,7 @@ public class searchDumb{
             int j = 0;
             //parse through all vertices of molecule2 to see if their connections matches to the connections in the vertex
             //i at molecule 1.
-            //System.out.println("This is the atom we are trying to find a correspondence " + ato1.get(i) + " this is its index" + i);
             while(found == false && j < ato2.size()) {
-
-                // System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
                 //check if the vertex you are at in molecule2 has already been matched to a vertex in molecule1
                 if (ato1.get(i).equals(ato2.get(j)) && (used.contains(j) == false)) {
                     //check the vertex connections
@@ -462,15 +430,12 @@ public class searchDumb{
                     //sort both atom connections
                     sortAtomListNumbers(atom_connections);
                     sortAtomListNumbers(atom_connections2);
-                    System.out.println(atom_connections.toString());
-                    System.out.println(atom_connections2.toString());
                     int w = 0;
                     while (w < atom_connections.size() && w < atom_connections2.size()) {
                         //if the connections are not the same then we don't want to use the vertex
                         if (atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) == false ||
                                 atom_connections.get(w).getValue().equals(atom_connections2.get(w).getValue()) == false) {
                             found = false;
-                            //System.out.println("hello");
                             w--;
                             break;
                         }
@@ -489,7 +454,6 @@ public class searchDumb{
             //if you parsed through all vertices in molecule2 and all vertices don't match the connections of vertex i
             //in molecule 1 than they are not isomorphic.
             if(found == false){
-                System.out.println("Como estas Danny?");
                 return null;
             }
             i++;
@@ -524,14 +488,12 @@ public class searchDumb{
         //stop if a vertex from molecule1 wasn't matched to any of the vertices from molecule 2 or if all the vertices
         //were matched.
         while(found == true && i < ato1.size()) {
-            //System.out.println("This is the atom we are trying to find a correspondence " + ato1.get(i) + " this is its index" + i);
             found = false;
             int j = 0;
             //parse through all vertices of molecule2 to see if their connections matches to the connections in the vertex
             //i at molecule 1.
             while(found == false && j < ato2.size()) {
                 //check if the vertex you are at in molecule2 has already been matched to a vertex in molecule1
-                //System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
                 if (ato1.get(i).equals(ato2.get(j)) && (used.contains(j) == false)) {
                     //check the vertex connections
                     int[] connections = adj1[i];
@@ -550,14 +512,11 @@ public class searchDumb{
                     //sort both atom connections
                     sortAtomListNumbers(atom_connections);
                     sortAtomListNumbers(atom_connections2);
-//                    System.out.println("Here are the atom1 connections " + atom_connections.toString());
-//                    System.out.println("Here are the atom2 connections " + atom_connections2.toString());
                     int w = 0;
                     while (w < atom_connections.size() && w < atom_connections2.size()) {
                         //if the connections are not the same then we don't want to use the vertex
                         if (!atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) ||
                                 !atom_connections.get(w).getValue().equals(atom_connections2.get(w).getValue())) {
-                            //System.out.println("entered false loop");
                             found = false;
                             break;
                         }
@@ -565,13 +524,10 @@ public class searchDumb{
                             w++;
                         }
                     }
-                    //System.out.println("w " + w);
-                    //System.out.println("atom connections size " + atom_connections.size());
                     //if the connections are the same store the fact that you are using this vertex to match to vertex i
                     //in molecule 1 and won't be using to describe other vertices in molecule1 even if they have the same
                     //atom connections
                     if (w == atom_connections.size() && w == atom_connections2.size()) {
-                        // System.out.println("hello");
                         used.add(j);
                         found = true;
                     }
@@ -585,7 +541,6 @@ public class searchDumb{
             }
             i++;
         }
-        // System.out.println("found right solution");
         return true;
     }
 

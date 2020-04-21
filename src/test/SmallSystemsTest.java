@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SmallSystemsTest {
@@ -50,8 +51,8 @@ public class SmallSystemsTest {
         boolean weakIso = searchDumb.isIsomorphicWithNumbers(m1, m2);
         assert (weakIso);
 
-        boolean strongIso = searchDumb.verify_rigorous_isomorphism(m1, m2);
-        assert(strongIso);
+        ArrayList<Integer> strongIso = searchDumb.verify_rigorous_isomorphism(m1, m2);
+        assert(strongIso != null);
     }
 
     /**
