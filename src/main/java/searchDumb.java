@@ -287,9 +287,9 @@ public class searchDumb{
         ArrayList<String> atoms_to_make_sure_not_duplicate = new ArrayList<>();
         boolean isomorphic = false;
         //ListIterator<MoleculeAbstract> molecule = molecules_valid.currentSolutions.listIterator();
-        Deque<MoleculeText> moleculeQueue = new ArrayDeque<>();
-        moleculeQueue.add(new MoleculeText(molecule1));
-        while(!moleculeQueue.isEmpty()){
+        Deque<MoleculeText> moleculeStack = new ArrayDeque<>();
+        moleculeStack.add(new MoleculeText(molecule1));
+        while(!moleculeStack.isEmpty()){
             /**
              * The following steps go until the "END"
              * The idea of the lines below:
@@ -299,7 +299,7 @@ public class searchDumb{
              * 3) After you create labels you will create an initial correspondence between molecules 1 and 2
              * 4) Change the molecules atoms list so they can include the correspondence
              */
-            MoleculeText tempMolecule = moleculeQueue.pop();
+            MoleculeText tempMolecule = moleculeStack.pop();
             ArrayList<Integer> a_list = new ArrayList<>();
             int i;
             for(i = 0; i < duplicates_to_array.length; i++) {
@@ -363,10 +363,10 @@ public class searchDumb{
                     build_dup.add(indices_dis[l]);
                 }
             }
-            isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeQueue);
+            isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeStack);
             if(hashSetsEqual(build_dup,all_dup)){
                 if(isomorphic){
-                    MoleculeText tempMolecule_prime = new MoleculeText(moleculeQueue.pop());
+                    MoleculeText tempMolecule_prime = new MoleculeText(moleculeStack.pop());
                     ArrayList<Integer> final_correspondence = initialCorrespondence(molecule2,tempMolecule_prime);
                     molecule1.changeAtomList(immutable_list);
                     molecule2.changeAtomList(immutable_list2);
