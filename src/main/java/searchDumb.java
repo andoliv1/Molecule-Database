@@ -6,7 +6,6 @@ Instructions: the code is well commented and by running main you should see the 
 isomorphism algorithm.
  */
 import javafx.util.Pair;
-import org.dbunit.util.concurrent.LinkedQueue;
 import sun.awt.image.ImageWatched;
 
 import java.sql.Array;
