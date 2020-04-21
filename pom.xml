@@ -70,7 +70,13 @@
             <artifactId>json</artifactId>
             <version>20190722</version>
         </dependency>
-<!--        <dependency>-->
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
+        </dependency>
+        <!--        <dependency>-->
 <!--            <groupId>org.slf4j</groupId>-->
 <!--            <artifactId>slf4j-simple</artifactId>-->
 <!--            <version>1.7.9</version>-->
