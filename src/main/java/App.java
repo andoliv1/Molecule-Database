@@ -38,6 +38,7 @@ public class App {
     Operations Ops;
     JFrame frame;
     private String moleculeFile;
+    private ArrayList<String> moleculeFiles;
     Viewer viewer1;
     Viewer viewer2;
     public App() {
@@ -45,6 +46,7 @@ public class App {
         // Initialize Operations class
         Ops = new Operations();
         moleculeFile = null;
+        moleculeFiles = new ArrayList<>();
 
         //Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
@@ -55,19 +57,22 @@ public class App {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser fc = new JFileChooser();
+                fc.setCurrentDirectory(new File("."));
+                fc.setMultiSelectionEnabled(true);
                 int returnval = fc.showOpenDialog(mainPanel);
                 if (returnval == JFileChooser.APPROVE_OPTION) {
-                    File file = fc.getSelectedFile();
+                    File[] files = fc.getSelectedFiles();
                     //This is where a real application would open the file.
-                    log.info("Opening: " + file.getName() + ".");
-                    try {
-                        moleculeFile = file.getCanonicalPath();
-                    } catch (IOException e) {
-                        moleculeFile = null;
+                    for(File file : files) {
+                        try {
+                            moleculeFiles.add(file.getCanonicalPath());
+                            label.setText("Selected: " + file.getCanonicalPath() + "\n");
+                        } catch (IOException e) {
+                            log.warning(e.getMessage());
+                        }
                     }
-                    label.setText("Selected: " + moleculeFile);
-
-
+                    if(moleculeFiles.size() > 0)
+                        moleculeFile = moleculeFiles.get(0);
                 } else {
                     log.info("Open command cancelled by user.");
                 }
@@ -78,13 +83,15 @@ public class App {
         performActionButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (moleculeFile == null) {
+                if (moleculeFiles.size() == 0) {
                     JFrame f = new JFrame();
-                    JOptionPane.showMessageDialog(f, "No text file selected.");
+                    JOptionPane.showMessageDialog(f, "No text file selected."   );
                 } else {
                     if (addButton.isSelected()) {
-                        label.setText("Added Molecule from: " + moleculeFile);
-                        Ops.insert(moleculeFile);
+                        for(String s : moleculeFiles) {
+                            label.setText("Added Molecule from: " + s);
+                            Ops.insert(s);
+                        }
                         createGraph(graphPanel1, new MoleculeText(moleculeFile));
                     } else if (findButton.isSelected()) {
 
