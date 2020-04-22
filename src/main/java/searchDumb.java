@@ -6,6 +6,8 @@ Instructions: the code is well commented and by running main you should see the 
 isomorphism algorithm.
  */
 import javafx.util.Pair;
+import scala.Int;
+
 import java.util.*;
 
 public class searchDumb{
@@ -184,28 +186,44 @@ public class searchDumb{
         //want to find duplicate atoms that have the same connections
         HashSet<String> atoms = new HashSet<>();
         //stores the atom and its connections
-        HashSet<Pair<String,ArrayList<String>>> atom_connections = new HashSet<>();
+        HashSet<Pair<String,ArrayList<Pair<String,Integer>>>> atom_connections = new HashSet<>();
         List<Integer> duplicates = new ArrayList<>();
         for(int i = 0; i < ato1.size(); i++){
             String atom = ato1.get(i);
-            ArrayList<String> build_adj = new ArrayList<>();
+            ArrayList<Pair<String,Integer>> build_adj = new ArrayList<>();
             int[] this_adj = adj1[i];
             for(int k = 0; k < this_adj.length; k++){
                 if(this_adj[k] != 0){
-                    build_adj.add(ato1.get(k));
+                    boolean found = false;
+                    for(int w = 0; w < build_adj.size(); w++){
+                        if(build_adj.get(w).getKey().equals(ato1.get(k))){
+                            int temp = build_adj.get(w).getValue();
+                            build_adj.set(w,new Pair(ato1.get(k),temp+this_adj[k]));
+                            found = true;
+                        }
+                    }
+                    if(found == false){
+                        build_adj.add(new Pair(ato1.get(k),this_adj[k]));
+                    }
+
                 }
             }
-//            System.out.println(build_adj.toString());
+
             //if the atom is an ambiguous atom then we want to copy its index and put it in the duplicates list
             if(atoms.contains(atom)){
-                //System.out.println("This is dup " + atom);
-                if(checkStringAndArrayList(build_adj,atom,atom_connections)){
+                //System.out.println("This is dup " + atom + " " + i);
+                //System.out.println(build_adj.toString());
+                if(checkStringAndArrayList(build_adj,atom,atom_connections,i)){
                     duplicates.add(i);
+                }
+                else {
+                    atom_connections.add(new Pair(atom,build_adj));
                 }
             }
             //else we want to store it for finding future atoms that might be ambiguous to this atom
             else{
-                //System.out.println("This is not dup " + atom);
+                //System.out.println("This is not dup " + atom + " " + i);
+                //System.out.println(build_adj.toString());
                 atoms.add(atom);
                 atom_connections.add(new Pair(atom,build_adj));
             }
@@ -213,9 +231,10 @@ public class searchDumb{
         //From (Beginning) to (End) this just finds the initial atom that generated the ambiguous atoms in the duplicate array. So for each distinct atom in the duplicates array there is a prior
         //atom that resulted in the atom being ambiguous this block is just finding that atom.
         //(Beginning)
-//        System.out.println(duplicates.toString() + " this is duplicates");
+        System.out.println(duplicates.toString() + " this is duplicates");
         HashSet<Integer> duplicates_final  = new HashSet<>();
         for(Integer dup : duplicates){
+            System.out.println(dup);
             int[] connec = adj1[dup];
             int counter= 0;
             boolean found = false;
@@ -240,7 +259,7 @@ public class searchDumb{
                     int w = 0;
                     while (w < atom_connec.size() && w < atom_connec2.size()) {
                         //if the connections are not the same then we don't want to use the vertex
-                        if (!atom_connec.get(w).getKey().equals(atom_connec2.get(w).getKey()) &&
+                        if (!atom_connec.get(w).getKey().equals(atom_connec2.get(w).getKey()) ||
                                 !atom_connec.get(w).getValue().equals(atom_connec2.get(w).getValue())) {
                             break;
                         }
@@ -289,6 +308,7 @@ public class searchDumb{
         //ListIterator<MoleculeAbstract> molecule = molecules_valid.currentSolutions.listIterator();
         Deque<MoleculeText> moleculeStack = new ArrayDeque<>();
         moleculeStack.add(new MoleculeText(molecule1));
+        System.out.println(duplicates_final.toString());
         while(!moleculeStack.isEmpty()){
             /**
              * The following steps go until the "END"
@@ -364,9 +384,12 @@ public class searchDumb{
                 }
             }
             isomorphic = generate(a.length, a, tempMolecule, molecule2, indices_dis, moleculeStack);
+            System.out.println(moleculeStack.toString());
             if(hashSetsEqual(build_dup,all_dup)){
                 if(isomorphic){
                     MoleculeText tempMolecule_prime = new MoleculeText(moleculeStack.pop());
+                    System.out.println(tempMolecule_prime.toString());
+                    System.out.println(molecule2.toString());
                     ArrayList<Integer> final_correspondence = initialCorrespondence(molecule2,tempMolecule_prime);
                     molecule1.changeAtomList(immutable_list);
                     molecule2.changeAtomList(immutable_list2);
@@ -555,23 +578,36 @@ public class searchDumb{
         return true;
     }
 
-    public static boolean checkStringAndArrayList(ArrayList<String> list, String str, HashSet<Pair<String,ArrayList<String>>> connections){
-        Iterator<Pair<String,ArrayList<String>>> iter = connections.iterator();
-        while (iter.hasNext()){
-            Pair<String,ArrayList<String>> base = iter.next();
+    public static boolean checkStringAndArrayList(ArrayList<Pair<String,Integer>> list, String str, HashSet<Pair<String,ArrayList<Pair<String,Integer>>>> connections,int pos){
+        Iterator<Pair<String,ArrayList<Pair<String,Integer>>>> iter = connections.iterator();
+        boolean found = false;
+        ArrayList<Pair<String, Integer>> atom_connections = list;
+        sortAtomListNumbers(atom_connections);
+        while (iter.hasNext() && found == false){
+            Pair<String,ArrayList<Pair<String,Integer>>> base = iter.next();
             if(base.getKey().equals(str)){
-                boolean found = true;
-                for(String str2 : base.getValue()){
-                    if(!list.contains(str2)){
+                //check the vertex connections
+                ArrayList<Pair<String,Integer>> atom_connections2 = base.getValue();
+                sortAtomListNumbers(atom_connections2);
+                //System.out.println(atom_connections.toString());
+                //System.out.println(atom_connections2.toString());
+                int w = 0;
+                while (w < atom_connections.size() && w < atom_connections2.size()) {
+                    //if the connections are not the same then we don't want to use the vertex
+                    if (!atom_connections.get(w).getKey().equals(atom_connections2.get(w).getKey()) ||
+                            !atom_connections.get(w).getValue().equals(atom_connections2.get(w).getValue())) {
                         found = false;
+                        break;
+                    } else {
+                        w++;
                     }
                 }
-                for(String str2 : list){
-                    if(!base.getValue().contains(str2)){
-                        found = false;
-                    }
-                }
-                if(found == true){
+
+                //if the connections are the same store the fact that you are using this vertex to match to vertex i
+                //in molecule 1 and won't be using to describe other vertices in molecule1 even if they have the same
+                //atom connections
+                if (w == atom_connections.size() && w == atom_connections2.size()) {
+                    System.out.println(str);
                     return true;
                 }
             }
