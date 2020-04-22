@@ -13,6 +13,7 @@ public class MoleculeText extends MoleculeAbstract {
     //constructor with only file name
     public MoleculeText(String filename){
         parseFile(filename);
+        this.bijection = new ArrayList<>();
     }
 
     //constructor that takes adjacency matrix and atoms
@@ -20,6 +21,7 @@ public class MoleculeText extends MoleculeAbstract {
         this.adjacencyMatrix = matrix;
         this.atoms = vertices;
         this.numVertices = vertices.size();
+        this.bijection = new ArrayList<>();
     }
 
     public MoleculeText(MoleculeAbstract mol){
@@ -31,6 +33,7 @@ public class MoleculeText extends MoleculeAbstract {
         this.atoms = new ArrayList<>();
         for(String atom: mol.atoms)
             this.atoms.add(atom);
+        this.bijection = new ArrayList<>();
     }
 
 

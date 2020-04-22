@@ -2,6 +2,7 @@ package main.java;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.View;
 import java.awt.*;
@@ -12,6 +13,7 @@ import java.io.IOException;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.MultiGraph;
@@ -29,16 +31,19 @@ public class App {
     private JButton fileButton;
     private JRadioButton findButton;
     private JRadioButton addButton;
-    private JLabel label;
+    private JTextArea textarea;
     private JButton performActionButton;
-    private JTextPane textPane1;
+    private JTextArea textPane1;
     private JPanel graphPanel1;
     private JPanel graphPanel2;
     private JButton button1;
+    private JScrollPane textareaScrollPane;
+    private JScrollPane isomorphicScrollPane;
     Operations Ops;
     JFrame frame;
     private String moleculeFile;
     private ArrayList<String> moleculeFiles;
+    private ArrayList<Integer> bijection;
     Viewer viewer1;
     Viewer viewer2;
     public App() {
@@ -56,6 +61,8 @@ public class App {
         fileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                moleculeFile = null;
+                moleculeFiles = new ArrayList<>();
                 JFileChooser fc = new JFileChooser();
                 fc.setCurrentDirectory(new File("."));
                 fc.setMultiSelectionEnabled(true);
@@ -66,7 +73,7 @@ public class App {
                     for(File file : files) {
                         try {
                             moleculeFiles.add(file.getCanonicalPath());
-                            label.setText("Selected: " + file.getCanonicalPath() + "\n");
+                            textarea.setText("Selected: " + file.getCanonicalPath() + "\n");
                         } catch (IOException e) {
                             log.warning(e.getMessage());
                         }
@@ -88,10 +95,16 @@ public class App {
                     JOptionPane.showMessageDialog(f, "No text file selected."   );
                 } else {
                     if (addButton.isSelected()) {
+                        textarea.setText("");
+                        StringBuilder l = new StringBuilder("Added Molecules : ");
                         for(String s : moleculeFiles) {
-                            label.setText("Added Molecule from: " + s);
+                            File ff = new File(s);
+                            l.append(ff.getName())
+                                .append(",\n");
                             Ops.insert(s);
+                            log.info("Added Molecule from: " + s);
                         }
+                        textarea.setText(l.toString().substring(0, l.length()-2));
                         createGraph(graphPanel1, new MoleculeText(moleculeFile));
                     } else if (findButton.isSelected()) {
 
@@ -104,7 +117,7 @@ public class App {
                                 SwingUtilities.invokeLater(new Runnable() {
                                     public void run() {
                                         textPane1.setText("");
-                                        StyledDocument doc = textPane1.getStyledDocument();
+                                        Document doc = textPane1.getDocument();
 
                                         if (molecules.size() > 0) {
                                             Graph graph1 = createGraph(graphPanel1, new MoleculeText(moleculeFile));
@@ -116,6 +129,7 @@ public class App {
                                                     e.printStackTrace();
                                                 }
                                             }
+                                            bijection = molecules.get(0).bijection;
                                             Graph graph2 = createGraph(graphPanel2, molecules.get(0));
                                         } else {
                                             try {
@@ -130,6 +144,10 @@ public class App {
                                     java.lang.Thread.sleep(100);
                                 }
                                 catch(Exception e) { }
+                                finally {
+                                    moleculeFile = null;
+                                    moleculeFiles = new ArrayList<>();
+                                }
                             }
                         }).start();
                     }
@@ -157,11 +175,18 @@ public class App {
         URL url = App.class.getResource("/public/GUIStyle.css");
         g.addAttribute("ui.stylesheet","url("+url.getFile()+")");
 
-
-        for (int vertex = 0; vertex < m.numVertices; vertex++){
-            System.out.println(m.getAtomList().get(vertex));
-            String atom = m.getAtomList().get(vertex);
+        int vertex;
+        for (int i = 0; i < m.numVertices; i++){
+//            System.out.println(m.getAtomList().get(i));
+            if(m.bijection.size() != 0){
+                vertex = m.bijection.get(i);
+            } else{
+                vertex = i;
+            }
+            String atom = m.getAtomList().get(i);
+            System.out.println(m.moleculeName + "   " + atom+vertex);
             Node n = g.addNode( ""+vertex); //C0, H1, ...
+
             n.addAttribute("ui.label", atom);
             n.addAttribute("ui.color", (float) vertex / m.numVertices);
             if(vertex < m.numVertices/2) {
@@ -177,10 +202,10 @@ public class App {
             for (int vertex2 = 0; vertex2 < m.getNumVertices(); vertex2++) {
                 // no repeats
                 if (vertex1 < vertex2) {
-                    for (int i = 0; i < m.getAdjacencyMatrix()[vertex1][vertex2]; i++)
+                    for (int ii = 0; ii < m.getAdjacencyMatrix()[vertex1][vertex2]; ii++)
                         g.addEdge(m.atoms.get(vertex1) + vertex1
                                         + m.atoms.get(vertex2) + vertex2
-                                        + "_" + i,
+                                        + "_" + ii,
                                 vertex1,
                                 vertex2
                                 );
@@ -194,13 +219,13 @@ public class App {
     public void drawGraph(JPanel graphPanel, Graph graph) {
         Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         if (graphPanel == graphPanel2) {
-            viewer.disableAutoLayout();
             viewer2 = viewer;
         }
         else {
-            viewer.enableAutoLayout();
             viewer1 = viewer;
         }
+        viewer.enableAutoLayout();
+
         ViewPanel viewPanel = viewer.addDefaultView(false);
         viewPanel.setLayout(new BorderLayout());
         viewPanel.setPreferredSize(new Dimension(800,600));
@@ -218,13 +243,14 @@ public class App {
 
         if(graph1.getNodeCount() != graph2.getNodeCount())
             return false;
+        System.out.println(Arrays.deepToString(new ArrayList[]{bijection}));
 
         for(int i = 0; i < graph1.getNodeCount(); i++) {
             Node n1 = graph1.getNode(""+i);
             Node n2 = graph2.getNode(""+i);
 
             double[] xy = nodePosition(n1);
-            System.out.println(xy[0] + "   " + xy[1]);
+            System.out.println(n1.toString() + "   " + n2.toString());
             n2.addAttribute("xy", xy[0], xy[1]);
         }
 //        drawGraph(graphPanel2, graph2);

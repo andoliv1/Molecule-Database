@@ -16,6 +16,7 @@ public class MoleculeDB extends MoleculeAbstract {
             this.adjacencyList[ii] = new LinkedList<>();
         }
         this.adjacencyMatrix = new int[numVertices][numVertices];
+        this.bijection = new ArrayList<>();
     }
 
     public String getMoleculeName(){
