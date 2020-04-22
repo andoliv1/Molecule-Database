@@ -82,7 +82,7 @@ public class Operations {
         try {
             MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
             for (MoleculeDB molecule : molecules) {
-                if(this.checkIsomorphism(m, molecule)){
+                if(this.checkIsomorphism(m, molecule) != null){
                     System.out.println(m.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
                     isomorphicMolecules.add(molecule);
                 }
