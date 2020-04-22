@@ -56,7 +56,7 @@
           <text value="Reorganize"/>
         </properties>
       </component>
-      <component id="1e60b" class="javax.swing.JLabel">
+      <component id="1e60b" class="javax.swing.JLabel" binding="mlabel2">
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -64,7 +64,7 @@
           <text value="Molecule 2"/>
         </properties>
       </component>
-      <component id="85822" class="javax.swing.JLabel">
+      <component id="85822" class="javax.swing.JLabel" binding="mlabel1">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
