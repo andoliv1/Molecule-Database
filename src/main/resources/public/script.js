@@ -16,9 +16,6 @@ let dropArea = document.getElementById("drop-area")
   dropArea.addEventListener(eventName, unhighlight, false)
 })
 
-// Handle dropped files
-dropArea.addEventListener('drop', handleDrop, false)
-
 function preventDefaults (e) {
   e.preventDefault()
   e.stopPropagation()
@@ -32,11 +29,34 @@ function unhighlight(e) {
   dropArea.classList.remove('active')
 }
 
-var files = null
-
-function handleDrop(e) {
-  var dt = e.dataTransfer
-  files = dt.files
+function uploadFiles()
+{
+  var form = $('#fileUploadForm')[0];
+  var data = new FormData(form);
+  $.ajax({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: "/upload",
+    data: data,
+    processData: false,
+    contentType: false,
+    cache: false,
+    timeout: 600000,
+    success: function (data) {
+      console.log("SUCCESS");
+      if (filesList != null)
+        add()
+      else
+        document.getElementById("demo").innerHTML = "Please select files first";
+    },
+    error: function (e) {
+      console.log("ERROR");
+      if (filesList != null)
+        add()
+      else
+        document.getElementById("demo").innerHTML = "Please select files first";
+    }
+  });
 }
 
 let uploadProgress = []
@@ -62,6 +82,7 @@ let filesList = null
 let addCount = 0
 
 function handleFiles(files) {
+  this.files = files
   filesList = [...files]
   initializeProgress(filesList.length)
   addCount = 0
@@ -69,7 +90,6 @@ function handleFiles(files) {
 }
 
 function resetFileList(file, i) {
-    
   $.ajax({
     type: "POST",
     url: "/reset",
@@ -115,7 +135,8 @@ function checkIfExists(search_val) {//This is where you add the
     success: function (res) {
       if(res == "!null") {
         getAndDraw(search_val);
-        get_search();
+        get_search_by_name();
+        document.getElementById("demo").innerHTML = "Searching for isomorphism";
       }
       else {
         myCanvas = new ChemDoodle.ViewerCanvas('id', 150, 150);
@@ -126,7 +147,7 @@ function checkIfExists(search_val) {//This is where you add the
         myCanvas.styles.atoms_useJMOLColors = true;
         myCanvas.emptyMessage = 'Molecule not found';
         myCanvas.repaint();
-        document.getElementById("demo").innerHTML = "Molecule not found";
+        document.getElementById("demo").innerHTML = "Molecule not found in database. Consider adding first";
       }
     }
   });
@@ -142,6 +163,16 @@ function get_search(){//This is where you add the
   $.ajax({
     type: "GET",
     url: "/isomorphism",
+    success: function(res) {
+      document.getElementById("demo").innerHTML = res;
+    }
+  });
+}
+
+function get_search_by_name(){//This is where you add the
+  $.ajax({
+    type: "GET",
+    url: "/isomorphismByName",
     success: function(res) {
       document.getElementById("demo").innerHTML = res;
     }
@@ -180,9 +211,8 @@ function add() {
         addCount = 0;
       }
       else {
-        add()
+          add()
       }
-      console.log("Count is " + addCount + " "+ filesList.length);
     },
     error: function(err) {
       addCount += 1
@@ -192,9 +222,8 @@ function add() {
         addCount = 0;
       }
       else {
-        add()
+          add()
       }
-      console.log("Count is " + addCount + " "+ filesList.length);
     }
   });
 }
@@ -206,38 +235,40 @@ function search()
 }
 
 function search_add() {
-  document.getElementById("demo").innerHTML = "Searching Molecule in Database";
-  $.ajax({
-    type: "POST",
-    url: "/add",
-    contentType: "string",
-    data: filesList[addCount].name,
-    dataType: "string",
-    success: function(response) {
-      addCount += 1
-      updateProgress(addCount-1, 100);
-      if (addCount != filesList.length) {
-        search_add()
+  if (filesList != null) {
+    document.getElementById("demo").innerHTML = "Searching for isomorphism";
+    $.ajax({
+      type: "POST",
+      url: "/add",
+      contentType: "string",
+      data: filesList[addCount].name,
+      dataType: "string",
+      success: function(response) {
+        addCount += 1
+        updateProgress(addCount-1, 100);
+        if (addCount != filesList.length) {
+          search_add()
+        }
+        else {
+          get_search();
+          addCount = 0;
+        }
+      },
+      error: function(err) {
+        addCount += 1
+        updateProgress(addCount-1, 100);
+        if (addCount != filesList.length) {
+          search_add()
+        }
+        else {
+          get_search();
+          addCount = 0;
+        }
       }
-      else {
-        get_search();
-        addCount = 0;
-      }
-      console.log("Count is " + addCount + " "+ filesList.length);
-    },
-    error: function(err) {
-      addCount += 1
-      updateProgress(addCount-1, 100);
-      if (addCount != filesList.length) {
-        search_add()
-      }
-      else {
-        get_search();
-        addCount = 0;
-      }
-      console.log("Count is " + addCount + " "+ filesList.length);
-    }
-  });
+    });
+  }
+  else
+    document.getElementById("demo").innerHTML = "Please select files first";
 }
 
 // Periodic table
