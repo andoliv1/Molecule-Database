@@ -29,31 +29,24 @@ public class H2DB {
      *
      */
     public Connection connect() throws SQLException {
-        // Load the MySQL driver
-//        try {
-//            Class.forName(Driver);
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        // Setup the connection with  DB
-//        Properties myProp = new Properties();
-//        myProp.put("user", User);
-//        myProp.put("password", Pw);
-//        myProp.put("allowMultiQueries", "true");
-//        try {
-//            connect = DriverManager
-//                    .getConnection(URL,
-//                                    myProp);
-//            connect.setAutoCommit(false);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return connect;
         return cp.getConnection();
-
     }
 
+
+    public int getNumberOfMolecules(){
+        try{
+            connect = connect();
+            String sql = "SELECT COUNT(*) FROM MOLECULES";
+            preparedStatement = connect
+                    .prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next())
+                return resultSet.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     public MoleculeDB queryMoleculeByName(String name) throws SQLException {
         MoleculeDB molecule;

@@ -84,4 +84,25 @@ public class MoleculeDB extends MoleculeAbstract {
     }
 
 
+    @Override
+    public boolean equals(Object m1){
+        MoleculeAbstract m = (MoleculeAbstract) m1;
+        // Check Molecule name are same
+        if (moleculeName.equals(m.getMoleculeName())){
+
+            //Check molecule adj matrix and atoms list are exactly the same.
+            for(int i = 0; i < numVertices; i++){
+                for(int j = 0; j < numVertices; j++){
+                    if(adjacencyMatrix[i][j] != m.getAdjacencyMatrix()[i][j])
+                        return false;
+                }
+
+                if(!atoms.get(i).equals(m.atoms.get(i)))
+                    return false;
+            }
+        }
+        else
+            return false;
+        return true;
+    }
 }

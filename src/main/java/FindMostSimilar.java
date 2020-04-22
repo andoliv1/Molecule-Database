@@ -37,17 +37,17 @@ import static java.lang.Math.abs;
  * At the end of the code we use a min Heap data structure to store the mostSimilar molecules so that if the user wants
  * he can keep pulling the molecules until he finds one he likes (whatever that may be anyways).
  */
-public class FindMostSimilar {
-    private ArrayList<MoleculeText> comparisonMolecules;
-    private ArrayList<MoleculeText> baseMolecules;
-    public PriorityQueue<Pair<Integer,MoleculeText>> minHeap;
+public class FindMostSimilar <T extends MoleculeAbstract>{
+    private ArrayList<T> comparisonMolecules;
+    private ArrayList<T> baseMolecules;
+    public PriorityQueue<Pair<Integer,T>> minHeap;
 
-    public FindMostSimilar(ArrayList<MoleculeText> comparisonMolecules, ArrayList<MoleculeText> baseMolecules) {
+    public FindMostSimilar(ArrayList<T> comparisonMolecules, ArrayList<T> baseMolecules) {
         this.comparisonMolecules = comparisonMolecules;
         this.baseMolecules = baseMolecules;
-        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,MoleculeText>>() {
+        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,T>>() {
             @Override
-            public int compare(Pair<Integer,MoleculeText> o1,Pair<Integer,MoleculeText> o2) {
+            public int compare(Pair<Integer,T> o1,Pair<Integer,T> o2) {
                 return Integer.compare(o1.getKey(),o2.getKey());
             }});
 
@@ -74,12 +74,12 @@ public class FindMostSimilar {
             minHeap.offer(new Pair(distance,compMol));
         }
     }
-    public FindMostSimilar(ArrayList<MoleculeText> comparisonMolecules, MoleculeText base) {
+    public FindMostSimilar(ArrayList<T> comparisonMolecules, T base) {
         this.comparisonMolecules = comparisonMolecules;
         this.baseMolecules = baseMolecules;
-        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,MoleculeText>>() {
+        this.minHeap = new PriorityQueue<>(new Comparator<Pair<Integer,T>>() {
             @Override
-            public int compare(Pair<Integer,MoleculeText> o1,Pair<Integer,MoleculeText> o2) {
+            public int compare(Pair<Integer,T> o1,Pair<Integer,T> o2) {
                 return Integer.compare(o1.getKey(),o2.getKey());
             }});
 
@@ -98,11 +98,11 @@ public class FindMostSimilar {
         }
     }
 
-    public PriorityQueue<Pair<Integer,MoleculeText>> getMinHeap(){
+    public PriorityQueue<Pair<Integer,T>> getMinHeap(){
         return this.minHeap;
     }
 
-    public Pair<Integer,MoleculeText> extractNextClosest(){
+    public Pair<Integer,T> extractNextClosest(){
         return this.minHeap.poll();
     }
 

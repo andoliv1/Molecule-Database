@@ -39,6 +39,12 @@ public class App {
     private JButton button1;
     private JScrollPane textareaScrollPane;
     private JScrollPane isomorphicScrollPane;
+    private JLabel mlabel1;
+    private JLabel mlabel2;
+    private JRadioButton mostSimilarRadioButton;
+    private JLabel numMolsLabel;
+    private JLabel insertTime;
+    private JLabel findTime;
     Operations Ops;
     JFrame frame;
     private String moleculeFile;
@@ -57,7 +63,9 @@ public class App {
         ButtonGroup group = new ButtonGroup();
         group.add(addButton);
         group.add(findButton);
+        group.add(mostSimilarRadioButton);
 
+        numMolsLabel.setText(""+Ops.getNumMolecules());
         fileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -97,6 +105,7 @@ public class App {
                     if (addButton.isSelected()) {
                         textarea.setText("");
                         StringBuilder l = new StringBuilder("Added Molecules : ");
+                        long startTime = System.nanoTime();
                         for(String s : moleculeFiles) {
                             File ff = new File(s);
                             l.append(ff.getName())
@@ -104,23 +113,32 @@ public class App {
                             Ops.insert(s);
                             log.info("Added Molecule from: " + s);
                         }
+                        long endTime = System.nanoTime();
+                        long duration = (endTime - startTime)/1000000;
+                        insertTime.setText(duration+"ms");
                         textarea.setText(l.toString().substring(0, l.length()-2));
                         createGraph(graphPanel1, new MoleculeText(moleculeFile));
+                        numMolsLabel.setText(""+Ops.getNumMolecules());
                     } else if (findButton.isSelected()) {
 
                         // Runs outside of the Swing UI thread
                         new Thread(new Runnable() {
                             public void run() {
+                                long startTime = System.nanoTime();
                                 ArrayList<MoleculeAbstract> molecules = Ops.find(moleculeFile);
-
+                                long endTime = System.nanoTime();
+                                long duration = (endTime - startTime)/1000000;
+                                findTime.setText(duration+"ms");
+                                MoleculeText interestedMolecule = new MoleculeText(moleculeFile);
                                 // Runs inside of the Swing UI thread
                                 SwingUtilities.invokeLater(new Runnable() {
                                     public void run() {
                                         textPane1.setText("");
                                         Document doc = textPane1.getDocument();
-
+                                        MoleculeAbstract isoMolecule = null;
+                                        boolean found_iso = false;
                                         if (molecules.size() > 0) {
-                                            Graph graph1 = createGraph(graphPanel1, new MoleculeText(moleculeFile));
+                                            Graph graph1 = createGraph(graphPanel1, interestedMolecule);
                                             for (MoleculeAbstract m : molecules) {
                                                 try {
 
@@ -128,9 +146,17 @@ public class App {
                                                 } catch (BadLocationException e) {
                                                     e.printStackTrace();
                                                 }
+
+                                                // If the isomorphic
+                                                if(molecules.size() == 1 || (!interestedMolecule.equals(m) && !found_iso)) {
+                                                    isoMolecule = m;
+                                                    found_iso = true;
+                                                }
                                             }
-                                            bijection = molecules.get(0).bijection;
-                                            Graph graph2 = createGraph(graphPanel2, molecules.get(0));
+                                            if (isoMolecule == null)
+                                                isoMolecule = molecules.get(0);
+                                            bijection = isoMolecule.bijection;
+                                            Graph graph2 = createGraph(graphPanel2, isoMolecule);
                                         } else {
                                             try {
                                                 doc.insertString(doc.getLength(), "No isomorphic molecules found.\n", null);
@@ -141,10 +167,43 @@ public class App {
                                     }
                                 });
                                 try {
-                                    java.lang.Thread.sleep(100);
+                                    Thread.sleep(100);
                                 }
                                 catch(Exception e) { }
                                 finally {
+                                    moleculeFile = null;
+                                    moleculeFiles = new ArrayList<>();
+                                }
+                            }
+                        }).start();
+                    }
+                    else{
+                        // Runs outside of the Swing UI thread
+                        new Thread(new Runnable() {
+                            public void run() {
+                                long startTime = System.nanoTime();
+                                MoleculeAbstract mostSimilarMolecule = Ops.mostSimilar(moleculeFile);
+                                long endTime = System.nanoTime();
+                                long duration = (endTime - startTime)/1000000;
+                                findTime.setText(duration+"ms");
+                                MoleculeText interestedMolecule = new MoleculeText(moleculeFile);
+                                // Runs inside of the Swing UI thread
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    public void run() {
+                                        textPane1.setText("");
+                                        Document doc = textPane1.getDocument();
+                                        Graph graph1 = createGraph(graphPanel1, interestedMolecule);
+                                        if(mostSimilarMolecule != null) {
+//                                    bijection = mostSimilarMolecule.bijection;
+                                            Graph graph2 = createGraph(graphPanel2, mostSimilarMolecule);
+                                        }
+
+                                    }
+                                });
+                                try {
+                                    Thread.sleep(100);
+                                } catch (Exception e) {
+                                } finally {
                                     moleculeFile = null;
                                     moleculeFiles = new ArrayList<>();
                                 }
@@ -170,7 +229,10 @@ public class App {
     }
 
     public Graph createGraph(JPanel graphPanel, MoleculeAbstract m){
-
+        if(graphPanel == graphPanel1){
+            mlabel1.setText(m.getMoleculeName());
+        } else
+            mlabel2.setText(m.getMoleculeName());
         Graph g = new MultiGraph(m.getMoleculeName(), false, true);
         URL url = App.class.getResource("/public/GUIStyle.css");
         g.addAttribute("ui.stylesheet","url("+url.getFile()+")");
@@ -184,7 +246,7 @@ public class App {
                 vertex = i;
             }
             String atom = m.getAtomList().get(i);
-            System.out.println(m.moleculeName + "   " + atom+vertex);
+//            System.out.println(m.moleculeName + "   " + atom+vertex);
             Node n = g.addNode( ""+vertex); //C0, H1, ...
 
             n.addAttribute("ui.label", atom);
@@ -196,7 +258,6 @@ public class App {
                 n.addAttribute("ui.style", "text-color:black;");
             }
         }
-        System.out.println("-=--------");
 
         for (int vertex1 = 0; vertex1< m.getNumVertices(); vertex1++)
             for (int vertex2 = 0; vertex2 < m.getNumVertices(); vertex2++) {
@@ -250,7 +311,7 @@ public class App {
             Node n2 = graph2.getNode(""+i);
 
             double[] xy = nodePosition(n1);
-            System.out.println(n1.toString() + "   " + n2.toString());
+//            System.out.println(n1.toString() + "   " + n2.toString());
             n2.addAttribute("xy", xy[0], xy[1]);
         }
 //        drawGraph(graphPanel2, graph2);
