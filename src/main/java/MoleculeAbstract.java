@@ -9,6 +9,7 @@ public abstract class MoleculeAbstract {
     public Integer numVertices;
     protected ArrayList<String> atoms;
     protected LinkedList<Integer>[] adjacencyList;
+    protected  ArrayList<Integer> bijection;
     protected int[][] adjacencyMatrix;
 
     public abstract String getMoleculeName();

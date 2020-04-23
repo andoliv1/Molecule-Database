@@ -13,21 +13,29 @@ public class MoleculeText extends MoleculeAbstract {
     //constructor with only file name
     public MoleculeText(String filename){
         parseFile(filename);
+        this.bijection = new ArrayList<>();
     }
 
     //constructor that takes adjacency matrix and atoms
     public MoleculeText(int[][] matrix, ArrayList<String> vertices){
         this.adjacencyMatrix = matrix;
         this.atoms = vertices;
+        this.numVertices = vertices.size();
+        this.bijection = new ArrayList<>();
     }
 
     public MoleculeText(MoleculeAbstract mol){
-        this.adjacencyMatrix = mol.adjacencyMatrix;
-        this.atoms = mol.atoms;
         this.numVertices = mol.numVertices;
-        this.adjacencyList = mol.adjacencyList;
-        this.moleculeName = mol.moleculeName;
+        this.adjacencyMatrix = new int[numVertices][numVertices];
+        for(int i = 0; i <numVertices; i++)
+            for(int j = 0; j <numVertices; j++)
+                this.adjacencyMatrix[i][j] = mol.getAdjacencyMatrix()[i][j];
+        this.atoms = new ArrayList<>();
+        for(String atom: mol.atoms)
+            this.atoms.add(atom);
+        this.bijection = new ArrayList<>();
     }
+
 
     public void parseFile(String filename) {
         try {
@@ -112,8 +120,36 @@ public class MoleculeText extends MoleculeAbstract {
         return true;
     }
 
+    public int hashCode(){
+        return this.adjacencyMatrix.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object m1){
+        MoleculeAbstract m = (MoleculeAbstract) m1;
+        // Check Molecule name are same
+        if (moleculeName.equals(m.getMoleculeName())){
+
+            //Check molecule adj matrix and atoms list are exactly the same.
+            for(int i = 0; i < numVertices; i++){
+                for(int j = 0; j < numVertices; j++){
+                    if(adjacencyMatrix[i][j] != m.getAdjacencyMatrix()[i][j])
+                        return false;
+                }
+
+                if(!atoms.get(i).equals(m.atoms.get(i)))
+                    return false;
+            }
+        }
+        else
+            return false;
+        return true;
+    }
+
     public static void main(String[] args) {
 //        main.java.MoleculeText m = new main.java.MoleculeText("butane.txt");
 
     }
+
+
 }

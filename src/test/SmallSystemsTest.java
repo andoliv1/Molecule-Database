@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SmallSystemsTest {
@@ -33,8 +34,8 @@ public class SmallSystemsTest {
     public void SystemsCheck() throws Exception{
 
         // Insert two molecules that are isomorphic
-        h2.insertMolecule("carbon_dioxide.txt");
-        h2.insertMolecule("carbon_dioxide2.txt");
+        h2.insertMolecule("molecules/carbon_dioxide.txt");
+        h2.insertMolecule("molecules/carbon_dioxide2.txt");
 //
 //        // Query the two molecules
         MoleculeDB m1 = h2.queryMoleculeByName("carbon dioxide");
@@ -50,8 +51,8 @@ public class SmallSystemsTest {
         boolean weakIso = searchDumb.isIsomorphicWithNumbers(m1, m2);
         assert (weakIso);
 
-        boolean strongIso = searchDumb.verify_rigorous_isomorphism(m1, m2);
-        assert(strongIso);
+        ArrayList<Integer> strongIso = searchDumb.verify_rigorous_isomorphism(m1, m2);
+        assert(strongIso != null);
     }
 
     /**
@@ -64,16 +65,16 @@ public class SmallSystemsTest {
 
         // 10 Insertions
         long startTime = System.nanoTime();
-        h2.insertMolecule("carbon_dioxide.txt");
-        h2.insertMolecule("carbon_dioxide2.txt");
-        h2.insertMolecule("carbon_dioxide.txt");
-        h2.insertMolecule("carbon_dioxide2.txt");
-        h2.insertMolecule("carbon_dioxide.txt");
-        h2.insertMolecule("carbon_dioxide2.txt");
-        h2.insertMolecule("carbon_dioxide.txt");
-        h2.insertMolecule("carbon_dioxide2.txt");
-        h2.insertMolecule("carbon_dioxide.txt");
-        h2.insertMolecule("carbon_dioxide2.txt");
+        h2.insertMolecule("molecules/carbon_dioxide.txt");
+        h2.insertMolecule("molecules/carbon_dioxide2.txt");
+        h2.insertMolecule("molecules/carbon_dioxide.txt");
+        h2.insertMolecule("molecules/carbon_dioxide2.txt");
+        h2.insertMolecule("molecules/carbon_dioxide.txt");
+        h2.insertMolecule("molecules/carbon_dioxide2.txt");
+        h2.insertMolecule("molecules/carbon_dioxide.txt");
+        h2.insertMolecule("molecules/carbon_dioxide2.txt");
+        h2.insertMolecule("molecules/carbon_dioxide.txt");
+        h2.insertMolecule("molecules/carbon_dioxide2.txt");
         long endTime = System.nanoTime();
         long duration = (endTime - startTime)/1000000;
         System.out.println(duration + "ms");
@@ -91,16 +92,16 @@ public class SmallSystemsTest {
         Operations op = new Operations();
         // 10 Find
         long startTime = System.nanoTime();
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
-        op.find("carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
+        op.find("molecules/carbon_dioxide.txt");
 
         long endTime = System.nanoTime();
         long duration = (endTime - startTime)/1000000;

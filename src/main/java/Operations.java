@@ -54,8 +54,10 @@ public class Operations {
         try {
             MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
             for (MoleculeDB molecule : molecules) {
-                if(this.checkIsomorphism(m, molecule)){
+                ArrayList<Integer> bijection = this.checkIsomorphism(m, molecule);
+                if(bijection != null){
                     System.out.println(m.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
+                    molecule.bijection = bijection;
                     isomorphicMolecules.add(molecule);
                 }
             }
@@ -80,7 +82,7 @@ public class Operations {
         try {
             MoleculeDB[] molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
             for (MoleculeDB molecule : molecules) {
-                if(this.checkIsomorphism(m, molecule)){
+                if(this.checkIsomorphism(m, molecule) != null){
                     System.out.println(m.getMoleculeName() + " is isomorphic with "+ molecule.moleculeName);
                     isomorphicMolecules.add(molecule);
                 }
@@ -96,24 +98,24 @@ public class Operations {
         return isomorphicMolecules;
     }
 
-    public boolean checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
-        boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
-        if(weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
-        return false;
+    public ArrayList<Integer> checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
+        try {
+            boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
+            if (weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
+        }
+        catch (NullPointerException e) {
+            return null;
+        }
+        return null;
     }
 
-    public void mostSimilar(String filename){
+    public MoleculeAbstract mostSimilar(String filename){
         ArrayList<MoleculeAbstract> isomorphicMolecules = new ArrayList<>(100);
         MoleculeText m = new MoleculeText(filename);
         try {
             MoleculeDB[] molecules = db.findSameNumberAtoms(m.numVertices, m.getAtomList());
-            for (MoleculeDB molecule : molecules) {
-                System.out.println(molecule.getMoleculeName());
-                if(this.checkIsomorphism(m, molecule)){
-                    System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
-                    isomorphicMolecules.add(molecule);
-                }
-            }
+            if (molecules.length == 0)
+                return null;
             ArrayList<MoleculeText> moleculesList = new ArrayList<>();
             for(int i = 0; i < molecules.length; i++){
                 ArrayList<String> atomsList = molecules[i].getAtomList();
@@ -121,16 +123,21 @@ public class Operations {
                 moleculesList.add(new MoleculeText(adj,atomsList));
             }
             //System.out.println(moleculesList.toString());
-            FindMostSimilar fd = new FindMostSimilar(moleculesList,m);
-            Pair<Integer,MoleculeText> k = fd.extractNextClosest();
+            FindMostSimilar fd = new FindMostSimilar(new ArrayList<>(Arrays.asList(molecules)),m);
+            Pair<Integer,MoleculeAbstract> k = fd.extractNextClosest();
             System.out.println("This is the distance with our metric " + k.getKey());
             System.out.println("This is the molecule with the smallest distance " + k.getValue().toString());
+            return k.getValue();
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("No molecules with that many atoms found");
         }
+        return null;
     }
 
+    public int getNumMolecules(){
+        return db.getNumberOfMolecules();
+    }
     /**
      * Function to see if we are able to get ten operations per second.
      */
@@ -160,7 +167,7 @@ public class Operations {
 
                 for (MoleculeDB molecule : molecules) {
 //                    System.out.println(molecule.getMoleculeName());
-                    if(this.checkIsomorphism(m, molecule))
+                    if(this.checkIsomorphism(m, molecule) != null)
                         System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
                 }
 
@@ -170,7 +177,7 @@ public class Operations {
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
-                    if(this.checkIsomorphism(m, molecule))
+                    if(this.checkIsomorphism(m, molecule) != null)
                         System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
                 }
 
@@ -180,7 +187,7 @@ public class Operations {
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
-                    if(this.checkIsomorphism(m, molecule))
+                    if(this.checkIsomorphism(m, molecule) != null)
                         System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
                 }
 
@@ -190,7 +197,7 @@ public class Operations {
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
-                    if(this.checkIsomorphism(m, molecule))
+                    if(this.checkIsomorphism(m, molecule) != null)
                         System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
                 }
 
@@ -200,7 +207,7 @@ public class Operations {
                 molecules = db.findSameAtoms(m.numVertices, m.getAtomList());
 
                 for (MoleculeDB molecule : molecules) {
-                    if(this.checkIsomorphism(m, molecule))
+                    if(this.checkIsomorphism(m, molecule) != null)
                         System.out.println(m.getMoleculeName() + "is isomorphic with "+ molecule.moleculeName);
                 }
 //
