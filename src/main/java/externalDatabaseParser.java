@@ -196,19 +196,17 @@ public class externalDatabaseParser {
                                 int counter = 0;
                                 while (counter <= count - 1) {
                                         String moleculeName = getMoleculeName(json, counter);
-                                        if (moleculeName.length() > 200)
-                                        {
-                                                moleculeName = moleculeName.substring(0, 199);
-                                        }
-                                        String numberOfVertices = Integer.toString(getNumberOfVertices(json, counter));
-                                        ArrayList<Integer> elementsArrayList = getElements(json, counter);
-                                        ArrayList<String> bondArrayList = getBonds(json, counter);
-                                        if (bondArrayList != null && moleculeName.length() != 0) {
-                                                moleculeNameFile.add(moleculeName);
-                                                elementsArrayListFile.add(elementsArrayList);
-                                                bondArrayListFile.add(bondArrayList);
-                                                numberOfVerticesFile.add(numberOfVertices);
-                                                moleculeCount += 1;
+                                        if (moleculeName.length() < 200) {
+                                                String numberOfVertices = Integer.toString(getNumberOfVertices(json, counter));
+                                                ArrayList<Integer> elementsArrayList = getElements(json, counter);
+                                                ArrayList<String> bondArrayList = getBonds(json, counter);
+                                                if (bondArrayList != null && moleculeName.length() != 0) {
+                                                        moleculeNameFile.add(moleculeName);
+                                                        elementsArrayListFile.add(elementsArrayList);
+                                                        bondArrayListFile.add(bondArrayList);
+                                                        numberOfVerticesFile.add(numberOfVertices);
+                                                        moleculeCount += 1;
+                                                }
                                         }
                                         counter += 1;
                                 }
