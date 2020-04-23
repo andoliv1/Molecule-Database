@@ -21,11 +21,8 @@ import static java.lang.Math.abs;
  * delta(originalMolecule,rankZeroChange) = 0;
  * delta(originalMolecule,rankOneChange) = 1*(#of vertices changed);
  * delta(originalMolecule,rankTwoChange) = 4*(#of edges added or removed);
- * delta(originalMolecule,rankThreeChange) = 16*(#of vertices added with an edge configuration);
- *
  * Therefore:
  * delta(originalMolecule, anotherMolecule) = delta(originalMolecule,rankOneChange) + delta(originalMolecule,rankTwoChange)
- *  +delta(originalMolecule,rankThreeChange);
  *
  *
  * We theorized that this was a reasonable metric by looking back at the Data Structures that we used for GI. Getting the number of
@@ -70,7 +67,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
                 }
                 compMol.changeAtomList(oldList);
             }
-            //System.out.println(distance + " for " + compMol.toString());
             minHeap.offer(new Pair(distance,compMol));
         }
     }
@@ -93,7 +89,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
             }
             int distance = 1 * rOneChange + 4 * rTwoChange;
             compMol.changeAtomList(oldList);
-            //System.out.println(distance + " for " + compMol.toString());
             minHeap.offer(new Pair(distance,compMol));
         }
     }
@@ -122,7 +117,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
                 temp_distance = 0;
             }
         }
-        //System.out.println(distance + " for " + compMol.toString());
         minHeap.offer(new Pair(distance,compMol));
     }
 
@@ -137,13 +131,10 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
         for(int i = 0; i < atomList.size();i++){
             boolean found = false;
             String atom = atomList.get(i);
-            //System.out.println("Trying " + atom);
             for(int j = 0 ; j < inUseAtoms.size(); j++){
                 String atom2 = inUseAtoms.get(j);
                 if(atom.equals(atom2) && used.contains(j) == false){
-                    //System.out.println("Found atom" + atom2);
                     used.add(j);
-                    //System.out.println(atom2);
                     found = true;
                     break;
                 }
@@ -155,10 +146,8 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
             }
         }
         counter = 0;
-        //System.out.println(used.toString());
         for(String atom : atom_changes){
             if(used.contains(counter) == false){
-                //System.out.println(atom);
                 compMol.changeLabels(atom,counter);
                 counter++;
             }
@@ -166,12 +155,10 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
                 while(used.contains(counter) == true && counter < inUseAtoms.size()){
                     counter++;
                 }
-                //System.out.println(atom);
                 compMol.changeLabels(atom,counter);
                 counter++;
             }
         }
-        //System.out.println("Total Rank One Changes " + atom_changes.size());
         return atom_changes.size();
     }
 
@@ -267,7 +254,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
             int j = 0;
             //parse through all vertices of molecule2 to see if their connections matches to the connections in the vertex
             //i at molecule 1.
-            //System.out.println("This is the atom we are trying to find a correspondence " + ato1.get(i) + " this is its index" + i);
             /**
              *Check this line later
              */
@@ -275,7 +261,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
             int temp_distance =1000000;
             Pair<Integer,Integer> to_be_used = new Pair<>(0,1000000);
             while(j < ato2.size()) {
-                //System.out.println("This is the atom we are comparing " + ato2.get(j) + " this is its index" + j);
                 //check if the vertex you are at in molecule2 has already been matched to a vertex in molecule1
                 if (ato1.get(i).equals(ato2.get(j)) && (used.contains(j) == false)) {
                     temp_distance = 0;
@@ -295,8 +280,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
                     //sort both atom connections
                     sortAtomListNumbers(atom_connections);
                     sortAtomListNumbers(atom_connections2);
-//                    System.out.println(atom_connections.toString());
-//                    System.out.println(atom_connections2.toString());
                     //Get the overall distance between a row and another
                     int k = 0;
                     int k2 = 0;
@@ -317,15 +300,12 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
                             k2++;
                         }
                         else{
-                            //System.out.println(atom_connections.get(k).toString());
-                            //System.out.println(atom_connections2.get(k2).toString());
                             if(compareWithNumbers(atom_connections.get(k),atom_connections2.get(k2)) > 0){
 
                                 temp_distance += atom_connections2.get(k2).getValue();
                                 k2++;
                             }
                             else {
-                                //System.out.println(atom_connections.get(k).getValue());
                                 temp_distance += atom_connections.get(k).getValue();
                                 k++;
                             }
@@ -338,8 +318,6 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
                 }
                 if(distance > temp_distance && used.contains(j) == false){
                     distance = temp_distance;
-//                    System.out.println("This is their distance");
-//                    System.out.println(temp_distance);
                     Pair<Integer,Integer> to_be_used_new = new Pair<>(j,temp_distance);
                     to_be_used = to_be_used_new;
                 }
@@ -359,11 +337,9 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
         if(originalMolecule.getAtomList().size() == compMol.getAtomList().size()) {
             ArrayList<Pair<Integer,Integer>> closestCorrespondence = initialClosestCorrespondence(compMol,originalMolecule);
             for(Pair<Integer,Integer> dist : closestCorrespondence){
-                //System.out.println(dist.getValue());
                 changes += dist.getValue();
             }
         }
-        //System.out.println("Total Rank Two Changes " + changes);
         return changes;
     }
 
@@ -375,9 +351,5 @@ public class FindMostSimilar <T extends MoleculeAbstract>{
             }
         }
         return sum;
-    }
-
-    public static void main(String[] args){
-
     }
 }

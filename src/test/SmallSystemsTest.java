@@ -1,17 +1,12 @@
 package test;
 
 import main.java.*;
-import org.dbunit.DatabaseTestCase;
 import org.dbunit.database.DatabaseConfig;
-import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,10 +43,10 @@ public class SmallSystemsTest {
         System.out.println(Arrays.deepToString(m1.getAdjacencyMatrix()));
         System.out.println(Arrays.deepToString(m2.getAdjacencyMatrix()));
 
-        boolean weakIso = searchDumb.isIsomorphicWithNumbers(m1, m2);
+        boolean weakIso = GraphIso.isIsomorphicWithNumbers(m1, m2);
         assert (weakIso);
 
-        ArrayList<Integer> strongIso = searchDumb.verify_rigorous_isomorphism(m1, m2);
+        ArrayList<Integer> strongIso = GraphIso.verify_rigorous_isomorphism(m1, m2);
         assert(strongIso != null);
     }
 
