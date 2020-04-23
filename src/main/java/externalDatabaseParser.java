@@ -170,7 +170,7 @@ public class externalDatabaseParser {
 
         public static void main(String[] args) throws JSONException, IOException {
                 // Number of molecules to grab
-                int numOfMolecules = 5;
+                int numOfMolecules = 1000;
                 int moleculeCount = 0;
                 ArrayList<String> numberOfVerticesFile = new ArrayList<>();
                 ArrayList<String> moleculeNameFile = new ArrayList<>();
@@ -196,7 +196,7 @@ public class externalDatabaseParser {
                                 int counter = 0;
                                 while (counter <= count - 1) {
                                         String moleculeName = getMoleculeName(json, counter);
-                                        if (moleculeName.length() < 200) {
+                                        if (moleculeName.length() <= 200) {
                                                 String numberOfVertices = Integer.toString(getNumberOfVertices(json, counter));
                                                 ArrayList<Integer> elementsArrayList = getElements(json, counter);
                                                 ArrayList<String> bondArrayList = getBonds(json, counter);
