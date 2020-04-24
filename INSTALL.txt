@@ -77,9 +77,9 @@ II.
 
 		Here are some sample commands to get you started.
 		./md --initdb
-		./md --addMolecule carbon_dioxide.txt
-		./md --addMolecule carbon_dioxide2.txt
-		./md --findMolecule carbon_dioxide.txt
+		./md --addMolecule molecules/carbon_dioxide.txt
+		./md --addMolecule molecules/carbon_dioxide2.txt
+		./md --findMolecule molecules/carbon_dioxide.txt
 
 		The above commands will initialize the database, 
 		insert two different versions of carbon dioxide,
