@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="82a47454-6539-472b-a269-c3296d5114e5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/GUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1aUqHynNGyPTJgSZeAiV5cRwaf9" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="GUI" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="GUI" />
+      <module name="java_gui" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="GUI" />
+      <module name="java_gui" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="82a47454-6539-472b-a269-c3296d5114e5" name="Default Changelist" comment="" />
+      <created>1586800435325</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1586800435325</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="184" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586802549788">
+      <screen x="0" y="23" width="1440" height="827" />
+    </state>
+    <state x="184" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.827@0.23.1440.827" timestamp="1586802549788" />
+    <state x="243" y="101" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.828@0.23.1440.828" timestamp="1586802142485" />
+    <state x="592" y="150" key="#com.intellij.ide.util.MemberChooser" timestamp="1586801816460">
+      <screen x="0" y="23" width="1440" height="828" />
+    </state>
+    <state x="592" y="150" key="#com.intellij.ide.util.MemberChooser/0.23.1440.828@0.23.1440.828" timestamp="1586801816460" />
+    <state x="516" y="231" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1586802132892">
+      <screen x="0" y="23" width="1440" height="828" />
+    </state>
+    <state x="516" y="231" key="#com.intellij.ide.util.TreeClassChooserDialog/0.23.1440.828@0.23.1440.828" timestamp="1586802132892" />
+    <state width="1280" height="213" key="GridCell.Tab.0.bottom" timestamp="1586809608979">
+      <screen x="0" y="23" width="1440" height="828" />
+    </state>
+    <state width="1280" height="213" key="GridCell.Tab.0.bottom/0.23.1440.827@0.23.1440.827" timestamp="1586803043907" />
+    <state width="1280" height="213" key="GridCell.Tab.0.bottom/0.23.1440.828@0.23.1440.828" timestamp="1586809608979" />
+    <state width="1280" height="213" key="GridCell.Tab.0.center" timestamp="1586809608978">
+      <screen x="0" y="23" width="1440" height="828" />
+    </state>
+    <state width="1280" height="213" key="GridCell.Tab.0.center/0.23.1440.827@0.23.1440.827" timestamp="1586803043905" />
+    <state width="1280" height="213" key="GridCell.Tab.0.center/0.23.1440.828@0.23.1440.828" timestamp="1586809608978" />
+    <state width="1280" height="213" key="GridCell.Tab.0.left" timestamp="1586809608978">
+      <screen x="0" y="23" width="1440" height="828" />
+    </state>
+    <state width="1280" height="213" key="GridCell.Tab.0.left/0.23.1440.827@0.23.1440.827" timestamp="1586803043904" />
+    <state width="1280" height="213" key="GridCell.Tab.0.left/0.23.1440.828@0.23.1440.828" timestamp="1586809608978" />
+    <state width="1280" height="213" key="GridCell.Tab.0.right" timestamp="1586809608979">
+      <screen x="0" y="23" width="1440" height="828" />
+    </state>
+    <state width="1280" height="213" key="GridCell.Tab.0.right/0.23.1440.827@0.23.1440.827" timestamp="1586803043905" />
+    <state width="1280" height="213" key="GridCell.Tab.0.right/0.23.1440.828@0.23.1440.828" timestamp="1586809608979" />
+    <state x="612" y="72" key="refactoring.ChangeSignatureDialog" timestamp="1586802975345">
+      <screen x="0" y="23" width="1440" height="827" />
+    </state>
+    <state x="612" y="72" key="refactoring.ChangeSignatureDialog/0.23.1440.827@0.23.1440.827" timestamp="1586802975345" />
+  </component>
+</project>
