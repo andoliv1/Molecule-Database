@@ -31,6 +31,7 @@ function unhighlight(e) {
 
 function uploadFilesAdd()
 {
+  resetFileList();
   var form = $('#fileUploadForm')[0];
   var data = new FormData(form);
   $.ajax({

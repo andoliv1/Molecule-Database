@@ -75,6 +75,7 @@ public class MoleculeText extends MoleculeAbstract {
                 }
 
             }
+            br.close();
         } catch(IOException e) {
             e.printStackTrace();
         }
