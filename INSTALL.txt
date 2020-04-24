@@ -41,7 +41,9 @@ I. Open the group9 project in Intelli-J
             	i. Java Language Level 8 
          	ii. SDK - 1.8
 		iii. Set the output folder to the folder named out in the project root.
-	b. Import maven projects 
+	b. Import maven projects
+	   To do this manually, click on the Maven button on the right sidebar of Intelli-J. From here, click on reimport
+	   all Maven projects.
 	
 
 II.
