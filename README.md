@@ -40,6 +40,7 @@ In this project, we will be exploring ways to efficiently store and access molec
 
    ![](images/terminal.png)
    ![](images/webui.png)
+   ![](images/app.png)
 
 - Implemented:
     
@@ -73,7 +74,8 @@ Carletti, V., Foggia, P., Saggese, A., & Vento, M. (2018). Challenging the Time 
 
 ## WorkBreakdown
 
-- Timmy Hoang:  A working SQL database that stores a molecule onto three tables where table one holds the molecule id, molecule name. Table two contains the molecule atom/vertex list. Table three contains the molecules adjacency list. Created the H2DB class that will be used to query and insert into the database. Designed a MoleculeAbstract, MoleculeText, MoleculeS classes that will be used depending on where the molecule will be parsed from. Also wrote Unit Tests for the database, and a small scale systems test. Integrated the database, search functions, and command line interface.
+- Timmy Hoang:  A working SQL database that stores a molecule onto three tables where table one holds the molecule id, molecule name. Table two contains the molecule atom/vertex list. Table three contains the molecules adjacency list. Created the H2DB class that will be used to query and insert into the database. Designed a MoleculeAbstract, MoleculeText, MoleculeDB classes that will be used depending on where the molecule will be parsed from. Also wrote Unit Tests for the database, and a small scale systems test. 
+Created the CLI to be used with the compiled JAR that runs our Operations class. Integrated the database, search functions, and command line interface. 
 
     As an addition of more features, I have implemented the JAVA GUI that includes outputs a graphic of the drawing of molecules and list of isomorphic molecules. It allows inputs that accepts file from current computer and two radio buttons for the add and find operations for the project. 
 

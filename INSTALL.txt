@@ -43,6 +43,9 @@ I. Open the group9 project in Intelli-J
 	b. Import maven projects
 	   To do this manually, click on the Maven button on the right sidebar of Intelli-J. From here, click on reimport
 	   all Maven projects.
+	c. We have packaged the group9.jar file that runs the Operations class in the repo. If you need to recompile the project, it is
+	  required to also recompile the group9.jar file. group9.jar packages the Operations class along with its dependencies. Without
+		this file, the command line interface will not work.
 	
 II.
 	Warning - Lab computers seem to default to Java 1.7. You will need to change that to Java 1.8.
