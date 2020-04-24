@@ -49,6 +49,8 @@ II.
 
 	It is required to initialize the database before doing anything. 
 	The H2DB library is contained in lib/h2/.
+	We will be using lib/h2/bin/h2-1.4.200.jar to create and initialize our database..
+
 	The database will be created and populated with some molecules with the following terminal command:
 	./md --initdb.
 	
