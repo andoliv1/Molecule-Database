@@ -56,7 +56,8 @@ In this project, we will be exploring ways to efficiently store and access molec
 
     - Download 1,000 known compounds from an existing database (e.g., ChemSpider) into your molecular database. We downloaded molecules using the PubChem API.
     (We decided that having meaningful compounds in our database would improve various different aspects of the user experience. Having known compounds, we are able to look up bond information (X-Y coordinates) to plot various locations of atoms. The implementation is done by restful API calls to pubChem as opposed ChemSpider. ChemSpider did not have the bond information we needed for drawing molecules. Every result is obtained and parsed in JSON format.)
-    -Java GUI that provides molecular entry and search capabilities. it also displays molecules in graphical format and database statistics.
+    
+    - Java GUI that provides molecular entry and search capabilities. it also displays molecules in graphical format and database statistics.
 
 ## References
 
