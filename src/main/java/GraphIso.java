@@ -171,6 +171,9 @@ GraphIso {
      * The first part is finding all the vertices that might generate an error. Second part is creating an ambiguous correspondence between atoms in the first molecule1 to atoms in molecule2.
      * Finally generate specific correspondence from the ambiguous to confirm isomorphism.
      *
+     * The bottle neck of this function is generating the permutations and checking the isomorphism within the permutations. Since there are at most
+     * O(V!) permutations and in each we do O(V^3logV) work for the isomorphism with numbers than the worst case running time is O(V^3logV*V!).
+     *
      * @param molecule1
      * @param molecule2
      * @returne
@@ -481,7 +484,8 @@ GraphIso {
      *This a filter function where we describe in our project as a weak isomorphism. The method is simply to checking that each vertex from molecule1
      *connects in the same way as another vertex in the other molecule. If that isn't true than the molecules can't
      *be isomorphic and if there is a one to one mapping from all connection from one molecule to all connections in the other
-     *molecule then it might be true that they are isomorphic.
+     *molecule then it might be true that they are isomorphic. The runtime for this function is O(V^3logV) since we have a nested while loop that goes through
+     * O(V^2) vertices and inside the inner loop we do a sort that takes O(VlogV) therefore the overall running time is O(V^3logV).
      */
     public static boolean isIsomorphicWithNumbers(MoleculeAbstract molecule1, MoleculeAbstract molecule2){
         //get the molecules adjacency matrix
