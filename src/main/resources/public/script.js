@@ -29,7 +29,7 @@ function unhighlight(e) {
   dropArea.classList.remove('active')
 }
 
-function uploadFiles()
+function uploadFilesAdd()
 {
   var form = $('#fileUploadForm')[0];
   var data = new FormData(form);
@@ -53,6 +53,36 @@ function uploadFiles()
       console.log("ERROR");
       if (filesList != null)
         add()
+      else
+        document.getElementById("demo").innerHTML = "Please select files first";
+    }
+  });
+}
+
+function uploadFilesSearch()
+{
+  var form = $('#fileUploadForm')[0];
+  var data = new FormData(form);
+  $.ajax({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: "/upload",
+    data: data,
+    processData: false,
+    contentType: false,
+    cache: false,
+    timeout: 600000,
+    success: function (data) {
+      console.log("SUCCESS");
+      if (filesList != null)
+        search()
+      else
+        document.getElementById("demo").innerHTML = "Please select files first";
+    },
+    error: function (e) {
+      console.log("ERROR");
+      if (filesList != null)
+        search()
       else
         document.getElementById("demo").innerHTML = "Please select files first";
     }
