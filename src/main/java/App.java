@@ -137,8 +137,9 @@ public class App {
                                         Document doc = textPane1.getDocument();
                                         MoleculeAbstract isoMolecule = null;
                                         boolean found_iso = false;
+                                        Graph graph1 = createGraph(graphPanel1, interestedMolecule);
+
                                         if (molecules.size() > 0) {
-                                            Graph graph1 = createGraph(graphPanel1, interestedMolecule);
                                             for (MoleculeAbstract m : molecules) {
                                                 try {
 
