@@ -9,7 +9,8 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-public class GraphIso {
+public class
+GraphIso {
 
     /**
      * Method used to compare two Pairs. A pair consists of the a 3 char string and an integer denoting the number of
@@ -89,7 +90,6 @@ public class GraphIso {
      * The concept is better explained in the function verify_rigorous isomorphism
      */
     public static boolean generate(int n, int[] a, MoleculeAbstract molecule1, MoleculeAbstract molecule2, int[] indices,Deque<MoleculeText> solutions) {
-        // Placeholder for swapping values
         int tmp;
         // If a new permutation has been found then change the respective indices of the vertices that needed to have a key assigned to it
         boolean isIso = false;
@@ -124,13 +124,11 @@ public class GraphIso {
                     isIso = true;
                 }
                 if(n % 2 == 0) {
-                    // Swap entry i with entry n-1
                     tmp = a[i];
                     a[i] = a[n-1];
                     a[n-1] = tmp;
                 }
                 else {
-                    // Swap entry 0 with entry n-1
                     tmp = a[0];
                     a[0] = a[n-1];
                     a[n-1] = tmp;
@@ -159,12 +157,15 @@ public class GraphIso {
      *
      * Now for the third part of the function we are simply assigning indices to the atoms in molecule1 and molecule2 according to the atoms in the first part of the
      * function that we found could generate ambiguity. We can do this to molecule1 and molecule2 because we know the correspondence of molecule2 atoms to molecule1 calculated by the second part of the
-     * function. Finally assigning numbers to the molecules will allow us to eliminate the ambiguity because it essentially creates a bijection between vertices of a molecule to another
-     * molecule so the only way the molecules can be isomorphic is if the bijection between ambiguous (remember ambigous is defined as atoms that have the same
-     * source atom and outgoing connections) atoms in the molecules exists.
+     * function.
      *
-     * Lastly we create all possible bijections with the generate function. If any of those bijections
-     * turns out to be a isomorphism then the molecules must be isomorphic.
+     * Now comes the fourth part of the function where we essentially do a DFS on all possible solutions and use a stack to see if any of the new added solutions is a solution that determines
+     * isomorphism. We do this the following way:
+     *      1. Get the first set of ambiguous atoms. (The first set here meaning all the atom that are ambiguous an equal to each other i.e Hydrogen atoms)
+     *      2. Generate all the valid isomoprhism configurations on this incomplete set of atoms (Incomplete because an isomorphism requires all ambiguous atoms to be labeled)
+     *      3. Insert all the solutions to a stack.
+     *      4. Remove the top element of the stack and generate all valid isomorphism configurations on the next set ambiguous atoms.
+     *      5. Do this until either the stack is empty or you have found a bijection that has all the ambiguous atoms labeled.
      *
      * TL;DR:
      * The first part is finding all the vertices that might generate an error. Second part is creating an ambiguous correspondence between atoms in the first molecule1 to atoms in molecule2.
@@ -297,7 +298,7 @@ public class GraphIso {
         HashSet<Integer> build_dup = new HashSet<>();
         ArrayList<String> atoms_to_make_sure_not_duplicate = new ArrayList<>();
         boolean isomorphic = false;
-        //ListIterator<MoleculeAbstract> molecule = molecules_valid.currentSolutions.listIterator();
+
         Deque<MoleculeText> moleculeStack = new ArrayDeque<>();
         moleculeStack.add(new MoleculeText(molecule1));
         while(!moleculeStack.isEmpty()){
@@ -476,11 +477,11 @@ public class GraphIso {
 
 
 
-    /*
-    The brute force idea I have for this method is simply to check each connection an atom and make sure the vertex from one
-    molecule connects in the same way as another vertex in the other molecule. If that isn't true than the molecules can't
-    be isomorphic and if there is a one to one mapping from all connection from one molecule to all connections in the other
-    molecule then it is true.
+    /**
+     *This a filter function where we describe in our project as a weak isomorphism. The method is simply to checking that each vertex from molecule1
+     *connects in the same way as another vertex in the other molecule. If that isn't true than the molecules can't
+     *be isomorphic and if there is a one to one mapping from all connection from one molecule to all connections in the other
+     *molecule then it might be true that they are isomorphic.
      */
     public static boolean isIsomorphicWithNumbers(MoleculeAbstract molecule1, MoleculeAbstract molecule2){
         //get the molecules adjacency matrix
@@ -554,6 +555,9 @@ public class GraphIso {
         return true;
     }
 
+    /**
+     * Helper function to determine if two Hash Sets are equal.
+     */
     public static boolean hashSetsEqual(HashSet<Integer> build_dup, HashSet<Integer> all_dup){
         Iterator<Integer> iter = all_dup.iterator();
         while (iter.hasNext()){
@@ -565,6 +569,9 @@ public class GraphIso {
         return true;
     }
 
+    /**
+     * Helper function used to determine list of ambiguous atoms.
+     */
     public static boolean checkStringAndArrayList(ArrayList<Pair<String,Integer>> list, String str, HashSet<Pair<String,ArrayList<Pair<String,Integer>>>> connections,int pos){
         Iterator<Pair<String,ArrayList<Pair<String,Integer>>>> iter = connections.iterator();
         boolean found = false;
