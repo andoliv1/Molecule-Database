@@ -88,7 +88,7 @@ II.
 
 III. In order to run the web UI you need to do the following steps:
 	a. Set Up an application (webApp.java):
-		i. run the CLI commands to initialize the database if you haven't done so already.
+		i. run the CLI commands to initialize the database if you haven't done so already. 
     ii. Run ./md --insertPubChem OR ./md --insertTenMillion to populate your database.
 		iii. To run the webUI, the user has to have an internet connection because 		
 			some APIs are restful commands. The webUI has its own standalone main in 		
