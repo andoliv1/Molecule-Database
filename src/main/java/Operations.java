@@ -6,15 +6,14 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.PriorityQueue;
 import java.util.Random;
 
 public class Operations {
     private static H2DB db;
-    //    searchDumb search;
+    //    GraphIso search;
 
     public Operations(){
-//        search = new searchDumb();
+//        search = new GraphIso();
         db = new H2DB();
         try {
             db.connect();
@@ -100,8 +99,8 @@ public class Operations {
 
     public ArrayList<Integer> checkIsomorphism(MoleculeAbstract m1, MoleculeAbstract m2){
         try {
-            boolean weakIsomorphism = searchDumb.isIsomorphicWithNumbers(m1, m2);
-            if (weakIsomorphism) return searchDumb.verify_rigorous_isomorphism(m1, m2);
+            boolean weakIsomorphism = GraphIso.isIsomorphicWithNumbers(m1, m2);
+            if (weakIsomorphism) return GraphIso.verify_rigorous_isomorphism(m1, m2);
         }
         catch (NullPointerException e) {
             return null;

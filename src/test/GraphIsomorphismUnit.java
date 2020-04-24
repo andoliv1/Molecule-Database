@@ -1,13 +1,12 @@
 package test;
 
 import main.java.MoleculeText;
-import main.java.searchDumb;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static main.java.searchDumb.isIsomorphicWithNumbers;
-import static main.java.searchDumb.verify_rigorous_isomorphism;
+import static main.java.GraphIso.isIsomorphicWithNumbers;
+import static main.java.GraphIso.verify_rigorous_isomorphism;
 import static org.junit.Assert.assertNull;
 
 public class GraphIsomorphismUnit {
