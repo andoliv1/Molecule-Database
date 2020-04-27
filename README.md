@@ -40,6 +40,7 @@ In this project, we will be exploring ways to efficiently store and access molec
 
    ![](images/terminal.png)
    ![](images/webui.png)
+   ![](images/app.png)
 
 - Implemented:
     
@@ -56,7 +57,11 @@ In this project, we will be exploring ways to efficiently store and access molec
 
     - Download 1,000 known compounds from an existing database (e.g., ChemSpider) into your molecular database. We downloaded molecules using the PubChem API.
     (We decided that having meaningful compounds in our database would improve various different aspects of the user experience. Having known compounds, we are able to look up bond information (X-Y coordinates) to plot various locations of atoms. The implementation is done by restful API calls to pubChem as opposed ChemSpider. ChemSpider did not have the bond information we needed for drawing molecules. Every result is obtained and parsed in JSON format.)
-    -Java GUI that provides molecular entry and search capabilities. it also displays molecules in graphical format and database statistics.
+    
+    - Java GUI that provides molecular entry and search capabilities. it also displays molecules in graphical format and database statistics.
+## Architecture
+
+ ![](images/architecture.jpeg)
 
 ## References
 
@@ -72,9 +77,10 @@ Carletti, V., Foggia, P., Saggese, A., & Vento, M. (2018). Challenging the Time 
 
 ## WorkBreakdown
 
-- Timmy Hoang:  A working SQL database that stores a molecule onto three tables where table one holds the molecule id, molecule name. Table two contains the molecule atom/vertex list. Table three contains the molecules adjacency list. Created the H2DB class that will be used to query and insert into the database. Designed a MoleculeAbstract, MoleculeText, MoleculeS classes that will be used depending on where the molecule will be parsed from. Also wrote Unit Tests for the database, and a small scale systems test. Integrated the database, search functions, and command line interface.
+- Timmy Hoang:  A working SQL database that stores a molecule onto three tables where table one holds the molecule id, molecule name. Table two contains the molecule atom/vertex list. Table three contains the molecules adjacency list. Created the H2DB class that will be used to query and insert into the database. Designed a MoleculeAbstract, MoleculeText, MoleculeDB classes that will be used depending on where the molecule will be parsed from. Also wrote Unit Tests for the database, and a small scale systems test. 
+Created the CLI to be used with the compiled JAR that runs our Operations class. Integrated the database, search functions, and command line interface. 
 
-As an addition of more features, I have implemented the JAVA GUI that includes outputs a graphic of the drawing of molecules and list of isomorphic molecules. It allows inputs that accepts file from current computer and two radio buttons for the add and find operations for the project. 
+    As an addition of more features, I have implemented the JAVA GUI that includes outputs a graphic of the drawing of molecules and list of isomorphic molecules. It allows inputs that accepts file from current computer and two radio buttons for the add and find operations for the project. 
 
 - Edwin Sun: Bash script that creates an executable file that adds a custom terminal command for adding and searching molecules. It needs to be saved in /usr/bin and be given appropriate permissions so that anybody using the terminal can execute the command. It error checks the parameters, options and filename if they exist. For each individual command, it runs a jar package for the search and add functions. 
 

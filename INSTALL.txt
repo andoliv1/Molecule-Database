@@ -4,10 +4,9 @@ Required Hardware:
 
 	Lab Machines from PHO 307: Lenovo ThinkCentre M91p workstations; 8GB ram; 3GHz 		Quad core processors; 24″ 1920×1200 Dell monitors; Centos 7
 
-
 2) Supporting Files
 
-Imported Libraries:
+Imported Libraries (Libraries are already installed using Maven): 
 
     Graphstream
 	Java.io
@@ -42,9 +41,13 @@ I. Open the group9 project in Intelli-J
             	i. Java Language Level 8 
          	ii. SDK - 1.8
 		iii. Set the output folder to the folder named out in the project root.
-	b. Import maven projects 
+	b. Import maven projects
+	   To do this manually, click on the Maven button on the right sidebar of Intelli-J. From here, click on reimport
+	   all Maven projects.
+	c. We have packaged the group9.jar file that runs the Operations class in the repo. If you need to recompile the project, it is
+	  required to also recompile the group9.jar file. group9.jar packages the Operations class along with its dependencies. Without
+		this file, the command line interface will not work.
 	
-
 II.
 	Warning - Lab computers seem to default to Java 1.7. You will need to change that to Java 1.8.
 
@@ -75,9 +78,9 @@ II.
 
 		Here are some sample commands to get you started.
 		./md --initdb
-		./md --addMolecule carbon_dioxide.txt
-		./md --addMolecule carbon_dioxide2.txt
-		./md --findMolecule carbon_dioxide.txt
+		./md --addMolecule molecules/carbon_dioxide.txt
+		./md --addMolecule molecules/carbon_dioxide2.txt
+		./md --findMolecule molecules/carbon_dioxide.txt
 
 		The above commands will initialize the database, 
 		insert two different versions of carbon dioxide,

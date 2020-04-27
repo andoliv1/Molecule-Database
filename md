@@ -40,7 +40,7 @@
     then
     if [ ! -f "$2" ]
       then
-        echo "File $2 does not exist. Please check if the filepath is correct"
+        echo "File $2 does not exist/could not be found. Please check if the filepath is correct"
     else
         echo "Add... molecule from $2"
         java -jar group9.jar "$1" "$2"
@@ -53,7 +53,7 @@
     then
     if [ ! -f "$2" ]
       then
-        echo "File $2 does not exist. Please check if the filepath is correct"
+        echo "File $2 does not exist/could not be found. Please check if the filepath is correct"
     else
         echo "Search... molecule from $2"
         java -jar group9.jar "$1" "$2"

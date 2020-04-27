@@ -305,7 +305,7 @@ public class App {
 
         if(graph1.getNodeCount() != graph2.getNodeCount())
             return false;
-        System.out.println(Arrays.deepToString(new ArrayList[]{bijection}));
+//        System.out.println(Arrays.deepToString(new ArrayList[]{bijection}));
 
         for(int i = 0; i < graph1.getNodeCount(); i++) {
             Node n1 = graph1.getNode(""+i);
