@@ -9,6 +9,7 @@ Required Hardware:
 
 Imported Libraries:
 
+    Graphstream
 	Java.io
 	h2-1.4.200
 	Javalin
@@ -23,11 +24,11 @@ Unit Test descriptions:
 
 	-DatabaseExport.java: Test with checking connection to database and add table
 
-	-GraphisomorphismUnit.java: Test with strong or weak isomorphism with molecules: 	salt, water, carbon dioxide...
+	-GraphIsomorphismUnit.java: Test with strong or weak isomorphism with molecules: 	salt, water, carbon dioxide...
 
 	-FindMostSimilarUnitTest.java: Test with findmostsimilar function in arraylist of 	carbon dioxide, water, weirdmol1...
 
-	-smallsystemtestes.java: Test inserting 2 isomorphic molecules into the database
+	-SmallSystemsTest.java: Test inserting 2 isomorphic molecules into the database
 													Searches weak/strong isomorphism for one of those molecules.
 													
 	-sqlunit.java: Test sql operations loading datasets and checking edges, atoms, 		molecules … rows 
