@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<link rel="stylesheet" href="ChemDoodleWeb.css" type="text/css">
+<script type="text/javascript" src="ChemDoodleWeb.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="jquery-3.4.1.min.js"></script>
+
+<body>
+<div id="includedContent"></div>
+</body>
+
+<html>
+
+<head>
+  <title>EC504 Molecule Database</title>
+  <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+</head>
+    
+<!-- BODY CONTENT-->
+<body>
+
+<!-- HEADER/TITLE-->
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">EC504 <span class="logo_colour">Molecule Database</span></a></h1>
+          <h2> Fast and Efficient way to search for molecules</h2>
+        </div>
+      </div>
+ 
+    </div>
+      
+<!-- SIDEBAR-->
+    <div id="site_content">
+      <div class="sidebar">
+        <!-- insert your sidebar items here -->
+        <h3>Instructions</h3>
+        <h4>To search molecules by molecule name:</h4>
+        <p>Enter the molecule name in the search bar and press enter. The resulting molecule will show in the draw area and isomorphic results in the results area. </p>
+        <h4> To search molecules by file name: </h4>
+        <p>Drag and drop or select files into the drop area. Click add button then search button to see isomorphic results on
+        the first molecule added.</p>
+        <h4> Results </h4>
+        <p> Results will be shown in the bottom or in the draw area. </p>
+        </form>
+      </div>
+	
+<!-- CONTENT SECTION-->
+      <div id="content">
+          
+        <!-- WELCOME -->
+        <h1>Welcome!</h1>
+          
+            <!-- INPUT SECTION -->
+            <h2>To Input Molecules</h2>
+            <!-- SEARCH INPUT SECTION -->
+                <p> search by molecule name... </p>
+                    <script>
+                        let myCanvas = new ChemDoodle.ViewerCanvas('id', 150, 150);
+                        myCanvas.styles.bonds_width_2D = 1.2;
+                        myCanvas.styles.bonds_saturationWidthAbs_2D = 5.2;
+                        myCanvas.styles.bonds_hashSpacing_2D = 5;
+                        myCanvas.styles.atoms_font_size_2D = 20;
+                        myCanvas.styles.atoms_useJMOLColors = true;
+                        myCanvas.emptyMessage = 'Search molecule';
+                        myCanvas.repaint();
+                    </script>
+                    <p>
+                        <input type="search" id="mySearch" value="Enter keywords.....">
+<!--                        <input name="search" onclick="search_val()" type="button" style="border: 0; margin: 0 0 -9px 5px;" src="style/search.png" />-->
+                        <label class="button3" onclick="search_val()" > Enter </label>
+                        <p id="test"></p>
+                    </p>
+
+                <!-- FILE INPUT SECTION -->
+                <p> search by file input ... </p>
+                    <div id="drop-area">
+                        <form method="post" action="/upload" enctype="multipart/form-data" id="fileUploadForm">
+                            <input type="file" name="files" id="fileElem" multiple onchange="handleFiles(this.files)">
+                            <label class="button" for="fileElem">Select some files</label>
+                        </form>
+                        <progress id="progress-bar" max=100 value=0></progress>
+                        <div id="gallery" /></div>
+                    </div>
+                <p id="check"></p>
+         <!-- SEARCH SECTION -->
+	     <h2>Search Results </h2>
+            <div id="wrapper"> 
+                <label class="button2" onclick="uploadFilesSearch()" > Search Molecule </label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label class="button2" onclick="uploadFilesAdd()"> Add Molecule </label>
+            </div>
+
+            <div id="result">
+                <p id="demo"> </p>
+                <p id="choice"> </p>
+            </div>
+        </div>
+    </div>
+    
+<!-- FOOTER BODY CONTENT-->
+
+    <div id="footer">
+      Designed by Edwin, part of Team 9 (including Andreas, Esteban, Timmy, and Danny) </a>
+    </div>
+    
+  </div>
+
+</body>
+
+<script src="script.js"></script>
+
+</html>
